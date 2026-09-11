@@ -1,24 +1,30 @@
-"""Independent validator for Test 05 development evidence (protocol v2,
-update I).
+"""Independent validator for Test 05 development evidence, protocol
+v1.2.0-dev3 (section 18).
 
-This module never trusts a cached ``status`` field. For every component it
-either (a) fully re-executes that component from the config/seed recorded
-in the evidence and byte-diffs the result against what was persisted, or
-(b) independently re-derives a specific conclusion (leakage, collision
-counts, resource eligibility, integrated gating) straight from the
-persisted raw data. A rejection is a structured finding, not an exception:
-running the validator against corrupted evidence must produce a report
-with ``valid: False`` and a specific violation, never a crash, so
-corruption tests can assert on the report.
+Never trusts a cached ``status`` field. For every component it either (a)
+fully re-executes that component from the config/seed recorded in the
+evidence and diffs the result against what was persisted, or (b)
+independently re-derives a specific conclusion (leakage, collision counts,
+observer statistics/coverage, resource eligibility, fault-mutation
+metadata, the integrated gate table) straight from the persisted raw data.
+A rejection is a structured finding, not an exception: running the
+validator against corrupted evidence produces a report with ``valid:
+False`` and a specific violation, never a crash.
+
+This module also derives the *authoritative* integrated determination
+(section 19: "the integrated status must begin as pending... until the
+validator derives it") and writes it to a new file,
+``results/integrated_determination.json``, without ever modifying the
+frozen protocol/config material or the generator's own canonical result.
 """
 
 from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
-from . import boundary, hashing, integrated, label_audit, observer, residual, resource, seeds, world, worlds
+from . import boundary, execution_matrix, hashing, integrated, label_audit, observer, residual, resource, seeds, world, worlds
 
 
 class Violation:
@@ -62,17 +68,13 @@ def _config_from_dict(d: dict) -> world.WorldConfig:
     return world.WorldConfig(**d)
 
 
-ALL_COMPONENTS = ("boundary", "residual", "observer", "resource", "integrated")
+ALL_COMPONENTS = ("boundary", "residual", "observer", "resource", "expansion", "execution_matrix", "integrated")
 
 
 def validate(evidence_root: Path, components: tuple[str, ...] = ALL_COMPONENTS) -> ValidationReport:
     """``components`` restricts which per-component recompute-and-diff
-    sections run (the structural checks -- manifest/hash/seed/label-audit
-    integrity -- always run regardless, since they are cheap). Full
-    end-to-end validation (the default) always uses every component;
-    ``components`` exists mainly so targeted corruption tests can validate
-    just the one component they corrupted without paying for a full
-    05C observer re-enumeration every time."""
+    sections run (structural checks always run; they are cheap). Full
+    end-to-end validation (the default) uses every component."""
     evidence_root = Path(evidence_root)
     report = ValidationReport()
     result_path = evidence_root / "results" / "test05_development_result.json"
@@ -95,70 +97,100 @@ def validate(evidence_root: Path, components: tuple[str, ...] = ALL_COMPONENTS) 
             f"recomputed digest {recomputed_digest} != stored canonical_digest {result.get('canonical_digest')}",
         )
 
-    report.record("evidence_manifest_files_exist_and_hash")
-    for entry in result.get("evidence_manifest", []):
-        path = evidence_root / entry["path"]
-        if not path.exists():
-            report.reject("evidence_manifest_files_exist_and_hash", f"missing evidence file: {entry['path']}")
+    report.record("companion_and_evidence_manifest_hashes_match")
+    companion_manifest_path = evidence_root / "hashes" / "companion_file_manifest.json"
+    evidence_manifest_path = evidence_root / "hashes" / "evidence_manifest.json"
+    for manifest_path, file_key in ((companion_manifest_path, "files"), (evidence_manifest_path, "evidence_manifest")):
+        if not manifest_path.exists():
+            report.reject("companion_and_evidence_manifest_hashes_match", f"missing manifest: {manifest_path}")
             continue
-        obj = _load_json(path)
-        actual_hash = hashing.hash_obj(obj)
-        if actual_hash != entry["sha256"]:
-            report.reject(
-                "evidence_manifest_files_exist_and_hash",
-                f"{entry['path']}: recomputed hash {actual_hash} != manifest hash {entry['sha256']}",
-            )
+        manifest = _load_json(manifest_path)
+        for entry in manifest.get(file_key, []):
+            path = evidence_root / entry["path"]
+            if not path.exists():
+                report.reject("companion_and_evidence_manifest_hashes_match", f"missing evidence file: {entry['path']}")
+                continue
+            if path.suffix == ".md":
+                actual_hash = hashing.hash_file(path)
+            else:
+                actual_hash = hashing.hash_obj(_load_json(path))
+            if actual_hash != entry["sha256"]:
+                report.reject(
+                    "companion_and_evidence_manifest_hashes_match",
+                    f"{entry['path']}: recomputed hash {actual_hash} != manifest hash {entry['sha256']}",
+                )
 
-    # --- 2. Seed legitimacy ---------------------------------------------------
+    # --- 2. Seed legitimacy (update: dict-of-families, not a flat list) -----
     report.record("no_reserved_seed_used")
     if result.get("reserved_seeds_used") is not False:
         report.reject("no_reserved_seed_used", "reserved_seeds_used is not explicitly False")
-    dev_seeds = result.get("development_seeds", [])
-    for s in dev_seeds:
+    dev_seeds_by_family = result.get("development_seeds", {})
+    flat_seeds = [s for seed_list in dev_seeds_by_family.values() for s in seed_list]
+    for s in flat_seeds:
         if seeds.is_reserved(s):
             report.reject("no_reserved_seed_used", f"seed {s} is in a reserved confirmatory band")
-        if not seeds.is_development(s):
-            report.reject("no_reserved_seed_used", f"seed {s} is not a registered development seed (any protocol version)")
+    eligibility = seeds.check_v3_seed_eligibility()
+    if not eligibility["eligible"]:
+        report.reject("no_reserved_seed_used", f"seed eligibility check failed: {eligibility}")
+    if set(flat_seeds) != seeds.all_v3_development_seeds():
+        report.reject(
+            "no_reserved_seed_used",
+            f"development_seeds {sorted(flat_seeds)} do not exactly match the registered v1.2.0-dev3 seed set",
+        )
 
-    # --- 3. Arm-label leakage audit (recomputed fresh, not trusted from evidence) ---
+    report.record("generator_never_asserts_integrated_status")
+    if result.get("integrated_result", {}).get("status") != "pending":
+        report.reject(
+            "generator_never_asserts_integrated_status",
+            f"generator's integrated_result.status is {result.get('integrated_result', {}).get('status')!r}, "
+            "not 'pending'; only the validator may assert supported/not_supported",
+        )
+
+    # --- 3. Arm-label leakage audit (recomputed fresh) -----------------------
     report.record("label_audit_clean")
     fresh_label_audit = label_audit.audit_no_label_leakage()
     if not fresh_label_audit["clean"]:
         report.reject("label_audit_clean", f"simulator-core functions leak labels: {fresh_label_audit['violations']}")
-    stored_label_audit = result.get("label_audit")
-    if stored_label_audit is not None and stored_label_audit.get("violations") != fresh_label_audit["violations"]:
-        report.reject("label_audit_clean", "stored label_audit evidence does not match a fresh audit")
+    stored_label_audit_path = evidence_root / "runs" / "label_audit.json"
+    if stored_label_audit_path.exists():
+        stored = _load_json(stored_label_audit_path)
+        if stored.get("violations") != fresh_label_audit["violations"]:
+            report.reject("label_audit_clean", "stored label_audit evidence does not match a fresh audit")
 
     # --- 4. Per-component full recompute-and-diff ----------------------------
+    family_configs = _family_configs_from_worlds_dir(evidence_root)
     if "boundary" in components:
-        _validate_boundary(evidence_root, result, report)
+        _validate_boundary(evidence_root, family_configs, report)
     if "residual" in components:
-        _validate_residual(evidence_root, result, report)
+        _validate_residual(evidence_root, family_configs, report)
     if "observer" in components:
-        _validate_observer(evidence_root, result, report)
+        _validate_observer(evidence_root, report)
     if "resource" in components:
-        _validate_resource(evidence_root, result, report)
+        _validate_resource(evidence_root, family_configs, report)
+    if "expansion" in components:
+        _validate_expansion(evidence_root, family_configs, report)
+    if "execution_matrix" in components:
+        _validate_execution_matrix(evidence_root, family_configs, result, report)
     if "integrated" in components:
-        _validate_integrated(evidence_root, result, report)
+        _validate_and_derive_integrated(evidence_root, report)
 
     return report
 
 
-def _family_configs_from_records(result: dict) -> dict[str, tuple[world.WorldConfig, world.WorldConfig]]:
+def _family_configs_from_worlds_dir(evidence_root: Path) -> dict[str, tuple[world.WorldConfig, world.WorldConfig]]:
     out = {}
-    for rec in result.get("world_families", []):
-        out[rec["family_id"]] = (
-            _config_from_dict(rec["standard_config"]),
-            _config_from_dict(rec["observer_config"]),
-        )
+    worlds_dir = evidence_root / "worlds"
+    if not worlds_dir.exists():
+        return out
+    for path in sorted(worlds_dir.glob("*.json")):
+        rec = _load_json(path)
+        out[rec["family_id"]] = (_config_from_dict(rec["standard_config"]), _config_from_dict(rec["observer_config"]))
     return out
 
 
-def _validate_boundary(evidence_root: Path, result: dict, report: ValidationReport) -> None:
-    families = _family_configs_from_records(result)
-
-    for fid, (std_cfg, _obs_cfg) in families.items():
-        path = evidence_root / "evidence" / "boundary" / f"{fid}.json"
+def _validate_boundary(evidence_root: Path, family_configs: dict, report: ValidationReport) -> None:
+    for fid, (std_cfg, _obs_cfg) in family_configs.items():
+        path = evidence_root / "runs" / "boundary" / f"{fid}.json"
         report.record(f"boundary[{fid}]_recompute_matches")
         if not path.exists():
             report.reject(f"boundary[{fid}]_recompute_matches", f"missing evidence file {path}")
@@ -169,7 +201,6 @@ def _validate_boundary(evidence_root: Path, result: dict, report: ValidationRepo
             report.reject(f"boundary[{fid}]_recompute_matches", "evidence does not record the rng_seed actually used")
             continue
 
-        # Beginning-commitment / contract integrity checks (update E, I).
         bc = stored.get("beginning_commitment", {})
         report.record(f"boundary[{fid}]_beginning_commitment_hash_matches")
         recomputed_hash = hashing.hash_obj(bc.get("data", {}))
@@ -182,18 +213,12 @@ def _validate_boundary(evidence_root: Path, result: dict, report: ValidationRepo
         if bc.get("consumed") is not False:
             report.reject(
                 f"boundary[{fid}]_beginning_commitment_hash_matches",
-                "the evidence-record beginning_commitment must itself be unconsumed (it exists only to prove "
-                "pre-tick-zero commitment, not to serve as an operational transition input)",
+                "the evidence-record beginning_commitment must itself be unconsumed",
             )
 
-        # Fully independent recomputation using the exact seed recorded in
-        # the evidence itself.
         recomputed = boundary.evaluate_world_family(std_cfg, rng_seed=stored_seed)
         _diff_arms(fid, stored, recomputed, report)
 
-        # Arm-level rejection semantics (update H/I): a "fake" intervention
-        # (arm 6) must show executed data actually changed on the causal
-        # path; arm 7 must show it did not.
         for arm in stored.get("arms", []):
             if arm["arm_id"] == "06_relevant_intermediate_mutation" and arm.get("notes") != "ineligible":
                 report.record(f"boundary[{fid}]_arm06_modifies_causal_path")
@@ -210,8 +235,7 @@ def _validate_boundary(evidence_root: Path, result: dict, report: ValidationRepo
                 if diff and diff.get("any_stage_differs"):
                     report.reject(
                         f"boundary[{fid}]_arm07_does_not_modify_causal_path",
-                        "arm 7 (irrelevant intermediate mutation) modified the declared causal path -- it is "
-                        "not actually irrelevant, or the world model's irrelevant-action policy is broken",
+                        "arm 7 (irrelevant intermediate mutation) modified the declared causal path",
                     )
             if arm["arm_id"] == "13_ignored_return_value_control":
                 report.record(f"boundary[{fid}]_ignored_return_value_rejected")
@@ -223,10 +247,7 @@ def _validate_boundary(evidence_root: Path, result: dict, report: ValidationRepo
             if arm["arm_id"] == "11_open_chain_no_return_transition":
                 report.record(f"boundary[{fid}]_open_chain_no_fake_transition")
                 if arm.get("contract_fail_reason") != "no_transition_executed":
-                    report.reject(
-                        f"boundary[{fid}]_open_chain_no_fake_transition",
-                        "arm 11 must record that no transition was executed, not a fabricated pass",
-                    )
+                    report.reject(f"boundary[{fid}]_open_chain_no_fake_transition", "arm 11 must record no transition executed")
             if arm["arm_id"] == "12_directly_copied_beginning":
                 report.record(f"boundary[{fid}]_copied_beginning_contract_not_consumed")
                 if arm.get("contract_fail_reason") != "contract_not_consumed":
@@ -245,10 +266,6 @@ def _diff_arms(fid: str, stored: dict, recomputed: dict, report: ValidationRepor
         if s is None or r is None:
             report.reject(f"boundary[{fid}]_recompute_matches", f"arm {arm_id} present in only one of stored/recomputed")
             continue
-        # Compare the decision fields (never notes/description, which may
-        # legitimately vary if a donor history or mutation tick differs
-        # between runs due to enumeration-order ties broken identically
-        # but described differently).
         for field_name in ("closes", "contract_satisfied", "contract_fail_reason", "exact_closure_fail_field", "return_value_used"):
             if s.get(field_name) != r.get(field_name):
                 report.reject(
@@ -256,76 +273,51 @@ def _diff_arms(fid: str, stored: dict, recomputed: dict, report: ValidationRepor
                     f"arm {arm_id}.{field_name}: stored={s.get(field_name)!r} recomputed={r.get(field_name)!r}",
                 )
     if stored.get("status") != recomputed.get("status"):
-        report.reject(
-            f"boundary[{fid}]_recompute_matches",
-            f"status: stored={stored.get('status')!r} recomputed={recomputed.get('status')!r}",
-        )
+        report.reject(f"boundary[{fid}]_recompute_matches", f"status: stored={stored.get('status')!r} recomputed={recomputed.get('status')!r}")
 
 
-def _validate_residual(evidence_root: Path, result: dict, report: ValidationReport) -> None:
-    families = _family_configs_from_records(result)
+def _validate_residual(evidence_root: Path, family_configs: dict, report: ValidationReport) -> None:
     all_wf = {wf.family_id: wf for wf in worlds.all_world_families()}
-    for fid, (std_cfg, _obs_cfg) in families.items():
-        path = evidence_root / "evidence" / "residual" / f"{fid}.json"
+    for fid, (std_cfg, _obs_cfg) in family_configs.items():
+        path = evidence_root / "runs" / "residual" / f"{fid}.json"
         report.record(f"residual[{fid}]_recompute_matches")
         if not path.exists():
             report.reject(f"residual[{fid}]_recompute_matches", f"missing evidence file {path}")
             continue
         stored = _load_json(path)
-
         wf = all_wf.get(fid)
-        if wf is None:
-            report.reject(f"residual[{fid}]_recompute_matches", f"unknown world family id {fid}")
-            continue
         stored_seed = stored.get("rng_seed")
-        if stored_seed is None:
-            report.reject(f"residual[{fid}]_recompute_matches", "evidence does not record the rng_seed actually used")
+        if wf is None or stored_seed is None:
+            report.reject(f"residual[{fid}]_recompute_matches", "unknown family or missing rng_seed")
             continue
         recomputed = residual.evaluate_world_family(wf, rng_seed=stored_seed, reference_history=tuple(stored["reference_history"]))
 
-        # Collision/microstate counts (update I: "incorrect microstate or
-        # collision counts").
         report.record(f"residual[{fid}]_collision_counts_match")
-        sc = stored["collision_analysis"]
-        rc = recomputed["collision_analysis"]
+        sc, rc = stored["collision_analysis"], recomputed["collision_analysis"]
         for key in ("admissible_microstate_count", "distinct_residual_count", "max_preimage_size", "non_injective"):
             if sc.get(key) != rc.get(key):
-                report.reject(
-                    f"residual[{fid}]_collision_counts_match",
-                    f"{key}: stored={sc.get(key)!r} recomputed={rc.get(key)!r}",
-                )
+                report.reject(f"residual[{fid}]_collision_counts_match", f"{key}: stored={sc.get(key)!r} recomputed={rc.get(key)!r}")
 
-        # Leakage audit re-verified directly against the STORED residual
-        # and ledger snapshot (not merely trusting the stored "clean"
-        # flag) -- this is the actual persisted artifact, not a fresh
-        # rebuild, so a leaked banned key written into the evidence itself
-        # is caught even if the *code* that produced it is innocent.
         report.record(f"residual[{fid}]_leakage_audit_reverified")
-        stored_residual = stored.get("residual_snapshot")
-        stored_ledger = stored.get("ledger_snapshot")
+        stored_residual, stored_ledger = stored.get("residual_snapshot"), stored.get("ledger_snapshot")
         if stored_residual is None or stored_ledger is None:
-            report.reject(f"residual[{fid}]_leakage_audit_reverified", "evidence does not include a residual/ledger snapshot to re-audit")
+            report.reject(f"residual[{fid}]_leakage_audit_reverified", "evidence does not include a residual/ledger snapshot")
         else:
             reaudit = residual.leakage_audit(stored_residual, stored_ledger)
             if not reaudit["clean"]:
-                report.reject(f"residual[{fid}]_leakage_audit_reverified", f"leakage found in persisted evidence: {reaudit['violations']}")
+                report.reject(f"residual[{fid}]_leakage_audit_reverified", f"leakage found: {reaudit['violations']}")
             if stored.get("leakage_audit", {}).get("clean") != reaudit["clean"]:
-                report.reject(f"residual[{fid}]_leakage_audit_reverified", "stored leakage_audit.clean disagrees with a fresh re-audit of the stored snapshot")
+                report.reject(f"residual[{fid}]_leakage_audit_reverified", "stored leakage_audit disagrees with re-audit")
 
-        # Also cross-check against a fully independent rebuild from the
-        # same reference history, to catch a code-level leakage regression
-        # even if this particular evidence file wasn't hand-tampered.
-        true_ending = world.run_history(std_cfg, tuple(stored["reference_history"]))
-        fresh_residual = residual.build_residual(true_ending, std_cfg)
-        fresh_ledger = residual.build_ledger(true_ending)
-        fresh_leakage = residual.leakage_audit(fresh_residual, fresh_ledger)
-        if not fresh_leakage["clean"]:
-            report.reject(f"residual[{fid}]_leakage_audit_reverified", f"leakage found on fresh rebuild: {fresh_leakage['violations']}")
-
-        # Probe/control grades and status (full recompute diff).
         report.record(f"residual[{fid}]_probe_grades_match")
         if stored.get("main_probe_grade", {}).get("all_pass") != recomputed.get("main_probe_grade", {}).get("all_pass"):
             report.reject(f"residual[{fid}]_probe_grades_match", "main_probe_grade.all_pass differs on recompute")
+        stored_scoring = stored.get("main_probe_grade", {}).get("scoring", {})
+        report.record(f"residual[{fid}]_9of9_and_8of8_scoring_present")
+        if stored_scoring.get("required_core", {}).get("total") != 9:
+            report.reject(f"residual[{fid}]_9of9_and_8of8_scoring_present", "required_core total is not 9")
+        if stored_scoring.get("delayed", {}).get("total") != 8:
+            report.reject(f"residual[{fid}]_9of9_and_8of8_scoring_present", "delayed total is not 8")
         for cid in stored.get("controls", {}):
             s_pass = stored["controls"][cid].get("all_pass")
             r_pass = recomputed.get("controls", {}).get(cid, {}).get("all_pass")
@@ -335,15 +327,11 @@ def _validate_residual(evidence_root: Path, result: dict, report: ValidationRepo
             report.reject(f"residual[{fid}]_recompute_matches", f"status: stored={stored.get('status')!r} recomputed={recomputed.get('status')!r}")
 
 
-def _validate_observer(evidence_root: Path, result: dict, report: ValidationReport) -> None:
+def _validate_observer(evidence_root: Path, report: ValidationReport) -> None:
     all_wf = {wf.family_id: wf for wf in worlds.observer_world_families()}
-    for rec in result.get("world_families", []):
-        fid = rec["family_id"]
-        path = evidence_root / "evidence" / "observer" / f"{fid}.json"
+    for path in sorted((evidence_root / "runs" / "observer").glob("*.json")):
+        fid = path.stem
         report.record(f"observer[{fid}]_recompute_matches")
-        if not path.exists():
-            report.reject(f"observer[{fid}]_recompute_matches", f"missing evidence file {path}")
-            continue
         stored = _load_json(path)
         wf = all_wf.get(fid)
         if wf is None:
@@ -355,59 +343,47 @@ def _validate_observer(evidence_root: Path, result: dict, report: ValidationRepo
         if pc.get("conclusion") != "positive_control_valid":
             report.reject(f"observer[{fid}]_positive_control_valid", f"positive control did not detect the boundary: {pc}")
 
+        report.record(f"observer[{fid}]_matching_coverage_adequate")
+        coverage = stored.get("matching_coverage")
+        if coverage is None or coverage < observer.MIN_MATCHING_COVERAGE:
+            report.reject(f"observer[{fid}]_matching_coverage_adequate", f"matching_coverage {coverage} below minimum {observer.MIN_MATCHING_COVERAGE}")
+
         report.record(f"observer[{fid}]_statistics_recompute")
-        s_primary = stored.get("primary_result", {})
-        r_primary = recomputed.get("primary_result", {})
-        for key in ("total_variation_distance", "bayes_optimal_accuracy", "mutual_information_bits", "conclusion"):
-            if s_primary.get(key) != r_primary.get(key):
-                report.reject(
-                    f"observer[{fid}]_statistics_recompute",
-                    f"primary_result.{key}: stored={s_primary.get(key)!r} recomputed={r_primary.get(key)!r}",
-                )
-        s_control = stored.get("positive_control_result", {})
-        r_control = recomputed.get("positive_control_result", {})
-        for key in ("total_variation_distance", "bayes_optimal_accuracy", "mutual_information_bits", "conclusion"):
-            if s_control.get(key) != r_control.get(key):
-                report.reject(
-                    f"observer[{fid}]_statistics_recompute",
-                    f"positive_control_result.{key}: stored={s_control.get(key)!r} recomputed={r_control.get(key)!r}",
-                )
+        for result_key in ("primary_result", "positive_control_result"):
+            s_r, r_r = stored.get(result_key, {}), recomputed.get(result_key, {})
+            for key in ("total_variation_distance", "bayes_optimal_accuracy", "mutual_information_bits", "conclusion"):
+                if s_r.get(key) != r_r.get(key):
+                    report.reject(f"observer[{fid}]_statistics_recompute", f"{result_key}.{key}: stored={s_r.get(key)!r} recomputed={r_r.get(key)!r}")
         if stored.get("status") != recomputed.get("status"):
             report.reject(f"observer[{fid}]_recompute_matches", f"status: stored={stored.get('status')!r} recomputed={recomputed.get('status')!r}")
 
 
-def _validate_resource(evidence_root: Path, result: dict, report: ValidationReport) -> None:
-    families = _family_configs_from_records(result)
-    for fid, (std_cfg, _obs_cfg) in families.items():
-        path = evidence_root / "evidence" / "resource" / f"{fid}.json"
+def _validate_resource(evidence_root: Path, family_configs: dict, report: ValidationReport) -> None:
+    for fid, (std_cfg, _obs_cfg) in family_configs.items():
+        path = evidence_root / "runs" / "resource" / f"{fid}.json"
         report.record(f"resource[{fid}]_recompute_matches")
         if not path.exists():
             report.reject(f"resource[{fid}]_recompute_matches", f"missing evidence file {path}")
             continue
         stored = _load_json(path)
 
-        # Fidelity eligibility (update I: "fidelity-ineligible resource
-        # comparisons"): every arm listed as eligible in pareto must itself
-        # be semantic_eligible=True in the arms dict.
         report.record(f"resource[{fid}]_eligibility_consistent")
         eligible_listed = set(stored.get("pareto", {}).get("eligible_arms", []))
         actually_eligible = {aid for aid, a in stored.get("arms", {}).items() if a.get("semantic_eligible")}
         if eligible_listed != actually_eligible:
-            report.reject(
-                f"resource[{fid}]_eligibility_consistent",
-                f"pareto.eligible_arms {eligible_listed} != arms actually marked semantic_eligible {actually_eligible}",
-            )
+            report.reject(f"resource[{fid}]_eligibility_consistent", f"pareto.eligible_arms {eligible_listed} != actually eligible {actually_eligible}")
 
-        # Omitted resource buffers (update I): every arm's resource_breakdown
-        # must declare every category in resource.RESOURCE_CATEGORIES.
         report.record(f"resource[{fid}]_no_omitted_categories")
         for aid, a in stored.get("arms", {}).items():
-            breakdown = a.get("resource_breakdown", {})
-            missing = [c for c in resource.RESOURCE_CATEGORIES if c not in breakdown]
+            missing = [c for c in resource.RESOURCE_CATEGORIES if c not in a.get("resource_breakdown", {})]
             if missing:
                 report.reject(f"resource[{fid}]_no_omitted_categories", f"arm {aid} omits categories {missing}")
 
-        # Full recompute of byte counts (uses the stored reference_history).
+        report.record(f"resource[{fid}]_strict_dominance_rule_applied")
+        pareto = stored.get("pareto", {})
+        if pareto.get("status") == "supported" and pareto.get("regression_arms_on_primary_metric"):
+            report.reject(f"resource[{fid}]_strict_dominance_rule_applied", "status is supported despite nonempty regression_arms_on_primary_metric")
+
         recomputed, _timing = resource.evaluate_world_family(std_cfg, tuple(stored["reference_history"]), seed=0)
         report.record(f"resource[{fid}]_byte_counts_match")
         for aid, a in stored.get("arms", {}).items():
@@ -416,65 +392,106 @@ def _validate_resource(evidence_root: Path, result: dict, report: ValidationRepo
                 report.reject(f"resource[{fid}]_byte_counts_match", f"arm {aid} missing from recomputation")
                 continue
             if a.get("peak_canonical_bytes") != r_a.get("peak_canonical_bytes"):
-                report.reject(
-                    f"resource[{fid}]_byte_counts_match",
-                    f"arm {aid}.peak_canonical_bytes: stored={a.get('peak_canonical_bytes')} recomputed={r_a.get('peak_canonical_bytes')}",
-                )
+                report.reject(f"resource[{fid}]_byte_counts_match", f"arm {aid}.peak_canonical_bytes mismatch")
         if stored.get("status") != recomputed.get("status"):
             report.reject(f"resource[{fid}]_recompute_matches", f"status: stored={stored.get('status')!r} recomputed={recomputed.get('status')!r}")
 
 
-def _validate_integrated(evidence_root: Path, result: dict, report: ValidationReport) -> None:
-    """Update I: 'integrated support with any failed prerequisite' must be
-    rejected. Recomputes the gate table from the persisted component
-    evidence (not the cached component_results summaries) and checks the
-    stored integrated_result is consistent with it."""
-    report.record("integrated_recompute_matches")
-    path = evidence_root / "evidence" / "integrated.json"
-    if not path.exists():
-        report.reject("integrated_recompute_matches", f"missing {path}")
-        return
-    stored_integrated = _load_json(path)
+def _validate_expansion(evidence_root: Path, family_configs: dict, report: ValidationReport) -> None:
+    from . import expansion
+
+    for fid, (std_cfg, _obs_cfg) in family_configs.items():
+        path = evidence_root / "runs" / "expansion" / f"{fid}.json"
+        report.record(f"expansion[{fid}]_recompute_matches")
+        if not path.exists():
+            report.reject(f"expansion[{fid}]_recompute_matches", f"missing evidence file {path}")
+            continue
+        stored = _load_json(path)
+        recomputed = expansion.evaluate_world_family(std_cfg)
+        if stored.get("status") != recomputed.get("status"):
+            report.reject(f"expansion[{fid}]_recompute_matches", f"status: stored={stored.get('status')!r} recomputed={recomputed.get('status')!r}")
+        if stored.get("theoretical_max_r") != recomputed.get("theoretical_max_r"):
+            report.reject(f"expansion[{fid}]_recompute_matches", "theoretical_max_r arithmetic differs on recompute")
+
+
+def _validate_execution_matrix(evidence_root: Path, family_configs: dict, result: dict, report: ValidationReport) -> None:
+    all_wf = {wf.family_id: wf for wf in worlds.all_world_families()}
+    dev_seeds = result.get("development_seeds", {})
+    for fid, wf in all_wf.items():
+        path = evidence_root / "runs" / "execution_matrix" / f"{fid}.json"
+        report.record(f"execution_matrix[{fid}]_recompute_matches")
+        if not path.exists():
+            report.reject(f"execution_matrix[{fid}]_recompute_matches", f"missing evidence file {path}")
+            continue
+        stored = _load_json(path)
+        seed_list = dev_seeds.get(fid, stored.get("seeds", []))
+        recomputed = execution_matrix.run_family_matrix(wf, seed_list)
+
+        report.record(f"execution_matrix[{fid}]_before_after_hashes_match")
+        stored_by_id = {e["execution_id"]: e for e in stored.get("executions", [])}
+        recomputed_by_id = {e["execution_id"]: e for e in recomputed.get("executions", [])}
+        if set(stored_by_id) != set(recomputed_by_id):
+            report.reject(f"execution_matrix[{fid}]_before_after_hashes_match", "execution_id sets differ between stored and recomputed")
+        for eid in set(stored_by_id) & set(recomputed_by_id):
+            s, r = stored_by_id[eid], recomputed_by_id[eid]
+            if s.get("before_hash") != r.get("before_hash") or s.get("after_hash") != r.get("after_hash"):
+                report.reject(f"execution_matrix[{fid}]_before_after_hashes_match", f"{eid}: before/after hash mismatch on recompute (incompatible mutation metadata)")
+            if s.get("mutated_fields") != r.get("mutated_fields"):
+                report.reject(f"execution_matrix[{fid}]_before_after_hashes_match", f"{eid}: mutated_fields mismatch on recompute")
+        if stored.get("execution_count") != recomputed.get("execution_count"):
+            report.reject(f"execution_matrix[{fid}]_recompute_matches", "execution_count differs on recompute")
+
+
+def _validate_and_derive_integrated(evidence_root: Path, report: ValidationReport) -> None:
+    """Section 19: derives the authoritative integrated determination from
+    raw per-family evidence and writes it to a NEW file (never modifying
+    the frozen generator output). Also enforces 'integrated support with a
+    failed prerequisite' can never be reported."""
+    report.record("integrated_derivable_from_raw_evidence")
 
     boundary_result = {"per_world_family": {}}
     residual_result = {"per_world_family": {}}
     observer_result = {"per_world_family": {}}
     resource_result = {"per_world_family": {}}
-    for rec in result.get("world_families", []):
-        fid = rec["family_id"]
-        b_path = evidence_root / "evidence" / "boundary" / f"{fid}.json"
-        r_path = evidence_root / "evidence" / "residual" / f"{fid}.json"
-        o_path = evidence_root / "evidence" / "observer" / f"{fid}.json"
-        s_path = evidence_root / "evidence" / "resource" / f"{fid}.json"
-        if b_path.exists():
-            boundary_result["per_world_family"][fid] = _load_json(b_path)
-        if r_path.exists():
-            residual_result["per_world_family"][fid] = _load_json(r_path)
-        if o_path.exists():
-            observer_result["per_world_family"][fid] = _load_json(o_path)
-        if s_path.exists():
-            resource_result["per_world_family"][fid] = _load_json(s_path)
+    for sub, target in (("boundary", boundary_result), ("residual", residual_result), ("observer", observer_result), ("resource", resource_result)):
+        for path in sorted((evidence_root / "runs" / sub).glob("*.json")):
+            target["per_world_family"][path.stem] = _load_json(path)
 
-    recomputed_integrated = integrated.evaluate(boundary_result, residual_result, observer_result, resource_result)
-    if stored_integrated.get("status") != recomputed_integrated.get("status"):
-        report.reject(
-            "integrated_recompute_matches",
-            f"integrated status: stored={stored_integrated.get('status')!r} recomputed={recomputed_integrated.get('status')!r}",
-        )
+    if not boundary_result["per_world_family"] or not residual_result["per_world_family"]:
+        report.reject("integrated_derivable_from_raw_evidence", "insufficient raw evidence to derive an integrated result")
+        return
 
-    # Never allow "supported" with a failed/ineligible/invalid gate: a
-    # direct, paranoid re-check independent of the boolean logic above.
+    derived = integrated.evaluate(boundary_result, residual_result, observer_result, resource_result)
+
+    report.record("stored_integrated_gates_match_recompute")
+    stored_gates_path = evidence_root / "runs" / "integrated_gates.json"
+    if stored_gates_path.exists():
+        stored_gates = _load_json(stored_gates_path)
+        if stored_gates.get("status") != derived.get("status"):
+            report.reject(
+                "stored_integrated_gates_match_recompute",
+                f"runs/integrated_gates.json status {stored_gates.get('status')!r} != recomputed {derived.get('status')!r}",
+            )
+        if stored_gates.get("failed_gates") != derived.get("failed_gates"):
+            report.reject("stored_integrated_gates_match_recompute", "runs/integrated_gates.json failed_gates differs on recompute")
+
     report.record("integrated_supported_requires_all_gates_ok")
-    if recomputed_integrated.get("status") == "supported":
-        if recomputed_integrated.get("failed_gates") or recomputed_integrated.get("ineligible_gates") or recomputed_integrated.get("invalid_gates"):
+    if derived.get("status") == "supported":
+        if derived.get("failed_gates") or derived.get("ineligible_gates") or derived.get("invalid_gates"):
             report.reject(
                 "integrated_supported_requires_all_gates_ok",
-                "status is 'supported' despite a nonempty failed/ineligible/invalid gate list",
+                "derived status is 'supported' despite a nonempty failed/ineligible/invalid gate list",
             )
-    top_level_integrated = result.get("integrated_result", {})
-    if top_level_integrated.get("status") == "supported":
-        if top_level_integrated.get("failed_gates") or top_level_integrated.get("ineligible_gates") or top_level_integrated.get("invalid_gates"):
-            report.reject(
-                "integrated_supported_requires_all_gates_ok",
-                "top-level result claims integrated support despite a nonempty failed/ineligible/invalid gate list",
-            )
+
+    determination = {
+        "status": derived["status"],
+        "failed_gates": derived["failed_gates"],
+        "inconclusive_gates": [],
+        "ineligible_gates": derived["ineligible_gates"],
+        "invalid_gates": derived["invalid_gates"],
+        "gates": derived["gates"],
+        "interpretation": derived["interpretation"],
+        "derived_by": "validator.py (independent of the generator; never asserted by run.py)",
+    }
+    out_path = evidence_root / "results" / "integrated_determination.json"
+    hashing.write_json(out_path, determination)

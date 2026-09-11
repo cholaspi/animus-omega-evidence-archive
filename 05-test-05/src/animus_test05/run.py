@@ -139,17 +139,18 @@ def freeze_checklist(output_dir: Path) -> dict:
     items["companion_files_frozen_and_hashed"] = manifest_path.exists()
     if manifest_path.exists():
         manifest = hashing.read_json(manifest_path)
-        expected = {
-            "protocol", "observer_spec.json", "physics_config.json",
+        expected_json_files = {
+            "observer_spec.json", "physics_config.json",
             "beginning_contract_schema.json", "causal_path_specification.json",
             "field_classification_manifest.json", "delayed_probe_generator.json",
             "fault_predictions.json", "mutation_definitions.json",
             "semantic_probe_specification.json", "byte_accounting_specification.json",
             "resource_objective.json", "seed_list.json",
         }
-        found = {Path(e["path"]).stem if Path(e["path"]).suffix == ".md" else Path(e["path"]).name for e in manifest["files"]}
-        items["all_required_companion_files_present"] = all(
-            any(exp in f for f in found) for exp in expected
+        found_basenames = {Path(e["path"]).name for e in manifest["files"]}
+        has_protocol_doc = any(name.lower().startswith("test_05_protocol") for name in found_basenames)
+        items["all_required_companion_files_present"] = (
+            has_protocol_doc and expected_json_files.issubset(found_basenames)
         )
 
     eligibility = seeds.check_v3_seed_eligibility()
@@ -309,8 +310,8 @@ def execute(output_dir: Path) -> dict:
         "world_family_results": {
             fid: {
                 "reciprocal_closure": boundary_result["per_world_family"][fid]["status"],
-                "loss": loss_result["per_world_family"].get(fid),
-                "semantic": semantic_result["per_world_family"].get(fid),
+                "loss": "supported" if loss_result["per_world_family"].get(fid) else "unsupported",
+                "semantic": "supported" if semantic_result["per_world_family"].get(fid) else "unsupported",
                 "observer": observer_result["per_world_family"][fid]["status"],
                 "resource": resource_result["per_world_family"][fid]["status"],
                 "expansion_contraction": expansion_result["per_world_family"][fid]["status"],

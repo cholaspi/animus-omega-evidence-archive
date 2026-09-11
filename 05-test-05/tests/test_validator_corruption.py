@@ -1,6 +1,6 @@
-"""Corruption tests for validator.py (protocol v2, update I).
+"""Corruption tests for validator.py, protocol v1.2.0-dev3 (section 18).
 
-Generates one real baseline evidence set with the actual development
+Generates one real baseline evidence set with the actual freeze()+execute()
 pipeline (this is the expensive part -- run once for the whole module),
 then for each named rejection condition, copies the baseline, corrupts
 exactly one thing, and asserts the validator's report is invalid with a
@@ -27,7 +27,8 @@ _BASELINE_DIR: Path = None
 def setUpModule():
     global _BASELINE_DIR
     _BASELINE_DIR = Path(tempfile.mkdtemp(prefix="animus_test05_validator_baseline_"))
-    run_module.run(_BASELINE_DIR)
+    run_module.freeze(_BASELINE_DIR)
+    run_module.execute(_BASELINE_DIR)
 
 
 def tearDownModule():
@@ -55,50 +56,58 @@ class TestBaselineIsValid(unittest.TestCase):
         report = validator.validate(_BASELINE_DIR)
         self.assertTrue(report.valid, report.to_dict()["violations"])
 
+    def test_generator_wrote_pending_integrated_status(self):
+        result = _load(_BASELINE_DIR / "results" / "test05_development_result.json")
+        self.assertEqual(result["integrated_result"]["status"], "pending")
+
+    def test_validator_derives_integrated_determination_file(self):
+        validator.validate(_BASELINE_DIR, components=("integrated",))
+        self.assertTrue((_BASELINE_DIR / "results" / "integrated_determination.json").exists())
+
 
 class TestStructuralCorruption(unittest.TestCase):
     def test_missing_evidence_file_is_rejected(self):
         d = _copy_baseline("missing_evidence")
-        (d / "evidence" / "boundary" / "friendly.json").unlink()
+        (d / "runs" / "boundary" / "friendly.json").unlink()
         report = validator.validate(d, components=("boundary",))
         self.assertFalse(report.valid)
         self.assertTrue(any("missing" in v.detail for v in report.violations))
 
     def test_modified_evidence_hash_is_rejected(self):
         d = _copy_baseline("modified_hash")
-        p = d / "evidence" / "residual" / "friendly.json"
+        p = d / "runs" / "residual" / "friendly.json"
         obj = _load(p)
         obj["status"] = "supported" if obj["status"] != "supported" else "unsupported"
         _save(p, obj)
         report = validator.validate(d, components=("residual",))
         self.assertFalse(report.valid)
-        self.assertTrue(any(v.check == "evidence_manifest_files_exist_and_hash" for v in report.violations))
+        self.assertTrue(any(v.check == "companion_and_evidence_manifest_hashes_match" for v in report.violations))
 
     def test_forbidden_reserved_seed_is_rejected(self):
         d = _copy_baseline("reserved_seed")
         p = d / "results" / "test05_development_result.json"
         obj = _load(p)
-        obj["development_seeds"].append(58000)
+        obj["development_seeds"]["friendly"].append(58000)
         _save(p, obj)
         report = validator.validate(d, components=())
         self.assertFalse(report.valid)
         self.assertTrue(any(v.check == "no_reserved_seed_used" for v in report.violations))
 
-    def test_unregistered_seed_is_rejected(self):
-        d = _copy_baseline("unregistered_seed")
+    def test_generator_asserting_supported_is_rejected(self):
+        d = _copy_baseline("fake_generator_assertion")
         p = d / "results" / "test05_development_result.json"
         obj = _load(p)
-        obj["development_seeds"].append(1)
+        obj["integrated_result"]["status"] = "supported"
         _save(p, obj)
         report = validator.validate(d, components=())
         self.assertFalse(report.valid)
-        self.assertTrue(any(v.check == "no_reserved_seed_used" for v in report.violations))
+        self.assertTrue(any(v.check == "generator_never_asserts_integrated_status" for v in report.violations))
 
 
 class TestBoundaryCorruption(unittest.TestCase):
     def test_post_hoc_modified_beginning_contract_is_rejected(self):
         d = _copy_baseline("modified_contract")
-        p = d / "evidence" / "boundary" / "friendly.json"
+        p = d / "runs" / "boundary" / "friendly.json"
         obj = _load(p)
         obj["beginning_commitment"]["data"]["min_resolutions"] = 999  # tamper after the hash was computed
         _save(p, obj)
@@ -108,7 +117,7 @@ class TestBoundaryCorruption(unittest.TestCase):
 
     def test_contract_marked_consumed_in_evidence_record_is_rejected(self):
         d = _copy_baseline("consumed_evidence_contract")
-        p = d / "evidence" / "boundary" / "friendly.json"
+        p = d / "runs" / "boundary" / "friendly.json"
         obj = _load(p)
         obj["beginning_commitment"]["consumed"] = True
         _save(p, obj)
@@ -117,7 +126,7 @@ class TestBoundaryCorruption(unittest.TestCase):
 
     def test_ignored_return_value_silently_marked_fine_is_rejected(self):
         d = _copy_baseline("ignored_rv")
-        p = d / "evidence" / "boundary" / "friendly.json"
+        p = d / "runs" / "boundary" / "friendly.json"
         obj = _load(p)
         for arm in obj["arms"]:
             if arm["arm_id"] == "13_ignored_return_value_control":
@@ -130,7 +139,7 @@ class TestBoundaryCorruption(unittest.TestCase):
 
     def test_fake_relevant_intervention_with_unchanged_causal_path_is_rejected(self):
         d = _copy_baseline("fake_intervention")
-        p = d / "evidence" / "boundary" / "friendly.json"
+        p = d / "runs" / "boundary" / "friendly.json"
         obj = _load(p)
         for arm in obj["arms"]:
             if arm["arm_id"] == "06_relevant_intermediate_mutation" and arm.get("causal_path_diff"):
@@ -142,7 +151,7 @@ class TestBoundaryCorruption(unittest.TestCase):
 
     def test_shortcut_arm_falsely_marked_as_consuming_contract_is_rejected(self):
         d = _copy_baseline("fake_shortcut_pass")
-        p = d / "evidence" / "boundary" / "friendly.json"
+        p = d / "runs" / "boundary" / "friendly.json"
         obj = _load(p)
         for arm in obj["arms"]:
             if arm["arm_id"] == "12_directly_copied_beginning":
@@ -156,7 +165,7 @@ class TestBoundaryCorruption(unittest.TestCase):
 class TestResidualLeakageAndCounts(unittest.TestCase):
     def test_leaked_answer_key_in_residual_is_rejected(self):
         d = _copy_baseline("leakage")
-        p = d / "evidence" / "residual" / "friendly.json"
+        p = d / "runs" / "residual" / "friendly.json"
         obj = _load(p)
         obj["residual_snapshot"]["expected_answer"] = "a0"  # inject a banned meta-key
         obj["leakage_audit"] = {"violations": [], "clean": True}  # falsely claim clean
@@ -167,7 +176,7 @@ class TestResidualLeakageAndCounts(unittest.TestCase):
 
     def test_incorrect_collision_count_is_rejected(self):
         d = _copy_baseline("collision_counts")
-        p = d / "evidence" / "residual" / "friendly.json"
+        p = d / "runs" / "residual" / "friendly.json"
         obj = _load(p)
         obj["collision_analysis"]["max_preimage_size"] = 999999
         _save(p, obj)
@@ -177,18 +186,28 @@ class TestResidualLeakageAndCounts(unittest.TestCase):
 
     def test_non_injective_falsely_claimed_true_is_rejected(self):
         d = _copy_baseline("non_injective_lie")
-        p = d / "evidence" / "residual" / "friendly.json"
+        p = d / "runs" / "residual" / "friendly.json"
         obj = _load(p)
         obj["collision_analysis"]["non_injective"] = not obj["collision_analysis"]["non_injective"]
         _save(p, obj)
         report = validator.validate(d, components=("residual",))
         self.assertFalse(report.valid)
 
+    def test_9_of_9_scoring_tampered_is_rejected(self):
+        d = _copy_baseline("scoring_tamper")
+        p = d / "runs" / "residual" / "friendly.json"
+        obj = _load(p)
+        obj["main_probe_grade"]["scoring"]["required_core"]["total"] = 5
+        _save(p, obj)
+        report = validator.validate(d, components=("residual",))
+        self.assertFalse(report.valid)
+        self.assertTrue(any(v.check == "residual[friendly]_9of9_and_8of8_scoring_present" for v in report.violations))
+
 
 class TestResourceEligibilityAndBuffers(unittest.TestCase):
     def test_ineligible_arm_admitted_into_pareto_comparison_is_rejected(self):
         d = _copy_baseline("fidelity_ineligible_admitted")
-        p = d / "evidence" / "resource" / "friendly.json"
+        p = d / "runs" / "resource" / "friendly.json"
         obj = _load(p)
         obj["pareto"]["eligible_arms"].append("open_chain_execution")  # known ineligible arm
         _save(p, obj)
@@ -198,7 +217,7 @@ class TestResourceEligibilityAndBuffers(unittest.TestCase):
 
     def test_omitted_resource_category_is_rejected(self):
         d = _copy_baseline("omitted_category")
-        p = d / "evidence" / "resource" / "friendly.json"
+        p = d / "runs" / "resource" / "friendly.json"
         obj = _load(p)
         first_arm = next(iter(obj["arms"]))
         del obj["arms"][first_arm]["resource_breakdown"]["lookup_table_bytes"]
@@ -209,7 +228,7 @@ class TestResourceEligibilityAndBuffers(unittest.TestCase):
 
     def test_incorrect_peak_bytes_is_rejected(self):
         d = _copy_baseline("wrong_peak_bytes")
-        p = d / "evidence" / "resource" / "friendly.json"
+        p = d / "runs" / "resource" / "friendly.json"
         obj = _load(p)
         first_arm = next(iter(obj["arms"]))
         obj["arms"][first_arm]["peak_canonical_bytes"] = 123456789
@@ -217,21 +236,22 @@ class TestResourceEligibilityAndBuffers(unittest.TestCase):
         report = validator.validate(d, components=("resource",))
         self.assertFalse(report.valid)
 
+    def test_supported_despite_regression_is_rejected(self):
+        d = _copy_baseline("fake_strict_dominance")
+        p = d / "runs" / "resource" / "friendly.json"
+        obj = _load(p)
+        obj["pareto"]["status"] = "supported"
+        obj["pareto"]["regression_arms_on_primary_metric"] = ["general_purpose_lossless_compression"]
+        _save(p, obj)
+        report = validator.validate(d, components=("resource",))
+        self.assertFalse(report.valid)
+        self.assertTrue(any(v.check == "resource[friendly]_strict_dominance_rule_applied" for v in report.violations))
+
 
 class TestIntegratedCorruption(unittest.TestCase):
-    def test_integrated_support_with_failed_gate_is_rejected(self):
-        d = _copy_baseline("fake_integrated_support")
-        p = d / "results" / "test05_development_result.json"
-        obj = _load(p)
-        obj["integrated_result"]["status"] = "supported"
-        # leave failed_gates non-empty (from the real not_supported run) if any
-        _save(p, obj)
-        report = validator.validate(d, components=())
-        self.assertFalse(report.valid)
-
-    def test_integrated_evidence_disagrees_with_recompute_is_rejected(self):
-        d = _copy_baseline("integrated_evidence_tamper")
-        p = d / "evidence" / "integrated.json"
+    def test_integrated_gates_tampered_is_rejected(self):
+        d = _copy_baseline("integrated_gates_tamper")
+        p = d / "runs" / "integrated_gates.json"
         obj = _load(p)
         obj["status"] = "supported"
         obj["failed_gates"] = []
@@ -240,18 +260,41 @@ class TestIntegratedCorruption(unittest.TestCase):
         _save(p, obj)
         report = validator.validate(d, components=("integrated",))
         self.assertFalse(report.valid)
+        self.assertTrue(any(v.check == "stored_integrated_gates_match_recompute" for v in report.violations))
 
 
 class TestObserverCorruption(unittest.TestCase):
     def test_falsely_valid_positive_control_is_rejected(self):
         d = _copy_baseline("fake_positive_control")
-        p = d / "evidence" / "observer" / "friendly.json"
+        p = d / "runs" / "observer" / "friendly.json"
         obj = _load(p)
         obj["positive_control_result"]["conclusion"] = "positive_control_valid"
         obj["positive_control_result"]["total_variation_distance"] = 0.0  # inconsistent with "valid"
         _save(p, obj)
         report = validator.validate(d, components=("observer",))
         self.assertFalse(report.valid)
+
+    def test_inadequate_matching_coverage_is_rejected(self):
+        d = _copy_baseline("bad_coverage")
+        p = d / "runs" / "observer" / "friendly.json"
+        obj = _load(p)
+        obj["matching_coverage"] = 0.5
+        _save(p, obj)
+        report = validator.validate(d, components=("observer",))
+        self.assertFalse(report.valid)
+        self.assertTrue(any(v.check == "observer[friendly]_matching_coverage_adequate" for v in report.violations))
+
+
+class TestExecutionMatrixCorruption(unittest.TestCase):
+    def test_incompatible_mutation_metadata_is_rejected(self):
+        d = _copy_baseline("bad_mutation_metadata")
+        p = d / "runs" / "execution_matrix" / "adversarial.json"
+        obj = _load(p)
+        obj["executions"][1]["after_hash"] = "0" * 64
+        _save(p, obj)
+        report = validator.validate(d, components=("execution_matrix",))
+        self.assertFalse(report.valid)
+        self.assertTrue(any(v.check == "execution_matrix[adversarial]_before_after_hashes_match" for v in report.violations))
 
 
 if __name__ == "__main__":
