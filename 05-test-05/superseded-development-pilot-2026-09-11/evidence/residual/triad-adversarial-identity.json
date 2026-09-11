@@ -1,0 +1,760 @@
+{
+  "adversarial_notes": {
+    "identity_substitution": {
+      "correctly_distinguishes": true,
+      "description": "The identity-substitution probe must answer False (no defect) on the true residual and True (reject) on the shuffled-identity control.",
+      "shuffled_control_answer": true,
+      "true_residual_answer": false
+    }
+  },
+  "collision_analysis": {
+    "admissible_microstate_count": 256,
+    "cardinality_reduction_ratio": 0.683594,
+    "collision_group_count": 65,
+    "distinct_residual_count": 81,
+    "example_collision": {
+      "group_size": 16,
+      "microstate_a": {
+        "history": [
+          "noop_x",
+          "noop_x",
+          "noop_x",
+          "noop_x"
+        ],
+        "microstate_hash": "99ccbdd1495a7f140af068968877b3938d6ce6392b85677e265238ea8035ee46"
+      },
+      "microstate_b": {
+        "history": [
+          "noop_x",
+          "noop_x",
+          "noop_x",
+          "noop_y"
+        ],
+        "microstate_hash": "23ecc33f8006c643234f891740ec961f7e12e65b9c0958a3f23e84a9566874fc"
+      },
+      "residual_key_prefix": "b5b0840022b2e987"
+    },
+    "max_preimage_size": 16,
+    "non_injective": true,
+    "total_histories_enumerated": 256
+  },
+  "controls": {
+    "changed_causal_dependency": {
+      "all_pass": false,
+      "answers": {
+        "authorizing_relationship": true,
+        "causal_prerequisite_last_obligation": "o0",
+        "counterfactual_move_agent0": false,
+        "dependency_blocks_last_obligation": false,
+        "identity_substitution_reject": false,
+        "ledger_effects_consistent": true,
+        "owner_of_o0": "a0",
+        "permitted_actions": [
+          "a1",
+          "a2"
+        ],
+        "provenance_present_o0": true,
+        "unseen_chain_completion": "CORRUPTED_DEP"
+      },
+      "description": "causal_order_token corrupted (reversed and tagged).",
+      "grades": {
+        "authorizing_relationship": true,
+        "causal_prerequisite_last_obligation": true,
+        "counterfactual_move_agent0": true,
+        "dependency_blocks_last_obligation": true,
+        "identity_substitution_reject": true,
+        "ledger_effects_consistent": true,
+        "owner_of_o0": true,
+        "permitted_actions": true,
+        "provenance_present_o0": true,
+        "unseen_chain_completion": false
+      },
+      "ground_truth": {
+        "authorizing_relationship": true,
+        "causal_prerequisite_last_obligation": "o0",
+        "counterfactual_move_agent0": false,
+        "dependency_blocks_last_obligation": false,
+        "identity_substitution_reject": false,
+        "ledger_effects_consistent": true,
+        "owner_of_o0": "a0",
+        "permitted_actions": [
+          "a1",
+          "a2"
+        ],
+        "provenance_present_o0": true,
+        "unseen_chain_completion": "o0"
+      },
+      "pass_count": 9,
+      "total": 10
+    },
+    "complete_checkpoint": {
+      "all_pass": true,
+      "answers": {
+        "authorizing_relationship": true,
+        "causal_prerequisite_last_obligation": "o0",
+        "counterfactual_move_agent0": false,
+        "dependency_blocks_last_obligation": false,
+        "identity_substitution_reject": false,
+        "ledger_effects_consistent": true,
+        "owner_of_o0": "a0",
+        "permitted_actions": [
+          "a1",
+          "a2"
+        ],
+        "provenance_present_o0": true,
+        "unseen_chain_completion": "o0"
+      },
+      "description": "Full true microstate (private fields included) used directly.",
+      "grades": {
+        "authorizing_relationship": true,
+        "causal_prerequisite_last_obligation": true,
+        "counterfactual_move_agent0": true,
+        "dependency_blocks_last_obligation": true,
+        "identity_substitution_reject": true,
+        "ledger_effects_consistent": true,
+        "owner_of_o0": true,
+        "permitted_actions": true,
+        "provenance_present_o0": true,
+        "unseen_chain_completion": true
+      },
+      "ground_truth": {
+        "authorizing_relationship": true,
+        "causal_prerequisite_last_obligation": "o0",
+        "counterfactual_move_agent0": false,
+        "dependency_blocks_last_obligation": false,
+        "identity_substitution_reject": false,
+        "ledger_effects_consistent": true,
+        "owner_of_o0": "a0",
+        "permitted_actions": [
+          "a1",
+          "a2"
+        ],
+        "provenance_present_o0": true,
+        "unseen_chain_completion": "o0"
+      },
+      "pass_count": 10,
+      "total": 10
+    },
+    "contradictory_ledger_entry": {
+      "all_pass": false,
+      "answers": {
+        "authorizing_relationship": true,
+        "causal_prerequisite_last_obligation": "o0",
+        "counterfactual_move_agent0": false,
+        "dependency_blocks_last_obligation": false,
+        "identity_substitution_reject": false,
+        "ledger_effects_consistent": false,
+        "owner_of_o0": "a0",
+        "permitted_actions": [
+          "a1",
+          "a2"
+        ],
+        "provenance_present_o0": true,
+        "unseen_chain_completion": "o0"
+      },
+      "description": "First ledger entry's effect field replaced with a contradictory value.",
+      "grades": {
+        "authorizing_relationship": true,
+        "causal_prerequisite_last_obligation": true,
+        "counterfactual_move_agent0": true,
+        "dependency_blocks_last_obligation": true,
+        "identity_substitution_reject": true,
+        "ledger_effects_consistent": false,
+        "owner_of_o0": true,
+        "permitted_actions": true,
+        "provenance_present_o0": true,
+        "unseen_chain_completion": true
+      },
+      "ground_truth": {
+        "authorizing_relationship": true,
+        "causal_prerequisite_last_obligation": "o0",
+        "counterfactual_move_agent0": false,
+        "dependency_blocks_last_obligation": false,
+        "identity_substitution_reject": false,
+        "ledger_effects_consistent": true,
+        "owner_of_o0": "a0",
+        "permitted_actions": [
+          "a1",
+          "a2"
+        ],
+        "provenance_present_o0": true,
+        "unseen_chain_completion": "o0"
+      },
+      "pass_count": 9,
+      "total": 10
+    },
+    "deleted_obligation": {
+      "all_pass": false,
+      "answers": {
+        "authorizing_relationship": true,
+        "causal_prerequisite_last_obligation": "o0",
+        "counterfactual_move_agent0": false,
+        "dependency_blocks_last_obligation": true,
+        "identity_substitution_reject": false,
+        "ledger_effects_consistent": true,
+        "owner_of_o0": null,
+        "permitted_actions": [
+          "a1",
+          "a2"
+        ],
+        "provenance_present_o0": false,
+        "unseen_chain_completion": "o0"
+      },
+      "description": "Obligation o0 removed from the residual.",
+      "grades": {
+        "authorizing_relationship": true,
+        "causal_prerequisite_last_obligation": true,
+        "counterfactual_move_agent0": true,
+        "dependency_blocks_last_obligation": false,
+        "identity_substitution_reject": true,
+        "ledger_effects_consistent": true,
+        "owner_of_o0": false,
+        "permitted_actions": true,
+        "provenance_present_o0": false,
+        "unseen_chain_completion": true
+      },
+      "ground_truth": {
+        "authorizing_relationship": true,
+        "causal_prerequisite_last_obligation": "o0",
+        "counterfactual_move_agent0": false,
+        "dependency_blocks_last_obligation": false,
+        "identity_substitution_reject": false,
+        "ledger_effects_consistent": true,
+        "owner_of_o0": "a0",
+        "permitted_actions": [
+          "a1",
+          "a2"
+        ],
+        "provenance_present_o0": true,
+        "unseen_chain_completion": "o0"
+      },
+      "pass_count": 7,
+      "total": 10
+    },
+    "duplicate_event": {
+      "all_pass": false,
+      "answers": {
+        "authorizing_relationship": true,
+        "causal_prerequisite_last_obligation": "o0",
+        "counterfactual_move_agent0": false,
+        "dependency_blocks_last_obligation": false,
+        "identity_substitution_reject": false,
+        "ledger_effects_consistent": false,
+        "owner_of_o0": "a0",
+        "permitted_actions": [
+          "a1",
+          "a2"
+        ],
+        "provenance_present_o0": true,
+        "unseen_chain_completion": "o0"
+      },
+      "description": "First ledger entry duplicated at the end.",
+      "grades": {
+        "authorizing_relationship": true,
+        "causal_prerequisite_last_obligation": true,
+        "counterfactual_move_agent0": true,
+        "dependency_blocks_last_obligation": true,
+        "identity_substitution_reject": true,
+        "ledger_effects_consistent": false,
+        "owner_of_o0": true,
+        "permitted_actions": true,
+        "provenance_present_o0": true,
+        "unseen_chain_completion": true
+      },
+      "ground_truth": {
+        "authorizing_relationship": true,
+        "causal_prerequisite_last_obligation": "o0",
+        "counterfactual_move_agent0": false,
+        "dependency_blocks_last_obligation": false,
+        "identity_substitution_reject": false,
+        "ledger_effects_consistent": true,
+        "owner_of_o0": "a0",
+        "permitted_actions": [
+          "a1",
+          "a2"
+        ],
+        "provenance_present_o0": true,
+        "unseen_chain_completion": "o0"
+      },
+      "pass_count": 9,
+      "total": 10
+    },
+    "general_purpose_compressed_baseline": {
+      "all_pass": true,
+      "answers": {
+        "authorizing_relationship": true,
+        "causal_prerequisite_last_obligation": "o0",
+        "counterfactual_move_agent0": false,
+        "dependency_blocks_last_obligation": false,
+        "identity_substitution_reject": false,
+        "ledger_effects_consistent": true,
+        "owner_of_o0": "a0",
+        "permitted_actions": [
+          "a1",
+          "a2"
+        ],
+        "provenance_present_o0": true,
+        "unseen_chain_completion": "o0"
+      },
+      "compressed_bytes": 329,
+      "description": "Full microstate losslessly zlib-compressed then decompressed (generic compression).",
+      "grades": {
+        "authorizing_relationship": true,
+        "causal_prerequisite_last_obligation": true,
+        "counterfactual_move_agent0": true,
+        "dependency_blocks_last_obligation": true,
+        "identity_substitution_reject": true,
+        "ledger_effects_consistent": true,
+        "owner_of_o0": true,
+        "permitted_actions": true,
+        "provenance_present_o0": true,
+        "unseen_chain_completion": true
+      },
+      "ground_truth": {
+        "authorizing_relationship": true,
+        "causal_prerequisite_last_obligation": "o0",
+        "counterfactual_move_agent0": false,
+        "dependency_blocks_last_obligation": false,
+        "identity_substitution_reject": false,
+        "ledger_effects_consistent": true,
+        "owner_of_o0": "a0",
+        "permitted_actions": [
+          "a1",
+          "a2"
+        ],
+        "provenance_present_o0": true,
+        "unseen_chain_completion": "o0"
+      },
+      "pass_count": 10,
+      "raw_bytes": 849,
+      "total": 10
+    },
+    "lossless_event_log": {
+      "all_pass": true,
+      "answers": {
+        "authorizing_relationship": true,
+        "causal_prerequisite_last_obligation": "o0",
+        "counterfactual_move_agent0": false,
+        "dependency_blocks_last_obligation": false,
+        "identity_substitution_reject": false,
+        "ledger_effects_consistent": true,
+        "owner_of_o0": "a0",
+        "permitted_actions": [
+          "a1",
+          "a2"
+        ],
+        "provenance_present_o0": true,
+        "unseen_chain_completion": "o0"
+      },
+      "description": "Full unfiltered event_log supplied alongside the true residual.",
+      "grades": {
+        "authorizing_relationship": true,
+        "causal_prerequisite_last_obligation": true,
+        "counterfactual_move_agent0": true,
+        "dependency_blocks_last_obligation": true,
+        "identity_substitution_reject": true,
+        "ledger_effects_consistent": true,
+        "owner_of_o0": true,
+        "permitted_actions": true,
+        "provenance_present_o0": true,
+        "unseen_chain_completion": true
+      },
+      "ground_truth": {
+        "authorizing_relationship": true,
+        "causal_prerequisite_last_obligation": "o0",
+        "counterfactual_move_agent0": false,
+        "dependency_blocks_last_obligation": false,
+        "identity_substitution_reject": false,
+        "ledger_effects_consistent": true,
+        "owner_of_o0": "a0",
+        "permitted_actions": [
+          "a1",
+          "a2"
+        ],
+        "provenance_present_o0": true,
+        "unseen_chain_completion": "o0"
+      },
+      "pass_count": 10,
+      "total": 10
+    },
+    "lossy_residual_with_valid_ledger": {
+      "all_pass": true,
+      "answers": {
+        "authorizing_relationship": true,
+        "causal_prerequisite_last_obligation": "o0",
+        "counterfactual_move_agent0": false,
+        "dependency_blocks_last_obligation": false,
+        "identity_substitution_reject": false,
+        "ledger_effects_consistent": true,
+        "owner_of_o0": "a0",
+        "permitted_actions": [
+          "a1",
+          "a2"
+        ],
+        "provenance_present_o0": true,
+        "unseen_chain_completion": "o0"
+      },
+      "description": "The declared residual + its matching relevant ledger (the real architecture).",
+      "grades": {
+        "authorizing_relationship": true,
+        "causal_prerequisite_last_obligation": true,
+        "counterfactual_move_agent0": true,
+        "dependency_blocks_last_obligation": true,
+        "identity_substitution_reject": true,
+        "ledger_effects_consistent": true,
+        "owner_of_o0": true,
+        "permitted_actions": true,
+        "provenance_present_o0": true,
+        "unseen_chain_completion": true
+      },
+      "ground_truth": {
+        "authorizing_relationship": true,
+        "causal_prerequisite_last_obligation": "o0",
+        "counterfactual_move_agent0": false,
+        "dependency_blocks_last_obligation": false,
+        "identity_substitution_reject": false,
+        "ledger_effects_consistent": true,
+        "owner_of_o0": "a0",
+        "permitted_actions": [
+          "a1",
+          "a2"
+        ],
+        "provenance_present_o0": true,
+        "unseen_chain_completion": "o0"
+      },
+      "pass_count": 10,
+      "total": 10
+    },
+    "lossy_residual_without_ledger": {
+      "all_pass": false,
+      "answers": {
+        "authorizing_relationship": true,
+        "causal_prerequisite_last_obligation": "o0",
+        "counterfactual_move_agent0": false,
+        "dependency_blocks_last_obligation": false,
+        "identity_substitution_reject": true,
+        "ledger_effects_consistent": true,
+        "owner_of_o0": "a0",
+        "permitted_actions": [
+          "a1",
+          "a2"
+        ],
+        "provenance_present_o0": true,
+        "unseen_chain_completion": "o0"
+      },
+      "description": "The declared residual with an empty ledger (no narrative history available).",
+      "grades": {
+        "authorizing_relationship": true,
+        "causal_prerequisite_last_obligation": true,
+        "counterfactual_move_agent0": true,
+        "dependency_blocks_last_obligation": true,
+        "identity_substitution_reject": false,
+        "ledger_effects_consistent": true,
+        "owner_of_o0": true,
+        "permitted_actions": true,
+        "provenance_present_o0": true,
+        "unseen_chain_completion": true
+      },
+      "ground_truth": {
+        "authorizing_relationship": true,
+        "causal_prerequisite_last_obligation": "o0",
+        "counterfactual_move_agent0": false,
+        "dependency_blocks_last_obligation": false,
+        "identity_substitution_reject": false,
+        "ledger_effects_consistent": true,
+        "owner_of_o0": "a0",
+        "permitted_actions": [
+          "a1",
+          "a2"
+        ],
+        "provenance_present_o0": true,
+        "unseen_chain_completion": "o0"
+      },
+      "pass_count": 9,
+      "total": 10
+    },
+    "missing_provenance": {
+      "all_pass": false,
+      "answers": {
+        "authorizing_relationship": true,
+        "causal_prerequisite_last_obligation": "o0",
+        "counterfactual_move_agent0": false,
+        "dependency_blocks_last_obligation": false,
+        "identity_substitution_reject": false,
+        "ledger_effects_consistent": true,
+        "owner_of_o0": "a0",
+        "permitted_actions": [
+          "a1",
+          "a2"
+        ],
+        "provenance_present_o0": false,
+        "unseen_chain_completion": "o0"
+      },
+      "description": "First obligation's provenance field removed.",
+      "grades": {
+        "authorizing_relationship": true,
+        "causal_prerequisite_last_obligation": true,
+        "counterfactual_move_agent0": true,
+        "dependency_blocks_last_obligation": true,
+        "identity_substitution_reject": true,
+        "ledger_effects_consistent": true,
+        "owner_of_o0": true,
+        "permitted_actions": true,
+        "provenance_present_o0": false,
+        "unseen_chain_completion": true
+      },
+      "ground_truth": {
+        "authorizing_relationship": true,
+        "causal_prerequisite_last_obligation": "o0",
+        "counterfactual_move_agent0": false,
+        "dependency_blocks_last_obligation": false,
+        "identity_substitution_reject": false,
+        "ledger_effects_consistent": true,
+        "owner_of_o0": "a0",
+        "permitted_actions": [
+          "a1",
+          "a2"
+        ],
+        "provenance_present_o0": true,
+        "unseen_chain_completion": "o0"
+      },
+      "pass_count": 9,
+      "total": 10
+    },
+    "random_reconstructed_payload": {
+      "all_pass": false,
+      "answers": {
+        "authorizing_relationship": true,
+        "causal_prerequisite_last_obligation": "o0",
+        "counterfactual_move_agent0": false,
+        "dependency_blocks_last_obligation": true,
+        "identity_substitution_reject": true,
+        "ledger_effects_consistent": true,
+        "owner_of_o0": "a1",
+        "permitted_actions": [
+          "a1"
+        ],
+        "provenance_present_o0": true,
+        "unseen_chain_completion": "o0"
+      },
+      "description": "Residual balances/obligation owners/status replaced with random values.",
+      "grades": {
+        "authorizing_relationship": true,
+        "causal_prerequisite_last_obligation": true,
+        "counterfactual_move_agent0": true,
+        "dependency_blocks_last_obligation": false,
+        "identity_substitution_reject": false,
+        "ledger_effects_consistent": true,
+        "owner_of_o0": false,
+        "permitted_actions": false,
+        "provenance_present_o0": true,
+        "unseen_chain_completion": true
+      },
+      "ground_truth": {
+        "authorizing_relationship": true,
+        "causal_prerequisite_last_obligation": "o0",
+        "counterfactual_move_agent0": false,
+        "dependency_blocks_last_obligation": false,
+        "identity_substitution_reject": false,
+        "ledger_effects_consistent": true,
+        "owner_of_o0": "a0",
+        "permitted_actions": [
+          "a1",
+          "a2"
+        ],
+        "provenance_present_o0": true,
+        "unseen_chain_completion": "o0"
+      },
+      "pass_count": 6,
+      "total": 10
+    },
+    "shuffled_identities": {
+      "all_pass": false,
+      "answers": {
+        "authorizing_relationship": true,
+        "causal_prerequisite_last_obligation": "o0",
+        "counterfactual_move_agent0": true,
+        "dependency_blocks_last_obligation": false,
+        "identity_substitution_reject": true,
+        "ledger_effects_consistent": true,
+        "owner_of_o0": "a0",
+        "permitted_actions": [
+          "a0",
+          "a2"
+        ],
+        "provenance_present_o0": true,
+        "unseen_chain_completion": "o0"
+      },
+      "description": "Two agents' balances swapped in the residual (identity relabeling).",
+      "grades": {
+        "authorizing_relationship": true,
+        "causal_prerequisite_last_obligation": true,
+        "counterfactual_move_agent0": false,
+        "dependency_blocks_last_obligation": true,
+        "identity_substitution_reject": false,
+        "ledger_effects_consistent": true,
+        "owner_of_o0": true,
+        "permitted_actions": false,
+        "provenance_present_o0": true,
+        "unseen_chain_completion": true
+      },
+      "ground_truth": {
+        "authorizing_relationship": true,
+        "causal_prerequisite_last_obligation": "o0",
+        "counterfactual_move_agent0": false,
+        "dependency_blocks_last_obligation": false,
+        "identity_substitution_reject": false,
+        "ledger_effects_consistent": true,
+        "owner_of_o0": "a0",
+        "permitted_actions": [
+          "a1",
+          "a2"
+        ],
+        "provenance_present_o0": true,
+        "unseen_chain_completion": "o0"
+      },
+      "pass_count": 7,
+      "total": 10
+    },
+    "stale_ledger_entry": {
+      "all_pass": false,
+      "answers": {
+        "authorizing_relationship": true,
+        "causal_prerequisite_last_obligation": "o0",
+        "counterfactual_move_agent0": false,
+        "dependency_blocks_last_obligation": false,
+        "identity_substitution_reject": true,
+        "ledger_effects_consistent": true,
+        "owner_of_o0": "a0",
+        "permitted_actions": [
+          "a1",
+          "a2"
+        ],
+        "provenance_present_o0": true,
+        "unseen_chain_completion": "o0"
+      },
+      "description": "Ledger replaced with an empty/stale ledger from a different (earlier) point.",
+      "grades": {
+        "authorizing_relationship": true,
+        "causal_prerequisite_last_obligation": true,
+        "counterfactual_move_agent0": true,
+        "dependency_blocks_last_obligation": true,
+        "identity_substitution_reject": false,
+        "ledger_effects_consistent": true,
+        "owner_of_o0": true,
+        "permitted_actions": true,
+        "provenance_present_o0": true,
+        "unseen_chain_completion": true
+      },
+      "ground_truth": {
+        "authorizing_relationship": true,
+        "causal_prerequisite_last_obligation": "o0",
+        "counterfactual_move_agent0": false,
+        "dependency_blocks_last_obligation": false,
+        "identity_substitution_reject": false,
+        "ledger_effects_consistent": true,
+        "owner_of_o0": "a0",
+        "permitted_actions": [
+          "a1",
+          "a2"
+        ],
+        "provenance_present_o0": true,
+        "unseen_chain_completion": "o0"
+      },
+      "pass_count": 9,
+      "total": 10
+    }
+  },
+  "field_classification": {
+    "agents.*.balance": "reconstructed",
+    "agents.*.internal_seed": "intentionally_discarded",
+    "agents.*.private_trace": "intentionally_discarded",
+    "causal_order_token": "derived_through_later_execution",
+    "event_log[blocked/noop entries]": "intentionally_discarded",
+    "obligations.*.deadline": "copied",
+    "obligations.*.owner": "copied",
+    "obligations.*.provenance": "copied",
+    "obligations.*.resource": "copied",
+    "obligations.*.status": "reconstructed",
+    "obligations.*.target": "copied",
+    "provenance_digest": "derived_through_later_execution",
+    "relationships.*": "copied"
+  },
+  "leakage_audit": {
+    "clean": true,
+    "violations": []
+  },
+  "main_probe_grade": {
+    "all_pass": true,
+    "answers": {
+      "authorizing_relationship": true,
+      "causal_prerequisite_last_obligation": "o0",
+      "counterfactual_move_agent0": false,
+      "dependency_blocks_last_obligation": false,
+      "identity_substitution_reject": false,
+      "ledger_effects_consistent": true,
+      "owner_of_o0": "a0",
+      "permitted_actions": [
+        "a1",
+        "a2"
+      ],
+      "provenance_present_o0": true,
+      "unseen_chain_completion": "o0"
+    },
+    "grades": {
+      "authorizing_relationship": true,
+      "causal_prerequisite_last_obligation": true,
+      "counterfactual_move_agent0": true,
+      "dependency_blocks_last_obligation": true,
+      "identity_substitution_reject": true,
+      "ledger_effects_consistent": true,
+      "owner_of_o0": true,
+      "permitted_actions": true,
+      "provenance_present_o0": true,
+      "unseen_chain_completion": true
+    },
+    "ground_truth": {
+      "authorizing_relationship": true,
+      "causal_prerequisite_last_obligation": "o0",
+      "counterfactual_move_agent0": false,
+      "dependency_blocks_last_obligation": false,
+      "identity_substitution_reject": false,
+      "ledger_effects_consistent": true,
+      "owner_of_o0": "a0",
+      "permitted_actions": [
+        "a1",
+        "a2"
+      ],
+      "provenance_present_o0": true,
+      "unseen_chain_completion": "o0"
+    },
+    "pass_count": 10,
+    "total": 10
+  },
+  "reference_history": [
+    "move",
+    "move",
+    "resolve",
+    "move"
+  ],
+  "semantic_contract": {
+    "causal_ordering": "an obligation can be closed only if its causal dependency is closed",
+    "obligation_ownership": "every obligation's owner/target/provenance matches genesis",
+    "observer_visible_consequence": "primary_holder is derivable and unique",
+    "permitted_future_actions": "an agent may move iff balance>0 and its ring edge exists",
+    "provenance": "every obligation carries a genesis:<i> provenance tag",
+    "relationship_permissions": "residual.relationships == the config ring exactly",
+    "resource_commitment": "sum(balances) + resolved_count == config.total_resource",
+    "stable_identity": "residual.agents keys == config.agent_ids() exactly"
+  },
+  "status": "supported",
+  "support_checks": {
+    "expected_answers_not_directly_copied": true,
+    "leakage_audit_clean": true,
+    "main_residual_passes_all_probes": true,
+    "negative_controls_correctly_fail": true,
+    "non_injective_loss_demonstrated": true,
+    "positive_controls_pass": true
+  },
+  "world_id": "triad-adversarial-identity"
+}

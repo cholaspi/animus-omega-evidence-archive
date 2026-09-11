@@ -1,0 +1,76 @@
+{
+  "failed_gates": [
+    "no_qualifying_distinction_for_bounded_observer"
+  ],
+  "gates": [
+    {
+      "detail": "every 05A world family executes a history (expansion) followed by a J boundary transition (contraction)",
+      "gate": "expanding_and_contracting_represented_world",
+      "ok": true
+    },
+    {
+      "detail": "locked_beginning_contract() is a pure function of WorldConfig only, computed before any history executes",
+      "gate": "independently_locked_beginning_contract",
+      "ok": true
+    },
+    {
+      "detail": "return_value_of(ending_state) is computed and fed into J in every 05A arm",
+      "gate": "ending_derived_return_value_present",
+      "ok": true
+    },
+    {
+      "detail": "execute_J() is called for every arm of every evaluated world family",
+      "gate": "executed_transition_ending_to_beginning",
+      "ok": true
+    },
+    {
+      "detail": "at least one 05A world family exhibits both closing and non-closing natural histories",
+      "gate": "both_closing_and_non_closing_histories",
+      "ok": true
+    },
+    {
+      "detail": "at least one 05A world family shows relevant interventions breaking closure while irrelevant ones do not",
+      "gate": "causal_sensitivity_to_endpoint_information",
+      "ok": true
+    },
+    {
+      "detail": "at least one 05B world family's residual is a non-injective function of the admissible microstate space",
+      "gate": "genuine_information_loss",
+      "ok": true
+    },
+    {
+      "detail": "05B overall status is 'supported'",
+      "gate": "preserved_semantic_behavior_through_loss",
+      "ok": true
+    },
+    {
+      "detail": "removing the ledger breaks semantic probes (05B) and corrupting the ledger breaks closure (05A arm 8)",
+      "gate": "narrative_ledger_causally_load_bearing",
+      "ok": true
+    },
+    {
+      "detail": "the full-state observer's TV distance exceeds the positive-control threshold in every 05C world family",
+      "gate": "positive_control_observer_detects_boundary",
+      "ok": true
+    },
+    {
+      "detail": "every bounded observer class stays under the frozen indistinguishability threshold in every 05C world family",
+      "gate": "no_qualifying_distinction_for_bounded_observer",
+      "ok": false
+    },
+    {
+      "detail": "05D overall status is 'supported'",
+      "gate": "fidelity_matched_resource_advantage",
+      "ok": true
+    },
+    {
+      "detail": "every 05B world family's negative controls correctly fail at least one semantic probe",
+      "gate": "negative_and_fault_injection_controls_pass",
+      "ok": true
+    }
+  ],
+  "ineligible_gates": [],
+  "interpretation": "At least one integration gate did not pass (see failed_gates/ineligible_gates/invalid_gates). The complete Animus Omega conjecture is therefore not supported by this development run. This is not evidence that it is disproved: it means this bounded model and protocol did not jointly demonstrate every required property in the same run.",
+  "invalid_gates": [],
+  "status": "not_supported"
+}

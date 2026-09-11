@@ -1,0 +1,276 @@
+{
+  "arms": [
+    {
+      "arm_id": "01_correct_return_value",
+      "closes": true,
+      "contract_fail_reason": null,
+      "contract_satisfied": true,
+      "description": "Feed the true return value derived from this history's own ending.",
+      "exact_closure_detail": null,
+      "exact_closure_fail_field": null,
+      "notes": "",
+      "return_value_used": true
+    },
+    {
+      "arm_id": "02_missing_return_value",
+      "closes": false,
+      "contract_fail_reason": "primary_holder_missing_or_invalid",
+      "contract_satisfied": false,
+      "description": "Return value is None.",
+      "exact_closure_detail": {
+        "got": null,
+        "want": "a0"
+      },
+      "exact_closure_fail_field": "primary_holder",
+      "notes": "",
+      "return_value_used": false
+    },
+    {
+      "arm_id": "03_random_return_value",
+      "closes": false,
+      "contract_fail_reason": null,
+      "contract_satisfied": true,
+      "description": "Return value's primary_holder field replaced with a random different agent id.",
+      "exact_closure_detail": {
+        "got": "a2",
+        "want": "a0"
+      },
+      "exact_closure_fail_field": "primary_holder",
+      "notes": "true_holder=a0 random_holder=a2",
+      "return_value_used": true
+    },
+    {
+      "arm_id": "04_return_value_from_different_history",
+      "closes": false,
+      "contract_fail_reason": "primary_holder_missing_or_invalid",
+      "contract_satisfied": false,
+      "description": "Return value taken from a different admissible history's true ending.",
+      "exact_closure_detail": {
+        "got": null,
+        "want": "a0"
+      },
+      "exact_closure_fail_field": "primary_holder",
+      "notes": "donor_history=None",
+      "return_value_used": false
+    },
+    {
+      "arm_id": "05_endpoint_mutation",
+      "closes": false,
+      "contract_fail_reason": "total_conservation_violated",
+      "contract_satisfied": false,
+      "description": "Return value recomputed from a one-unit endpoint mutation of the true ending.",
+      "exact_closure_detail": {
+        "got": 0,
+        "want": 1
+      },
+      "exact_closure_fail_field": "resolved_count_hint",
+      "notes": "",
+      "return_value_used": true
+    },
+    {
+      "arm_id": "06_relevant_intermediate_mutation",
+      "closes": false,
+      "contract_fail_reason": null,
+      "contract_satisfied": true,
+      "description": "Action at tick 0 changed 'move'->'resolve'; original return value held stale against the mutated execution's ledger/reconstruction, checked against the original reference history's true ending.",
+      "exact_closure_detail": {
+        "got": "2542cf9fc2d46ba666ce223f29e75ec33eb7179dc4faf6a48abc23fe99e5612d",
+        "want": "b557a50ce01b267589f4731495845692748e724a24743f6474be2dcf909b850b"
+      },
+      "exact_closure_fail_field": "ledger_root",
+      "notes": "mutated_history=('resolve', 'move', 'noop_x', 'resolve') own_true_rv={'primary_holder': 'a0', 'resolved_count': 1, 'ledger_root': '2542cf9fc2d46ba666ce223f29e75ec33eb7179dc4faf6a48abc23fe99e5612d'}",
+      "return_value_used": true
+    },
+    {
+      "arm_id": "07_irrelevant_intermediate_mutation",
+      "closes": true,
+      "contract_fail_reason": null,
+      "contract_satisfied": true,
+      "description": "Action at tick 2 changed 'noop_x'->'noop_y' (irrelevant-class swap); original return value re-used against the mutated execution's ledger/reconstruction, checked against the original reference history's true ending.",
+      "exact_closure_detail": null,
+      "exact_closure_fail_field": null,
+      "notes": "mutated_history=('move', 'move', 'noop_y', 'resolve') own_true_rv={'primary_holder': 'a0', 'resolved_count': 1, 'ledger_root': 'b557a50ce01b267589f4731495845692748e724a24743f6474be2dcf909b850b'}",
+      "return_value_used": true
+    },
+    {
+      "arm_id": "08_correct_return_value_incorrect_ledger",
+      "closes": false,
+      "contract_fail_reason": null,
+      "contract_satisfied": true,
+      "description": "Ledger's first entry corrupted; return value and reconstruction left correct.",
+      "exact_closure_detail": {
+        "got": "9b19859d7419aed0523df2ffaa8172f2a1189bde629186a5c9e6e7867dba66cb",
+        "want": "b557a50ce01b267589f4731495845692748e724a24743f6474be2dcf909b850b"
+      },
+      "exact_closure_fail_field": "ledger_root",
+      "notes": "",
+      "return_value_used": true
+    },
+    {
+      "arm_id": "09_correct_ledger_incorrect_reconstruction",
+      "closes": false,
+      "contract_fail_reason": "total_conservation_violated",
+      "contract_satisfied": false,
+      "description": "Reconstructed balance for a0 corrupted (+5); ledger and return value left correct.",
+      "exact_closure_detail": {
+        "got": 8,
+        "want": 3
+      },
+      "exact_closure_fail_field": "total",
+      "notes": "",
+      "return_value_used": true
+    },
+    {
+      "arm_id": "10_no_endpoint_information",
+      "closes": false,
+      "contract_fail_reason": "primary_holder_missing_or_invalid",
+      "contract_satisfied": false,
+      "description": "J executed via the no-endpoint code path (return_value parameter never supplied).",
+      "exact_closure_detail": {
+        "got": null,
+        "want": "a0"
+      },
+      "exact_closure_fail_field": "primary_holder",
+      "notes": "",
+      "return_value_used": false
+    },
+    {
+      "arm_id": "11_open_chain_no_return_transition",
+      "closes": false,
+      "contract_fail_reason": "no_transition_executed",
+      "contract_satisfied": false,
+      "description": "No J transition executed; there is no next beginning to compare against the contract.",
+      "exact_closure_detail": null,
+      "exact_closure_fail_field": "no_transition_executed",
+      "notes": "control: closure is vacuously absent by construction",
+      "return_value_used": false
+    },
+    {
+      "arm_id": "12_directly_copied_beginning",
+      "closes": false,
+      "contract_fail_reason": "min_resolutions_not_met",
+      "contract_satisfied": false,
+      "description": "Next beginning is the untouched initial state, ignoring the executed ending entirely.",
+      "exact_closure_detail": {
+        "got": 0,
+        "want": 1
+      },
+      "exact_closure_fail_field": "resolved_count_hint",
+      "notes": "shortcut/no-copy-explains-result control",
+      "return_value_used": false
+    },
+    {
+      "arm_id": "13_ignored_return_value_control",
+      "closes": false,
+      "contract_fail_reason": "primary_holder_missing_or_invalid",
+      "contract_satisfied": false,
+      "description": "Return value is read (accessed_fields is non-empty) but the output field is hardcoded regardless of what was read: this must be flagged as an ignored return value.",
+      "exact_closure_detail": {
+        "got": null,
+        "want": "a0"
+      },
+      "exact_closure_fail_field": "primary_holder",
+      "notes": "ignored_return_value_detected=True",
+      "return_value_used": false
+    }
+  ],
+  "closing_count": 112,
+  "closing_examples": [
+    [
+      "move",
+      "move",
+      "move",
+      "resolve"
+    ],
+    [
+      "move",
+      "move",
+      "resolve",
+      "resolve"
+    ],
+    [
+      "move",
+      "move",
+      "noop_x",
+      "resolve"
+    ],
+    [
+      "move",
+      "move",
+      "noop_y",
+      "resolve"
+    ],
+    [
+      "move",
+      "resolve",
+      "move",
+      "resolve"
+    ]
+  ],
+  "config": {
+    "history_length": 4,
+    "ledger_capacity": 64,
+    "num_agents": 4,
+    "num_obligations": 3,
+    "reconstruction_algorithm": "faithful_replay",
+    "total_resource": 4,
+    "world_id": "quad-chain"
+  },
+  "contract": {
+    "min_resolutions": 1,
+    "total_conserved_invariant": 4
+  },
+  "non_closing_count": 144,
+  "non_closing_examples": [
+    [
+      "move",
+      "move",
+      "move",
+      "move"
+    ],
+    [
+      "move",
+      "move",
+      "move",
+      "noop_x"
+    ],
+    [
+      "move",
+      "move",
+      "move",
+      "noop_y"
+    ],
+    [
+      "move",
+      "move",
+      "resolve",
+      "move"
+    ],
+    [
+      "move",
+      "move",
+      "resolve",
+      "noop_x"
+    ]
+  ],
+  "reference_history": [
+    "move",
+    "move",
+    "noop_x",
+    "resolve"
+  ],
+  "status": "supported",
+  "support_checks": {
+    "all_disrupting_arms_break_closure": true,
+    "at_least_one_natural_closing_history": true,
+    "at_least_one_natural_non_closing_history": true,
+    "ignored_return_value_detected_and_rejected": true,
+    "irrelevant_intermediate_arm_applicable": true,
+    "irrelevant_intermediate_preserves_closure": true,
+    "natural_reference_closes": true,
+    "relevant_intermediate_arm_applicable": true,
+    "relevant_intermediate_breaks_closure": true
+  },
+  "total_histories": 256,
+  "world_id": "quad-chain"
+}

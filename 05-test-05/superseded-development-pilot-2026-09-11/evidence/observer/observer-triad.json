@@ -1,0 +1,118 @@
+{
+  "boundary_start": 5,
+  "config": {
+    "history_length": 7,
+    "ledger_capacity": 64,
+    "num_agents": 3,
+    "num_obligations": 2,
+    "reconstruction_algorithm": "faithful_replay",
+    "total_resource": 3,
+    "world_id": "observer-triad"
+  },
+  "indistinguishability_tv_threshold": 0.05,
+  "interior_start": 2,
+  "null_model": "histories uniformly likely over the full enumerated admissible-history space (exact, no sampling)",
+  "observers": [
+    {
+      "bayes_optimal_accuracy": 0.60553,
+      "conclusion": "unsupported",
+      "description": "Radius-one local observer (own balance, last tick only).",
+      "enumeration_count": 16384,
+      "is_positive_control": false,
+      "likelihood_ratio_summary": {
+        "boundary_only_observations": 0,
+        "max_finite_ratio": 5.46484375,
+        "min_finite_ratio": 0.4041666666666667,
+        "num_distinct_observations": 4
+      },
+      "mutual_information_bits": 0.061542,
+      "observer_id": "radius_one_local",
+      "total_variation_distance": 0.21106
+    },
+    {
+      "bayes_optimal_accuracy": 0.615906,
+      "conclusion": "unsupported",
+      "description": "Local observer with short memory (own balance across the window).",
+      "enumeration_count": 16384,
+      "is_positive_control": false,
+      "likelihood_ratio_summary": {
+        "boundary_only_observations": 1,
+        "max_finite_ratio": 3.91796875,
+        "min_finite_ratio": 0.4041666666666667,
+        "num_distinct_observations": 7
+      },
+      "mutual_information_bits": 0.075707,
+      "observer_id": "local_short_memory",
+      "total_variation_distance": 0.231812
+    },
+    {
+      "bayes_optimal_accuracy": 0.615906,
+      "conclusion": "unsupported",
+      "description": "Local observer with relationship memory (own balance + was-actor).",
+      "enumeration_count": 16384,
+      "is_positive_control": false,
+      "likelihood_ratio_summary": {
+        "boundary_only_observations": 1,
+        "max_finite_ratio": 3.91796875,
+        "min_finite_ratio": 0.4041666666666667,
+        "num_distinct_observations": 7
+      },
+      "mutual_information_bits": 0.075707,
+      "observer_id": "local_relationship_memory",
+      "total_variation_distance": 0.231812
+    },
+    {
+      "bayes_optimal_accuracy": 0.638153,
+      "conclusion": "unsupported",
+      "description": "Local observer with obligation history (adds own obligation status).",
+      "enumeration_count": 16384,
+      "is_positive_control": false,
+      "likelihood_ratio_summary": {
+        "boundary_only_observations": 6,
+        "max_finite_ratio": 3.00390625,
+        "min_finite_ratio": 0.4041666666666667,
+        "num_distinct_observations": 14
+      },
+      "mutual_information_bits": 0.134825,
+      "observer_id": "local_obligation_history",
+      "total_variation_distance": 0.276306
+    },
+    {
+      "bayes_optimal_accuracy": 0.647797,
+      "conclusion": "unsupported",
+      "description": "Bounded observer with longer (wider) memory (all balances, window ticks).",
+      "enumeration_count": 16384,
+      "is_positive_control": false,
+      "likelihood_ratio_summary": {
+        "boundary_only_observations": 19,
+        "max_finite_ratio": 3.390625,
+        "min_finite_ratio": 0.0,
+        "num_distinct_observations": 32
+      },
+      "mutual_information_bits": 0.159764,
+      "observer_id": "bounded_longer_memory",
+      "total_variation_distance": 0.295593
+    },
+    {
+      "bayes_optimal_accuracy": 1.0,
+      "conclusion": "positive_control_valid",
+      "description": "Full-state observer (positive control): tick + all balances + all obligation statuses.",
+      "enumeration_count": 16384,
+      "is_positive_control": true,
+      "likelihood_ratio_summary": {
+        "boundary_only_observations": 31,
+        "max_finite_ratio": 0.0,
+        "min_finite_ratio": 0.0,
+        "num_distinct_observations": 44
+      },
+      "mutual_information_bits": 1.0,
+      "observer_id": "full_state_positive_control",
+      "total_variation_distance": 1.0
+    }
+  ],
+  "positive_control_tv_threshold": 0.2,
+  "reason": "a qualifying distinction was detected for at least one bounded observer class",
+  "status": "unsupported",
+  "window": 2,
+  "world_id": "observer-triad"
+}

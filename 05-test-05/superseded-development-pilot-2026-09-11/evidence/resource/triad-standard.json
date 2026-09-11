@@ -1,0 +1,666 @@
+{
+  "arms": {
+    "always_expanded_lossless": {
+      "arm_id": "always_expanded_lossless",
+      "description": "Every one of 3 regions keeps an independent full copy of state at every tick; never dumps or merges.",
+      "dump_ops": 0,
+      "merge_ops": 0,
+      "notes": "",
+      "observer_update_ops": 12,
+      "peak_canonical_bytes": 2559,
+      "reconstruction_ops": 0,
+      "semantic_eligible": true,
+      "semantic_grade": {
+        "note": "full state retained at all times; trivially passes every probe"
+      },
+      "sync_ops": 0,
+      "total_byte_ticks": 8760,
+      "total_operation_count": 12,
+      "wall_clock_seconds": 9.700500004328205e-05
+    },
+    "complete_checkpointing": {
+      "arm_id": "complete_checkpointing",
+      "description": "Full state (all private fields) serialized and retained at every tick.",
+      "dump_ops": 4,
+      "merge_ops": 0,
+      "notes": "",
+      "observer_update_ops": 4,
+      "peak_canonical_bytes": 853,
+      "reconstruction_ops": 0,
+      "semantic_eligible": true,
+      "semantic_grade": {
+        "grades": {
+          "authorizing_relationship": true,
+          "causal_prerequisite_last_obligation": true,
+          "counterfactual_move_agent0": true,
+          "dependency_blocks_last_obligation": true,
+          "identity_substitution_reject": true,
+          "ledger_effects_consistent": true,
+          "owner_of_o0": true,
+          "permitted_actions": true,
+          "provenance_present_o0": true,
+          "unseen_chain_completion": true
+        },
+        "pass_count": 10,
+        "total": 10
+      },
+      "sync_ops": 0,
+      "total_byte_ticks": 2920,
+      "total_operation_count": 8,
+      "wall_clock_seconds": 0.0005248310001206846
+    },
+    "general_purpose_lossless_compression": {
+      "arm_id": "general_purpose_lossless_compression",
+      "description": "Full state zlib-compressed (level 9) and later decompressed in full.",
+      "dump_ops": 1,
+      "merge_ops": 0,
+      "notes": "",
+      "observer_update_ops": 1,
+      "peak_canonical_bytes": 348,
+      "reconstruction_ops": 1,
+      "semantic_eligible": true,
+      "semantic_grade": {
+        "all_pass": true,
+        "answers": {
+          "authorizing_relationship": true,
+          "causal_prerequisite_last_obligation": "o0",
+          "counterfactual_move_agent0": true,
+          "dependency_blocks_last_obligation": false,
+          "identity_substitution_reject": false,
+          "ledger_effects_consistent": true,
+          "owner_of_o0": "a0",
+          "permitted_actions": [
+            "a0",
+            "a2"
+          ],
+          "provenance_present_o0": true,
+          "unseen_chain_completion": "o0"
+        },
+        "grades": {
+          "authorizing_relationship": true,
+          "causal_prerequisite_last_obligation": true,
+          "counterfactual_move_agent0": true,
+          "dependency_blocks_last_obligation": true,
+          "identity_substitution_reject": true,
+          "ledger_effects_consistent": true,
+          "owner_of_o0": true,
+          "permitted_actions": true,
+          "provenance_present_o0": true,
+          "unseen_chain_completion": true
+        },
+        "ground_truth": {
+          "authorizing_relationship": true,
+          "causal_prerequisite_last_obligation": "o0",
+          "counterfactual_move_agent0": true,
+          "dependency_blocks_last_obligation": false,
+          "identity_substitution_reject": false,
+          "ledger_effects_consistent": true,
+          "owner_of_o0": "a0",
+          "permitted_actions": [
+            "a0",
+            "a2"
+          ],
+          "provenance_present_o0": true,
+          "unseen_chain_completion": "o0"
+        },
+        "pass_count": 10,
+        "total": 10
+      },
+      "sync_ops": 0,
+      "total_byte_ticks": 1392,
+      "total_operation_count": 3,
+      "wall_clock_seconds": 0.0004762139999456849
+    },
+    "general_purpose_lossy_compression_matched_fidelity": {
+      "arm_id": "general_purpose_lossy_compression_matched_fidelity",
+      "description": "Residual+ledger (same content as our own architecture) generically zlib-compressed instead of kept structured.",
+      "dump_ops": 1,
+      "merge_ops": 0,
+      "notes": "",
+      "observer_update_ops": 3,
+      "peak_canonical_bytes": 325,
+      "reconstruction_ops": 1,
+      "semantic_eligible": true,
+      "semantic_grade": {
+        "all_pass": true,
+        "answers": {
+          "authorizing_relationship": true,
+          "causal_prerequisite_last_obligation": "o0",
+          "counterfactual_move_agent0": true,
+          "dependency_blocks_last_obligation": false,
+          "identity_substitution_reject": false,
+          "ledger_effects_consistent": true,
+          "owner_of_o0": "a0",
+          "permitted_actions": [
+            "a0",
+            "a2"
+          ],
+          "provenance_present_o0": true,
+          "unseen_chain_completion": "o0"
+        },
+        "grades": {
+          "authorizing_relationship": true,
+          "causal_prerequisite_last_obligation": true,
+          "counterfactual_move_agent0": true,
+          "dependency_blocks_last_obligation": true,
+          "identity_substitution_reject": true,
+          "ledger_effects_consistent": true,
+          "owner_of_o0": true,
+          "permitted_actions": true,
+          "provenance_present_o0": true,
+          "unseen_chain_completion": true
+        },
+        "ground_truth": {
+          "authorizing_relationship": true,
+          "causal_prerequisite_last_obligation": "o0",
+          "counterfactual_move_agent0": true,
+          "dependency_blocks_last_obligation": false,
+          "identity_substitution_reject": false,
+          "ledger_effects_consistent": true,
+          "owner_of_o0": "a0",
+          "permitted_actions": [
+            "a0",
+            "a2"
+          ],
+          "provenance_present_o0": true,
+          "unseen_chain_completion": "o0"
+        },
+        "pass_count": 10,
+        "total": 10
+      },
+      "sync_ops": 0,
+      "total_byte_ticks": 1300,
+      "total_operation_count": 5,
+      "wall_clock_seconds": 0.00027255899999545363
+    },
+    "lossy_execution_without_ledger": {
+      "arm_id": "lossy_execution_without_ledger",
+      "description": "The same residual as our architecture, but with the narrative ledger discarded entirely.",
+      "dump_ops": 1,
+      "merge_ops": 0,
+      "notes": "",
+      "observer_update_ops": 0,
+      "peak_canonical_bytes": 455,
+      "reconstruction_ops": 0,
+      "semantic_eligible": false,
+      "semantic_grade": {
+        "all_pass": false,
+        "answers": {
+          "authorizing_relationship": true,
+          "causal_prerequisite_last_obligation": "o0",
+          "counterfactual_move_agent0": true,
+          "dependency_blocks_last_obligation": false,
+          "identity_substitution_reject": true,
+          "ledger_effects_consistent": true,
+          "owner_of_o0": "a0",
+          "permitted_actions": [
+            "a0",
+            "a2"
+          ],
+          "provenance_present_o0": true,
+          "unseen_chain_completion": "o0"
+        },
+        "grades": {
+          "authorizing_relationship": true,
+          "causal_prerequisite_last_obligation": true,
+          "counterfactual_move_agent0": true,
+          "dependency_blocks_last_obligation": true,
+          "identity_substitution_reject": false,
+          "ledger_effects_consistent": true,
+          "owner_of_o0": true,
+          "permitted_actions": true,
+          "provenance_present_o0": true,
+          "unseen_chain_completion": true
+        },
+        "ground_truth": {
+          "authorizing_relationship": true,
+          "causal_prerequisite_last_obligation": "o0",
+          "counterfactual_move_agent0": true,
+          "dependency_blocks_last_obligation": false,
+          "identity_substitution_reject": false,
+          "ledger_effects_consistent": true,
+          "owner_of_o0": "a0",
+          "permitted_actions": [
+            "a0",
+            "a2"
+          ],
+          "provenance_present_o0": true,
+          "unseen_chain_completion": "o0"
+        },
+        "pass_count": 9,
+        "total": 10
+      },
+      "sync_ops": 0,
+      "total_byte_ticks": 455,
+      "total_operation_count": 1,
+      "wall_clock_seconds": 0.00018845599993255746
+    },
+    "no_loss_cyclic_execution": {
+      "arm_id": "no_loss_cyclic_execution",
+      "description": "A single full copy of state is kept live at every tick; nothing is ever dumped or discarded.",
+      "dump_ops": 0,
+      "merge_ops": 0,
+      "notes": "",
+      "observer_update_ops": 4,
+      "peak_canonical_bytes": 853,
+      "reconstruction_ops": 0,
+      "semantic_eligible": true,
+      "semantic_grade": {
+        "note": "full state retained at all times; trivially passes every probe"
+      },
+      "sync_ops": 0,
+      "total_byte_ticks": 2920,
+      "total_operation_count": 4,
+      "wall_clock_seconds": 0.0001302269999996497
+    },
+    "open_chain_execution": {
+      "arm_id": "open_chain_execution",
+      "description": "Only the final public state is retained; no ledger, no boundary transition, no narrative continuity.",
+      "dump_ops": 1,
+      "merge_ops": 0,
+      "notes": "Test 05A arm 11 control: no return transition executed.",
+      "observer_update_ops": 1,
+      "peak_canonical_bytes": 340,
+      "reconstruction_ops": 0,
+      "semantic_eligible": false,
+      "semantic_grade": {
+        "all_pass": false,
+        "answers": {
+          "authorizing_relationship": true,
+          "causal_prerequisite_last_obligation": "o0",
+          "counterfactual_move_agent0": true,
+          "dependency_blocks_last_obligation": false,
+          "identity_substitution_reject": true,
+          "ledger_effects_consistent": true,
+          "owner_of_o0": "a0",
+          "permitted_actions": [
+            "a0",
+            "a2"
+          ],
+          "provenance_present_o0": true,
+          "unseen_chain_completion": null
+        },
+        "grades": {
+          "authorizing_relationship": true,
+          "causal_prerequisite_last_obligation": true,
+          "counterfactual_move_agent0": true,
+          "dependency_blocks_last_obligation": true,
+          "identity_substitution_reject": false,
+          "ledger_effects_consistent": true,
+          "owner_of_o0": true,
+          "permitted_actions": true,
+          "provenance_present_o0": true,
+          "unseen_chain_completion": false
+        },
+        "ground_truth": {
+          "authorizing_relationship": true,
+          "causal_prerequisite_last_obligation": "o0",
+          "counterfactual_move_agent0": true,
+          "dependency_blocks_last_obligation": false,
+          "identity_substitution_reject": false,
+          "ledger_effects_consistent": true,
+          "owner_of_o0": "a0",
+          "permitted_actions": [
+            "a0",
+            "a2"
+          ],
+          "provenance_present_o0": true,
+          "unseen_chain_completion": "o0"
+        },
+        "pass_count": 8,
+        "total": 10
+      },
+      "sync_ops": 0,
+      "total_byte_ticks": 340,
+      "total_operation_count": 2,
+      "wall_clock_seconds": 0.00018739000006462447
+    },
+    "proposed_architecture_residual_plus_ledger": {
+      "arm_id": "proposed_architecture_residual_plus_ledger",
+      "description": "The architecture under test: reconstructed residual + narrative ledger, one boundary transition.",
+      "dump_ops": 1,
+      "merge_ops": 1,
+      "notes": "",
+      "observer_update_ops": 3,
+      "peak_canonical_bytes": 691,
+      "reconstruction_ops": 1,
+      "semantic_eligible": true,
+      "semantic_grade": {
+        "all_pass": true,
+        "answers": {
+          "authorizing_relationship": true,
+          "causal_prerequisite_last_obligation": "o0",
+          "counterfactual_move_agent0": true,
+          "dependency_blocks_last_obligation": false,
+          "identity_substitution_reject": false,
+          "ledger_effects_consistent": true,
+          "owner_of_o0": "a0",
+          "permitted_actions": [
+            "a0",
+            "a2"
+          ],
+          "provenance_present_o0": true,
+          "unseen_chain_completion": "o0"
+        },
+        "grades": {
+          "authorizing_relationship": true,
+          "causal_prerequisite_last_obligation": true,
+          "counterfactual_move_agent0": true,
+          "dependency_blocks_last_obligation": true,
+          "identity_substitution_reject": true,
+          "ledger_effects_consistent": true,
+          "owner_of_o0": true,
+          "permitted_actions": true,
+          "provenance_present_o0": true,
+          "unseen_chain_completion": true
+        },
+        "ground_truth": {
+          "authorizing_relationship": true,
+          "causal_prerequisite_last_obligation": "o0",
+          "counterfactual_move_agent0": true,
+          "dependency_blocks_last_obligation": false,
+          "identity_substitution_reject": false,
+          "ledger_effects_consistent": true,
+          "owner_of_o0": "a0",
+          "permitted_actions": [
+            "a0",
+            "a2"
+          ],
+          "provenance_present_o0": true,
+          "unseen_chain_completion": "o0"
+        },
+        "pass_count": 10,
+        "total": 10
+      },
+      "sync_ops": 0,
+      "total_byte_ticks": 1160,
+      "total_operation_count": 6,
+      "wall_clock_seconds": 0.0002657830000316608
+    },
+    "scripted_cyclic_replay": {
+      "arm_id": "scripted_cyclic_replay",
+      "description": "Only the exact action-symbol script is stored; the full history is re-executed from scratch to reconstruct state.",
+      "dump_ops": 1,
+      "merge_ops": 0,
+      "notes": "Passes fidelity trivially because it is exempt from the loss requirement entirely (it stores the exact script, not a lossy summary): this is not an apples-to-apples comparison with the lossy arms, and this arm cannot reconstruct a history it was not given the exact script for.",
+      "observer_update_ops": 0,
+      "peak_canonical_bytes": 34,
+      "reconstruction_ops": 4,
+      "semantic_eligible": true,
+      "semantic_grade": {
+        "all_pass": true,
+        "answers": {
+          "authorizing_relationship": true,
+          "causal_prerequisite_last_obligation": "o0",
+          "counterfactual_move_agent0": true,
+          "dependency_blocks_last_obligation": false,
+          "identity_substitution_reject": false,
+          "ledger_effects_consistent": true,
+          "owner_of_o0": "a0",
+          "permitted_actions": [
+            "a0",
+            "a2"
+          ],
+          "provenance_present_o0": true,
+          "unseen_chain_completion": "o0"
+        },
+        "grades": {
+          "authorizing_relationship": true,
+          "causal_prerequisite_last_obligation": true,
+          "counterfactual_move_agent0": true,
+          "dependency_blocks_last_obligation": true,
+          "identity_substitution_reject": true,
+          "ledger_effects_consistent": true,
+          "owner_of_o0": true,
+          "permitted_actions": true,
+          "provenance_present_o0": true,
+          "unseen_chain_completion": true
+        },
+        "ground_truth": {
+          "authorizing_relationship": true,
+          "causal_prerequisite_last_obligation": "o0",
+          "counterfactual_move_agent0": true,
+          "dependency_blocks_last_obligation": false,
+          "identity_substitution_reject": false,
+          "ledger_effects_consistent": true,
+          "owner_of_o0": "a0",
+          "permitted_actions": [
+            "a0",
+            "a2"
+          ],
+          "provenance_present_o0": true,
+          "unseen_chain_completion": "o0"
+        },
+        "pass_count": 10,
+        "total": 10
+      },
+      "sync_ops": 0,
+      "total_byte_ticks": 136,
+      "total_operation_count": 5,
+      "wall_clock_seconds": 0.00037599400002363836
+    },
+    "snapshot_plus_event_log": {
+      "arm_id": "snapshot_plus_event_log",
+      "description": "One genesis snapshot plus the full (unfiltered) growing event log; replayed once at the end.",
+      "dump_ops": 5,
+      "merge_ops": 0,
+      "notes": "",
+      "observer_update_ops": 4,
+      "peak_canonical_bytes": 844,
+      "reconstruction_ops": 1,
+      "semantic_eligible": true,
+      "semantic_grade": {
+        "all_pass": true,
+        "answers": {
+          "authorizing_relationship": true,
+          "causal_prerequisite_last_obligation": "o0",
+          "counterfactual_move_agent0": true,
+          "dependency_blocks_last_obligation": false,
+          "identity_substitution_reject": false,
+          "ledger_effects_consistent": true,
+          "owner_of_o0": "a0",
+          "permitted_actions": [
+            "a0",
+            "a2"
+          ],
+          "provenance_present_o0": true,
+          "unseen_chain_completion": "o0"
+        },
+        "grades": {
+          "authorizing_relationship": true,
+          "causal_prerequisite_last_obligation": true,
+          "counterfactual_move_agent0": true,
+          "dependency_blocks_last_obligation": true,
+          "identity_substitution_reject": true,
+          "ledger_effects_consistent": true,
+          "owner_of_o0": true,
+          "permitted_actions": true,
+          "provenance_present_o0": true,
+          "unseen_chain_completion": true
+        },
+        "ground_truth": {
+          "authorizing_relationship": true,
+          "causal_prerequisite_last_obligation": "o0",
+          "counterfactual_move_agent0": true,
+          "dependency_blocks_last_obligation": false,
+          "identity_substitution_reject": false,
+          "ledger_effects_consistent": true,
+          "owner_of_o0": "a0",
+          "permitted_actions": [
+            "a0",
+            "a2"
+          ],
+          "provenance_present_o0": true,
+          "unseen_chain_completion": "o0"
+        },
+        "pass_count": 10,
+        "total": 10
+      },
+      "sync_ops": 0,
+      "total_byte_ticks": 2915,
+      "total_operation_count": 10,
+      "wall_clock_seconds": 0.0002622469999096211
+    },
+    "state_machine_replication": {
+      "arm_id": "state_machine_replication",
+      "description": "3 replicas of the residual, synchronized once per tick.",
+      "dump_ops": 1,
+      "merge_ops": 0,
+      "notes": "",
+      "observer_update_ops": 3,
+      "peak_canonical_bytes": 1365,
+      "reconstruction_ops": 0,
+      "semantic_eligible": true,
+      "semantic_grade": {
+        "all_pass": true,
+        "answers": {
+          "authorizing_relationship": true,
+          "causal_prerequisite_last_obligation": "o0",
+          "counterfactual_move_agent0": true,
+          "dependency_blocks_last_obligation": false,
+          "identity_substitution_reject": false,
+          "ledger_effects_consistent": true,
+          "owner_of_o0": "a0",
+          "permitted_actions": [
+            "a0",
+            "a2"
+          ],
+          "provenance_present_o0": true,
+          "unseen_chain_completion": "o0"
+        },
+        "grades": {
+          "authorizing_relationship": true,
+          "causal_prerequisite_last_obligation": true,
+          "counterfactual_move_agent0": true,
+          "dependency_blocks_last_obligation": true,
+          "identity_substitution_reject": true,
+          "ledger_effects_consistent": true,
+          "owner_of_o0": true,
+          "permitted_actions": true,
+          "provenance_present_o0": true,
+          "unseen_chain_completion": true
+        },
+        "ground_truth": {
+          "authorizing_relationship": true,
+          "causal_prerequisite_last_obligation": "o0",
+          "counterfactual_move_agent0": true,
+          "dependency_blocks_last_obligation": false,
+          "identity_substitution_reject": false,
+          "ledger_effects_consistent": true,
+          "owner_of_o0": "a0",
+          "permitted_actions": [
+            "a0",
+            "a2"
+          ],
+          "provenance_present_o0": true,
+          "unseen_chain_completion": "o0"
+        },
+        "pass_count": 10,
+        "total": 10
+      },
+      "sync_ops": 4,
+      "total_byte_ticks": 5460,
+      "total_operation_count": 8,
+      "wall_clock_seconds": 0.00018733800015979796
+    }
+  },
+  "pareto": {
+    "comparisons_vs_focal": {
+      "always_expanded_lossless": {
+        "byte_ticks_ratio_focal_over_baseline": 0.13242,
+        "focal_fewer_ops": true,
+        "focal_smaller_byte_ticks": true,
+        "focal_smaller_peak_bytes": true,
+        "op_count_ratio_focal_over_baseline": 0.5,
+        "peak_bytes_ratio_focal_over_baseline": 0.270027
+      },
+      "complete_checkpointing": {
+        "byte_ticks_ratio_focal_over_baseline": 0.39726,
+        "focal_fewer_ops": true,
+        "focal_smaller_byte_ticks": true,
+        "focal_smaller_peak_bytes": true,
+        "op_count_ratio_focal_over_baseline": 0.75,
+        "peak_bytes_ratio_focal_over_baseline": 0.810082
+      },
+      "general_purpose_lossless_compression": {
+        "byte_ticks_ratio_focal_over_baseline": 0.833333,
+        "focal_fewer_ops": false,
+        "focal_smaller_byte_ticks": true,
+        "focal_smaller_peak_bytes": false,
+        "op_count_ratio_focal_over_baseline": 2.0,
+        "peak_bytes_ratio_focal_over_baseline": 1.985632
+      },
+      "general_purpose_lossy_compression_matched_fidelity": {
+        "byte_ticks_ratio_focal_over_baseline": 0.892308,
+        "focal_fewer_ops": false,
+        "focal_smaller_byte_ticks": true,
+        "focal_smaller_peak_bytes": false,
+        "op_count_ratio_focal_over_baseline": 1.2,
+        "peak_bytes_ratio_focal_over_baseline": 2.126154
+      },
+      "no_loss_cyclic_execution": {
+        "byte_ticks_ratio_focal_over_baseline": 0.39726,
+        "focal_fewer_ops": false,
+        "focal_smaller_byte_ticks": true,
+        "focal_smaller_peak_bytes": true,
+        "op_count_ratio_focal_over_baseline": 1.5,
+        "peak_bytes_ratio_focal_over_baseline": 0.810082
+      },
+      "scripted_cyclic_replay": {
+        "byte_ticks_ratio_focal_over_baseline": 8.529412,
+        "focal_fewer_ops": false,
+        "focal_smaller_byte_ticks": false,
+        "focal_smaller_peak_bytes": false,
+        "op_count_ratio_focal_over_baseline": 1.2,
+        "peak_bytes_ratio_focal_over_baseline": 20.323529
+      },
+      "snapshot_plus_event_log": {
+        "byte_ticks_ratio_focal_over_baseline": 0.397942,
+        "focal_fewer_ops": true,
+        "focal_smaller_byte_ticks": true,
+        "focal_smaller_peak_bytes": true,
+        "op_count_ratio_focal_over_baseline": 0.6,
+        "peak_bytes_ratio_focal_over_baseline": 0.81872
+      },
+      "state_machine_replication": {
+        "byte_ticks_ratio_focal_over_baseline": 0.212454,
+        "focal_fewer_ops": true,
+        "focal_smaller_byte_ticks": true,
+        "focal_smaller_peak_bytes": true,
+        "op_count_ratio_focal_over_baseline": 0.75,
+        "peak_bytes_ratio_focal_over_baseline": 0.506227
+      }
+    },
+    "dominates_count": 5,
+    "eligible_arms": [
+      "complete_checkpointing",
+      "snapshot_plus_event_log",
+      "always_expanded_lossless",
+      "general_purpose_lossless_compression",
+      "general_purpose_lossy_compression_matched_fidelity",
+      "no_loss_cyclic_execution",
+      "scripted_cyclic_replay",
+      "state_machine_replication",
+      "proposed_architecture_residual_plus_ledger"
+    ],
+    "focal_arm": "proposed_architecture_residual_plus_ledger",
+    "ineligible_arms": [
+      "open_chain_execution",
+      "lossy_execution_without_ledger"
+    ],
+    "reason": "the proposed architecture strictly dominates 5 eligible baseline(s) on peak bytes and byte-ticks, and every baseline it loses to on all axes carries a declared non-comparability caveat",
+    "status": "supported",
+    "total_regression_arms": [
+      "scripted_cyclic_replay"
+    ],
+    "undeclared_regression_arms": []
+  },
+  "reference_history": [
+    "move",
+    "move",
+    "resolve",
+    "noop_x"
+  ],
+  "status": "supported",
+  "world_id": "triad-standard"
+}

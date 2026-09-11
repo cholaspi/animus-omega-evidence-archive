@@ -1,0 +1,875 @@
+{
+  "canonical_digest": "c0cdd03258c587ce2196f086eeb291903a93bdc6863e863837a5b2a05ac46158",
+  "component_results": {
+    "ledger_controls": {
+      "evidence_refs": [
+        "evidence/residual/triad-standard.json",
+        "evidence/residual/quad-chain.json",
+        "evidence/residual/triad-lossy-reconstruction.json",
+        "evidence/residual/triad-short-ledger.json",
+        "evidence/residual/pentad-long-chain.json",
+        "evidence/residual/triad-adversarial-identity.json",
+        "evidence/residual/quad-adversarial-reorder.json"
+      ],
+      "metrics": {
+        "per_world_family": {
+          "pentad-long-chain": {
+            "changed_causal_dependency": {
+              "all_pass": false,
+              "pass_count": 9,
+              "total": 10
+            },
+            "contradictory_ledger_entry": {
+              "all_pass": false,
+              "pass_count": 9,
+              "total": 10
+            },
+            "deleted_obligation": {
+              "all_pass": false,
+              "pass_count": 8,
+              "total": 10
+            },
+            "duplicate_event": {
+              "all_pass": false,
+              "pass_count": 9,
+              "total": 10
+            },
+            "missing_provenance": {
+              "all_pass": false,
+              "pass_count": 9,
+              "total": 10
+            },
+            "random_reconstructed_payload": {
+              "all_pass": false,
+              "pass_count": 8,
+              "total": 10
+            },
+            "shuffled_identities": {
+              "all_pass": false,
+              "pass_count": 7,
+              "total": 10
+            },
+            "stale_ledger_entry": {
+              "all_pass": false,
+              "pass_count": 9,
+              "total": 10
+            }
+          },
+          "quad-adversarial-reorder": {
+            "changed_causal_dependency": {
+              "all_pass": false,
+              "pass_count": 9,
+              "total": 10
+            },
+            "contradictory_ledger_entry": {
+              "all_pass": false,
+              "pass_count": 9,
+              "total": 10
+            },
+            "deleted_obligation": {
+              "all_pass": false,
+              "pass_count": 8,
+              "total": 10
+            },
+            "duplicate_event": {
+              "all_pass": false,
+              "pass_count": 9,
+              "total": 10
+            },
+            "missing_provenance": {
+              "all_pass": false,
+              "pass_count": 9,
+              "total": 10
+            },
+            "random_reconstructed_payload": {
+              "all_pass": false,
+              "pass_count": 8,
+              "total": 10
+            },
+            "shuffled_identities": {
+              "all_pass": false,
+              "pass_count": 7,
+              "total": 10
+            },
+            "stale_ledger_entry": {
+              "all_pass": false,
+              "pass_count": 9,
+              "total": 10
+            }
+          },
+          "quad-chain": {
+            "changed_causal_dependency": {
+              "all_pass": false,
+              "pass_count": 9,
+              "total": 10
+            },
+            "contradictory_ledger_entry": {
+              "all_pass": false,
+              "pass_count": 9,
+              "total": 10
+            },
+            "deleted_obligation": {
+              "all_pass": false,
+              "pass_count": 8,
+              "total": 10
+            },
+            "duplicate_event": {
+              "all_pass": false,
+              "pass_count": 9,
+              "total": 10
+            },
+            "missing_provenance": {
+              "all_pass": false,
+              "pass_count": 9,
+              "total": 10
+            },
+            "random_reconstructed_payload": {
+              "all_pass": false,
+              "pass_count": 7,
+              "total": 10
+            },
+            "shuffled_identities": {
+              "all_pass": false,
+              "pass_count": 7,
+              "total": 10
+            },
+            "stale_ledger_entry": {
+              "all_pass": false,
+              "pass_count": 9,
+              "total": 10
+            }
+          },
+          "triad-adversarial-identity": {
+            "changed_causal_dependency": {
+              "all_pass": false,
+              "pass_count": 9,
+              "total": 10
+            },
+            "contradictory_ledger_entry": {
+              "all_pass": false,
+              "pass_count": 9,
+              "total": 10
+            },
+            "deleted_obligation": {
+              "all_pass": false,
+              "pass_count": 7,
+              "total": 10
+            },
+            "duplicate_event": {
+              "all_pass": false,
+              "pass_count": 9,
+              "total": 10
+            },
+            "missing_provenance": {
+              "all_pass": false,
+              "pass_count": 9,
+              "total": 10
+            },
+            "random_reconstructed_payload": {
+              "all_pass": false,
+              "pass_count": 6,
+              "total": 10
+            },
+            "shuffled_identities": {
+              "all_pass": false,
+              "pass_count": 7,
+              "total": 10
+            },
+            "stale_ledger_entry": {
+              "all_pass": false,
+              "pass_count": 9,
+              "total": 10
+            }
+          },
+          "triad-lossy-reconstruction": {
+            "changed_causal_dependency": {
+              "all_pass": false,
+              "pass_count": 9,
+              "total": 10
+            },
+            "contradictory_ledger_entry": {
+              "all_pass": false,
+              "pass_count": 9,
+              "total": 10
+            },
+            "deleted_obligation": {
+              "all_pass": false,
+              "pass_count": 7,
+              "total": 10
+            },
+            "duplicate_event": {
+              "all_pass": false,
+              "pass_count": 9,
+              "total": 10
+            },
+            "missing_provenance": {
+              "all_pass": false,
+              "pass_count": 9,
+              "total": 10
+            },
+            "random_reconstructed_payload": {
+              "all_pass": false,
+              "pass_count": 6,
+              "total": 10
+            },
+            "shuffled_identities": {
+              "all_pass": false,
+              "pass_count": 7,
+              "total": 10
+            },
+            "stale_ledger_entry": {
+              "all_pass": false,
+              "pass_count": 9,
+              "total": 10
+            }
+          },
+          "triad-short-ledger": {
+            "changed_causal_dependency": {
+              "all_pass": false,
+              "pass_count": 9,
+              "total": 10
+            },
+            "contradictory_ledger_entry": {
+              "all_pass": false,
+              "pass_count": 9,
+              "total": 10
+            },
+            "deleted_obligation": {
+              "all_pass": false,
+              "pass_count": 7,
+              "total": 10
+            },
+            "duplicate_event": {
+              "all_pass": false,
+              "pass_count": 9,
+              "total": 10
+            },
+            "missing_provenance": {
+              "all_pass": false,
+              "pass_count": 9,
+              "total": 10
+            },
+            "random_reconstructed_payload": {
+              "all_pass": false,
+              "pass_count": 6,
+              "total": 10
+            },
+            "shuffled_identities": {
+              "all_pass": false,
+              "pass_count": 7,
+              "total": 10
+            },
+            "stale_ledger_entry": {
+              "all_pass": false,
+              "pass_count": 9,
+              "total": 10
+            }
+          },
+          "triad-standard": {
+            "changed_causal_dependency": {
+              "all_pass": false,
+              "pass_count": 9,
+              "total": 10
+            },
+            "contradictory_ledger_entry": {
+              "all_pass": false,
+              "pass_count": 9,
+              "total": 10
+            },
+            "deleted_obligation": {
+              "all_pass": false,
+              "pass_count": 7,
+              "total": 10
+            },
+            "duplicate_event": {
+              "all_pass": false,
+              "pass_count": 9,
+              "total": 10
+            },
+            "missing_provenance": {
+              "all_pass": false,
+              "pass_count": 9,
+              "total": 10
+            },
+            "random_reconstructed_payload": {
+              "all_pass": false,
+              "pass_count": 5,
+              "total": 10
+            },
+            "shuffled_identities": {
+              "all_pass": false,
+              "pass_count": 7,
+              "total": 10
+            },
+            "stale_ledger_entry": {
+              "all_pass": false,
+              "pass_count": 9,
+              "total": 10
+            }
+          }
+        }
+      },
+      "reason": "every ledger fault-injection control correctly fails at least one semantic probe in every world family",
+      "status": "supported"
+    },
+    "observer_boundary": {
+      "evidence_refs": [
+        "evidence/observer/observer-duo.json",
+        "evidence/observer/observer-triad.json"
+      ],
+      "metrics": {
+        "per_family_observer_tv": {
+          "observer-duo": {
+            "bounded_longer_memory": 0.261719,
+            "full_state_positive_control": 1.0,
+            "local_obligation_history": 0.261719,
+            "local_relationship_memory": 0.230469,
+            "local_short_memory": 0.230469,
+            "radius_one_local": 0.158203
+          },
+          "observer-triad": {
+            "bounded_longer_memory": 0.295593,
+            "full_state_positive_control": 1.0,
+            "local_obligation_history": 0.276306,
+            "local_relationship_memory": 0.231812,
+            "local_short_memory": 0.231812,
+            "radius_one_local": 0.21106
+          }
+        },
+        "per_family_status": {
+          "observer-duo": "unsupported",
+          "observer-triad": "unsupported"
+        },
+        "world_family_count": 2
+      },
+      "reason": "",
+      "status": "unsupported"
+    },
+    "reciprocal_closure": {
+      "evidence_refs": [
+        "evidence/boundary/triad-standard.json",
+        "evidence/boundary/quad-chain.json",
+        "evidence/boundary/triad-lossy-reconstruction.json",
+        "evidence/boundary/triad-short-ledger.json",
+        "evidence/boundary/pentad-long-chain.json",
+        "evidence/boundary/triad-adversarial-identity.json",
+        "evidence/boundary/quad-adversarial-reorder.json"
+      ],
+      "metrics": {
+        "per_family_status": {
+          "pentad-long-chain": "supported",
+          "quad-adversarial-reorder": "supported",
+          "quad-chain": "supported",
+          "triad-adversarial-identity": "supported",
+          "triad-lossy-reconstruction": "unsupported",
+          "triad-short-ledger": "supported",
+          "triad-standard": "supported"
+        },
+        "supported_family_count": 6,
+        "unsupported_family_count": 1,
+        "world_family_count": 7
+      },
+      "reason": "at least one world family demonstrates natural closing and non-closing histories, all disruptive interventions breaking closure, the relevant/irrelevant distinction holding, and ignored-return-value detection working",
+      "status": "supported"
+    },
+    "resource_advantage": {
+      "evidence_refs": [
+        "evidence/resource/triad-standard.json",
+        "evidence/resource/quad-chain.json",
+        "evidence/resource/triad-lossy-reconstruction.json",
+        "evidence/resource/triad-short-ledger.json",
+        "evidence/resource/pentad-long-chain.json",
+        "evidence/resource/triad-adversarial-identity.json",
+        "evidence/resource/quad-adversarial-reorder.json"
+      ],
+      "metrics": {
+        "per_family_dominates_count": {
+          "pentad-long-chain": 5,
+          "quad-adversarial-reorder": 5,
+          "quad-chain": 5,
+          "triad-adversarial-identity": 5,
+          "triad-lossy-reconstruction": 4,
+          "triad-short-ledger": 5,
+          "triad-standard": 5
+        },
+        "per_family_status": {
+          "pentad-long-chain": "supported",
+          "quad-adversarial-reorder": "supported",
+          "quad-chain": "supported",
+          "triad-adversarial-identity": "supported",
+          "triad-lossy-reconstruction": "supported",
+          "triad-short-ledger": "supported",
+          "triad-standard": "supported"
+        },
+        "world_family_count": 7
+      },
+      "reason": "the proposed architecture achieves a frozen, undominated resource advantage in every evaluated world family",
+      "status": "supported"
+    },
+    "semantic_continuity": {
+      "evidence_refs": [
+        "evidence/residual/triad-standard.json",
+        "evidence/residual/quad-chain.json",
+        "evidence/residual/triad-lossy-reconstruction.json",
+        "evidence/residual/triad-short-ledger.json",
+        "evidence/residual/pentad-long-chain.json",
+        "evidence/residual/triad-adversarial-identity.json",
+        "evidence/residual/quad-adversarial-reorder.json"
+      ],
+      "metrics": {
+        "per_family_collision": {
+          "pentad-long-chain": {
+            "admissible_microstate_count": 256,
+            "cardinality_reduction_ratio": 0.683594,
+            "distinct_residual_count": 81,
+            "max_preimage_size": 16
+          },
+          "quad-adversarial-reorder": {
+            "admissible_microstate_count": 256,
+            "cardinality_reduction_ratio": 0.683594,
+            "distinct_residual_count": 81,
+            "max_preimage_size": 16
+          },
+          "quad-chain": {
+            "admissible_microstate_count": 256,
+            "cardinality_reduction_ratio": 0.683594,
+            "distinct_residual_count": 81,
+            "max_preimage_size": 16
+          },
+          "triad-adversarial-identity": {
+            "admissible_microstate_count": 256,
+            "cardinality_reduction_ratio": 0.683594,
+            "distinct_residual_count": 81,
+            "max_preimage_size": 16
+          },
+          "triad-lossy-reconstruction": {
+            "admissible_microstate_count": 256,
+            "cardinality_reduction_ratio": 0.683594,
+            "distinct_residual_count": 81,
+            "max_preimage_size": 16
+          },
+          "triad-short-ledger": {
+            "admissible_microstate_count": 1024,
+            "cardinality_reduction_ratio": 0.762695,
+            "distinct_residual_count": 243,
+            "max_preimage_size": 32
+          },
+          "triad-standard": {
+            "admissible_microstate_count": 256,
+            "cardinality_reduction_ratio": 0.683594,
+            "distinct_residual_count": 81,
+            "max_preimage_size": 16
+          }
+        },
+        "per_family_status": {
+          "pentad-long-chain": "supported",
+          "quad-adversarial-reorder": "supported",
+          "quad-chain": "supported",
+          "triad-adversarial-identity": "supported",
+          "triad-lossy-reconstruction": "supported",
+          "triad-short-ledger": "supported",
+          "triad-standard": "supported"
+        },
+        "supported_family_count": 7,
+        "world_family_count": 7
+      },
+      "reason": "every world family's residual is non-injective relative to the full microstate, passes every semantic probe, and every required negative control correctly fails at least one probe",
+      "status": "supported"
+    }
+  },
+  "config_hash": "d7bf74f86444b10f377cd09ceb4da9f3ad53585b1c7ec100ada3e79bf3740d13",
+  "created_at": "2026-09-11T05:09:13.911147+00:00",
+  "development_seeds": [
+    55000,
+    55001,
+    55002,
+    55003,
+    55004,
+    55005,
+    55006,
+    55100,
+    55101,
+    55102,
+    55103,
+    55104,
+    55105,
+    55106,
+    55300,
+    55301,
+    55302,
+    55303,
+    55304,
+    55305,
+    55306
+  ],
+  "evidence_manifest": [
+    {
+      "description": "Test 05A raw evidence for world family triad-standard",
+      "path": "evidence/boundary/triad-standard.json",
+      "sha256": "a54d13c0a76a7d17738fac5670edac222b56892d162cf7094bb6b2376a4c81ad"
+    },
+    {
+      "description": "Test 05A raw evidence for world family quad-chain",
+      "path": "evidence/boundary/quad-chain.json",
+      "sha256": "78ee339eb6f723cd0b60b2d7e91eebcb9f8bb3e9f2e4ebc0abb7be2ee4a66b1d"
+    },
+    {
+      "description": "Test 05A raw evidence for world family triad-lossy-reconstruction",
+      "path": "evidence/boundary/triad-lossy-reconstruction.json",
+      "sha256": "4a5b9d02ef263b7b4d60c67cf0f10c3e43bf4538e4d303644d273e9d3e8bc81b"
+    },
+    {
+      "description": "Test 05A raw evidence for world family triad-short-ledger",
+      "path": "evidence/boundary/triad-short-ledger.json",
+      "sha256": "78c46c64a5cbf5d4c81373b4a9ba6751f9a22eb13a13c4eaca47f12304abc74f"
+    },
+    {
+      "description": "Test 05A raw evidence for world family pentad-long-chain",
+      "path": "evidence/boundary/pentad-long-chain.json",
+      "sha256": "f1d3368c3f5dfc9e1e29ccf8745de0f52bcd9c4b0e8f55c0c70863a8f3e67c56"
+    },
+    {
+      "description": "Test 05A raw evidence for world family triad-adversarial-identity",
+      "path": "evidence/boundary/triad-adversarial-identity.json",
+      "sha256": "a16bc564a43ef299944f5250311c253d0d4eafa3d2be5c09c4be33d640c4afe8"
+    },
+    {
+      "description": "Test 05A raw evidence for world family quad-adversarial-reorder",
+      "path": "evidence/boundary/quad-adversarial-reorder.json",
+      "sha256": "6c2a2f008a7e702217a8fa0da464592b1a386da32ba818c7bb4b1f633a2cf63a"
+    },
+    {
+      "description": "Test 05B raw evidence for world family triad-standard",
+      "path": "evidence/residual/triad-standard.json",
+      "sha256": "c1c5c3ddc943ae6a55036de3164f150f530d1c42b08432cb3f39e56d5cf7d5b5"
+    },
+    {
+      "description": "Test 05B raw evidence for world family quad-chain",
+      "path": "evidence/residual/quad-chain.json",
+      "sha256": "e83474e275bde962801921cc24d8f63e72d2909bf315aaef72d9b43c1026e76d"
+    },
+    {
+      "description": "Test 05B raw evidence for world family triad-lossy-reconstruction",
+      "path": "evidence/residual/triad-lossy-reconstruction.json",
+      "sha256": "9d1832934d73b2e7344ff44368f82679253c26b2d95908d242c6ac32ff7c54c2"
+    },
+    {
+      "description": "Test 05B raw evidence for world family triad-short-ledger",
+      "path": "evidence/residual/triad-short-ledger.json",
+      "sha256": "94dc72ea63957407804e8256b90881422e190af179d51d08c27b09ebc28e18ba"
+    },
+    {
+      "description": "Test 05B raw evidence for world family pentad-long-chain",
+      "path": "evidence/residual/pentad-long-chain.json",
+      "sha256": "709c64bdef4df0954f24997470dbea6f81ca455fe7039286cf9ec0842f1000bb"
+    },
+    {
+      "description": "Test 05B raw evidence for world family triad-adversarial-identity",
+      "path": "evidence/residual/triad-adversarial-identity.json",
+      "sha256": "80f955f7d60fc7d6e4c7ce14813ecd2fd1a9e398f9ca7f56981807dd4b39d925"
+    },
+    {
+      "description": "Test 05B raw evidence for world family quad-adversarial-reorder",
+      "path": "evidence/residual/quad-adversarial-reorder.json",
+      "sha256": "a9c54af8f91d7d64b0033ce6ace570cda998fdbb79dac0650d11213d76041a86"
+    },
+    {
+      "description": "Test 05C raw evidence for world family observer-duo",
+      "path": "evidence/observer/observer-duo.json",
+      "sha256": "9eea0d76f91ebc61f2509cd2d7ce8d47f540d09f1084a13e146c21a53964d8dc"
+    },
+    {
+      "description": "Test 05C raw evidence for world family observer-triad",
+      "path": "evidence/observer/observer-triad.json",
+      "sha256": "b81fdab09e6695dfc380cee644fec579444662411d1413c598ea2c24bdd59490"
+    },
+    {
+      "description": "Test 05D raw evidence for world family triad-standard",
+      "path": "evidence/resource/triad-standard.json",
+      "sha256": "a593902fb91c2edce0d70387b974cdf9db20d7cd3bdcabf107167a2ab398acce"
+    },
+    {
+      "description": "Test 05D raw evidence for world family quad-chain",
+      "path": "evidence/resource/quad-chain.json",
+      "sha256": "eeb95212abf4c16afb4026d52ae24b6cf19ebe54b0a777520c9fcfa5fe31637b"
+    },
+    {
+      "description": "Test 05D raw evidence for world family triad-lossy-reconstruction",
+      "path": "evidence/resource/triad-lossy-reconstruction.json",
+      "sha256": "ae4ecb0c6fef5f47cc116552aa656632147527e6e798fa598ffef57d65171288"
+    },
+    {
+      "description": "Test 05D raw evidence for world family triad-short-ledger",
+      "path": "evidence/resource/triad-short-ledger.json",
+      "sha256": "60957a4334605bb31f519b46772bef8789f3172926df36796ce0c3410cedf886"
+    },
+    {
+      "description": "Test 05D raw evidence for world family pentad-long-chain",
+      "path": "evidence/resource/pentad-long-chain.json",
+      "sha256": "d4d397667d24d92f8edba838ceb8e1a84e1b01749cf6c7676833cdc2f14be83a"
+    },
+    {
+      "description": "Test 05D raw evidence for world family triad-adversarial-identity",
+      "path": "evidence/resource/triad-adversarial-identity.json",
+      "sha256": "82f7a4ff2da5e605c9947179078009c5df06891da57fde76129e58c8210946e2"
+    },
+    {
+      "description": "Test 05D raw evidence for world family quad-adversarial-reorder",
+      "path": "evidence/resource/quad-adversarial-reorder.json",
+      "sha256": "37f7ebf3c651b8467aa90734777644d8f2ff2f2625601a45cba9d471fc77c281"
+    },
+    {
+      "description": "Test 05E integrated gating evaluation",
+      "path": "evidence/integrated.json",
+      "sha256": "be98e97e71641b468edad15f6e2dc36131793a3c91697e2d2406dab0ff20d450"
+    }
+  ],
+  "integrated_result": {
+    "failed_gates": [
+      "no_qualifying_distinction_for_bounded_observer"
+    ],
+    "gates": [
+      {
+        "detail": "every 05A world family executes a history (expansion) followed by a J boundary transition (contraction)",
+        "gate": "expanding_and_contracting_represented_world",
+        "ok": true
+      },
+      {
+        "detail": "locked_beginning_contract() is a pure function of WorldConfig only, computed before any history executes",
+        "gate": "independently_locked_beginning_contract",
+        "ok": true
+      },
+      {
+        "detail": "return_value_of(ending_state) is computed and fed into J in every 05A arm",
+        "gate": "ending_derived_return_value_present",
+        "ok": true
+      },
+      {
+        "detail": "execute_J() is called for every arm of every evaluated world family",
+        "gate": "executed_transition_ending_to_beginning",
+        "ok": true
+      },
+      {
+        "detail": "at least one 05A world family exhibits both closing and non-closing natural histories",
+        "gate": "both_closing_and_non_closing_histories",
+        "ok": true
+      },
+      {
+        "detail": "at least one 05A world family shows relevant interventions breaking closure while irrelevant ones do not",
+        "gate": "causal_sensitivity_to_endpoint_information",
+        "ok": true
+      },
+      {
+        "detail": "at least one 05B world family's residual is a non-injective function of the admissible microstate space",
+        "gate": "genuine_information_loss",
+        "ok": true
+      },
+      {
+        "detail": "05B overall status is 'supported'",
+        "gate": "preserved_semantic_behavior_through_loss",
+        "ok": true
+      },
+      {
+        "detail": "removing the ledger breaks semantic probes (05B) and corrupting the ledger breaks closure (05A arm 8)",
+        "gate": "narrative_ledger_causally_load_bearing",
+        "ok": true
+      },
+      {
+        "detail": "the full-state observer's TV distance exceeds the positive-control threshold in every 05C world family",
+        "gate": "positive_control_observer_detects_boundary",
+        "ok": true
+      },
+      {
+        "detail": "every bounded observer class stays under the frozen indistinguishability threshold in every 05C world family",
+        "gate": "no_qualifying_distinction_for_bounded_observer",
+        "ok": false
+      },
+      {
+        "detail": "05D overall status is 'supported'",
+        "gate": "fidelity_matched_resource_advantage",
+        "ok": true
+      },
+      {
+        "detail": "every 05B world family's negative controls correctly fail at least one semantic probe",
+        "gate": "negative_and_fault_injection_controls_pass",
+        "ok": true
+      }
+    ],
+    "ineligible_gates": [],
+    "interpretation": "At least one integration gate did not pass (see failed_gates/ineligible_gates/invalid_gates). The complete Animus Omega conjecture is therefore not supported by this development run. This is not evidence that it is disproved: it means this bounded model and protocol did not jointly demonstrate every required property in the same run.",
+    "invalid_gates": [],
+    "status": "not_supported"
+  },
+  "protocol_hash": "d7373f2847a50846814bca5edf327b33dfa7362b866e5eab11e103c8323a9408",
+  "protocol_path": "docs/TEST_05_PROTOCOL.md",
+  "protocol_version": "test05-development-1.0.0",
+  "reserved_seeds_used": false,
+  "source_files": {
+    "src/animus_test05/__init__.py": "1b9481258c82d8fbbff072126985f8dd7f7dbad944d804ee70987b15511ea558",
+    "src/animus_test05/boundary.py": "78d077209aab744c5130ad203db310107918cd2d24b84dcb43614a26f227e6e4",
+    "src/animus_test05/hashing.py": "e00080df8f741637efa8cefec58c59f718ea03fc219c5ef3d8261365907a1039",
+    "src/animus_test05/integrated.py": "e1477b71ea2afc3abb6ebf0b5e5fe8ed8af01a060704102426e9b748ea5fcf76",
+    "src/animus_test05/observer.py": "f579d9ebe49ab446c54e5144087fa41fae003e21f2a90ffd01d6f2403857d9ea",
+    "src/animus_test05/residual.py": "27e10d917a33e0c1e5ef6e5ee61ab5ed26c788a4ed1d4730b777c09da2bcd6dd",
+    "src/animus_test05/resource.py": "32a0da47d6170378dd203c3eb70a4580107c4cd9c0530bd29f35e23661f76f21",
+    "src/animus_test05/run.py": "7ba60a744a4b0eba97b252f2de8eba0724944f01f214ebe865b119de419d3f07",
+    "src/animus_test05/seeds.py": "3c6d608f8038064631ad510dc3c9512ecd2b8c8abc00ef01bfebb1bb232e5005",
+    "src/animus_test05/world.py": "8c5aefbc070a310271ecdd85f250d6ecabd55f6a199915e444c6cba2512742a7",
+    "src/animus_test05/worlds.py": "721beb5a20bd3caf76a87ad6f92453b91a8ce0dfc5d0929be498fdc008537d7d"
+  },
+  "source_hash": "0d95e08024fab159f28ae06277f2ca93c736eed728351eadf0a906c86b0cea42",
+  "status": "development",
+  "test_id": "test-05-development",
+  "world_families": [
+    {
+      "adversarial": [],
+      "config": {
+        "history_length": 4,
+        "ledger_capacity": 64,
+        "num_agents": 3,
+        "num_obligations": 2,
+        "reconstruction_algorithm": "faithful_replay",
+        "total_resource": 3,
+        "world_id": "triad-standard"
+      },
+      "config_hash": "6b123a65d5a86de373a4707fd828bf0e26c06b6b5c6443a5d890d727e4a3a441",
+      "description": "3 agents, 2-obligation chain, faithful reconstruction.",
+      "family_id": "triad-standard",
+      "loss_profile": "standard"
+    },
+    {
+      "adversarial": [],
+      "config": {
+        "history_length": 4,
+        "ledger_capacity": 64,
+        "num_agents": 4,
+        "num_obligations": 3,
+        "reconstruction_algorithm": "faithful_replay",
+        "total_resource": 4,
+        "world_id": "quad-chain"
+      },
+      "config_hash": "00086a7e8777e8b672a904d2f69f7a1883284f3992b734e081d937e2db94ec33",
+      "description": "4 agents, 3-obligation chain, faithful reconstruction.",
+      "family_id": "quad-chain",
+      "loss_profile": "standard"
+    },
+    {
+      "adversarial": [],
+      "config": {
+        "history_length": 4,
+        "ledger_capacity": 64,
+        "num_agents": 3,
+        "num_obligations": 2,
+        "reconstruction_algorithm": "lossy_replay",
+        "total_resource": 3,
+        "world_id": "triad-lossy-reconstruction"
+      },
+      "config_hash": "59db8a971927493c07d740536d3c71b3290d9c1e0e344c4b41123f16aa45b006",
+      "description": "3 agents, 2-obligation chain, but reconstruction replays with a lossy algorithm that drops blocked-event detail; adversarial for reciprocal closure since some natural histories will fail to reconstruct exactly.",
+      "family_id": "triad-lossy-reconstruction",
+      "loss_profile": "aggressive"
+    },
+    {
+      "adversarial": [],
+      "config": {
+        "history_length": 5,
+        "ledger_capacity": 3,
+        "num_agents": 3,
+        "num_obligations": 2,
+        "reconstruction_algorithm": "faithful_replay",
+        "total_resource": 3,
+        "world_id": "triad-short-ledger"
+      },
+      "config_hash": "f0c2ba0b87d3b0071e0c3fd18c8ea4158278eafcc8e9459d026861cf6df36e6c",
+      "description": "3 agents, 2-obligation chain, 5-tick history, and a ledger capacity (3) smaller than the relevant-event count some histories produce, forcing ledger overflow handling.",
+      "family_id": "triad-short-ledger",
+      "loss_profile": "standard"
+    },
+    {
+      "adversarial": [],
+      "config": {
+        "history_length": 4,
+        "ledger_capacity": 64,
+        "num_agents": 5,
+        "num_obligations": 4,
+        "reconstruction_algorithm": "faithful_replay",
+        "total_resource": 5,
+        "world_id": "pentad-long-chain"
+      },
+      "config_hash": "475aaeda34f32071ae859e9e7f2db8ea44339179c52e865e50db8602ed11475c",
+      "description": "5 agents, 4-obligation chain, faithful reconstruction.",
+      "family_id": "pentad-long-chain",
+      "loss_profile": "standard"
+    },
+    {
+      "adversarial": [
+        "identity_substitution"
+      ],
+      "config": {
+        "history_length": 4,
+        "ledger_capacity": 64,
+        "num_agents": 3,
+        "num_obligations": 2,
+        "reconstruction_algorithm": "faithful_replay",
+        "total_resource": 3,
+        "world_id": "triad-adversarial-identity"
+      },
+      "config_hash": "8533159afb915bff3255b017151efe678e59af92effec89ddef55909533d3cad",
+      "description": "3 agents, 2-obligation chain; adversarial identity substitution probes are added on top of the standard semantic contract to test whether reconstruction can be fooled by a relabeled agent with matching balances.",
+      "family_id": "triad-adversarial-identity",
+      "loss_profile": "standard"
+    },
+    {
+      "adversarial": [
+        "causal_reorder"
+      ],
+      "config": {
+        "history_length": 4,
+        "ledger_capacity": 64,
+        "num_agents": 4,
+        "num_obligations": 3,
+        "reconstruction_algorithm": "faithful_replay",
+        "total_resource": 4,
+        "world_id": "quad-adversarial-reorder"
+      },
+      "config_hash": "7c7d72775d93237572349242c33c975aae727de06eca6ec261c768a770594afb",
+      "description": "4 agents, 3-obligation chain; adversarial causal-reorder probes are added to test whether a reordered ledger (same entries, different order) is wrongly accepted as equivalent.",
+      "family_id": "quad-adversarial-reorder",
+      "loss_profile": "standard"
+    },
+    {
+      "adversarial": [],
+      "config": {
+        "history_length": 5,
+        "ledger_capacity": 64,
+        "num_agents": 2,
+        "num_obligations": 1,
+        "reconstruction_algorithm": "faithful_replay",
+        "total_resource": 2,
+        "world_id": "observer-duo"
+      },
+      "config_hash": "8c6d138f8303be68330c2672b962cfda1176e675fc9e0a235891eb795bbe0424",
+      "description": "2 agents, 1 obligation, 5-tick history (exact enumeration, small).",
+      "family_id": "observer-duo",
+      "loss_profile": "standard",
+      "role": "observer_dedicated"
+    },
+    {
+      "adversarial": [],
+      "config": {
+        "history_length": 7,
+        "ledger_capacity": 64,
+        "num_agents": 3,
+        "num_obligations": 2,
+        "reconstruction_algorithm": "faithful_replay",
+        "total_resource": 3,
+        "world_id": "observer-triad"
+      },
+      "config_hash": "313305b41de3848a306518b236fa16b09e05e44a939ba64ee16675b219920246",
+      "description": "3 agents, 2 obligations, 7-tick history (exact enumeration).",
+      "family_id": "observer-triad",
+      "loss_profile": "standard",
+      "role": "observer_dedicated"
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "arms": [],
+  "closing_count": 0,
+  "closing_examples": [],
+  "config": {
+    "history_length": 4,
+    "ledger_capacity": 64,
+    "num_agents": 3,
+    "num_obligations": 2,
+    "reconstruction_algorithm": "lossy_replay",
+    "total_resource": 3,
+    "world_id": "triad-lossy-reconstruction"
+  },
+  "contract": {
+    "min_resolutions": 1,
+    "total_conserved_invariant": 3
+  },
+  "non_closing_count": 256,
+  "non_closing_examples": [
+    [
+      "move",
+      "move",
+      "move",
+      "move"
+    ],
+    [
+      "move",
+      "move",
+      "move",
+      "resolve"
+    ],
+    [
+      "move",
+      "move",
+      "move",
+      "noop_x"
+    ],
+    [
+      "move",
+      "move",
+      "move",
+      "noop_y"
+    ],
+    [
+      "move",
+      "move",
+      "resolve",
+      "move"
+    ]
+  ],
+  "reason": "no natural history satisfies both the locked contract and exact closure",
+  "reference_history": null,
+  "status": "unsupported",
+  "total_histories": 256,
+  "world_id": "triad-lossy-reconstruction"
+}

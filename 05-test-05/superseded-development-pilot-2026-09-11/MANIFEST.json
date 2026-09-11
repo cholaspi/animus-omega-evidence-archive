@@ -1,0 +1,125 @@
+{
+  "evidence_manifest": [
+    {
+      "description": "Test 05A raw evidence for world family triad-standard",
+      "path": "evidence/boundary/triad-standard.json",
+      "sha256": "a54d13c0a76a7d17738fac5670edac222b56892d162cf7094bb6b2376a4c81ad"
+    },
+    {
+      "description": "Test 05A raw evidence for world family quad-chain",
+      "path": "evidence/boundary/quad-chain.json",
+      "sha256": "78ee339eb6f723cd0b60b2d7e91eebcb9f8bb3e9f2e4ebc0abb7be2ee4a66b1d"
+    },
+    {
+      "description": "Test 05A raw evidence for world family triad-lossy-reconstruction",
+      "path": "evidence/boundary/triad-lossy-reconstruction.json",
+      "sha256": "4a5b9d02ef263b7b4d60c67cf0f10c3e43bf4538e4d303644d273e9d3e8bc81b"
+    },
+    {
+      "description": "Test 05A raw evidence for world family triad-short-ledger",
+      "path": "evidence/boundary/triad-short-ledger.json",
+      "sha256": "78c46c64a5cbf5d4c81373b4a9ba6751f9a22eb13a13c4eaca47f12304abc74f"
+    },
+    {
+      "description": "Test 05A raw evidence for world family pentad-long-chain",
+      "path": "evidence/boundary/pentad-long-chain.json",
+      "sha256": "f1d3368c3f5dfc9e1e29ccf8745de0f52bcd9c4b0e8f55c0c70863a8f3e67c56"
+    },
+    {
+      "description": "Test 05A raw evidence for world family triad-adversarial-identity",
+      "path": "evidence/boundary/triad-adversarial-identity.json",
+      "sha256": "a16bc564a43ef299944f5250311c253d0d4eafa3d2be5c09c4be33d640c4afe8"
+    },
+    {
+      "description": "Test 05A raw evidence for world family quad-adversarial-reorder",
+      "path": "evidence/boundary/quad-adversarial-reorder.json",
+      "sha256": "6c2a2f008a7e702217a8fa0da464592b1a386da32ba818c7bb4b1f633a2cf63a"
+    },
+    {
+      "description": "Test 05B raw evidence for world family triad-standard",
+      "path": "evidence/residual/triad-standard.json",
+      "sha256": "c1c5c3ddc943ae6a55036de3164f150f530d1c42b08432cb3f39e56d5cf7d5b5"
+    },
+    {
+      "description": "Test 05B raw evidence for world family quad-chain",
+      "path": "evidence/residual/quad-chain.json",
+      "sha256": "e83474e275bde962801921cc24d8f63e72d2909bf315aaef72d9b43c1026e76d"
+    },
+    {
+      "description": "Test 05B raw evidence for world family triad-lossy-reconstruction",
+      "path": "evidence/residual/triad-lossy-reconstruction.json",
+      "sha256": "9d1832934d73b2e7344ff44368f82679253c26b2d95908d242c6ac32ff7c54c2"
+    },
+    {
+      "description": "Test 05B raw evidence for world family triad-short-ledger",
+      "path": "evidence/residual/triad-short-ledger.json",
+      "sha256": "94dc72ea63957407804e8256b90881422e190af179d51d08c27b09ebc28e18ba"
+    },
+    {
+      "description": "Test 05B raw evidence for world family pentad-long-chain",
+      "path": "evidence/residual/pentad-long-chain.json",
+      "sha256": "709c64bdef4df0954f24997470dbea6f81ca455fe7039286cf9ec0842f1000bb"
+    },
+    {
+      "description": "Test 05B raw evidence for world family triad-adversarial-identity",
+      "path": "evidence/residual/triad-adversarial-identity.json",
+      "sha256": "80f955f7d60fc7d6e4c7ce14813ecd2fd1a9e398f9ca7f56981807dd4b39d925"
+    },
+    {
+      "description": "Test 05B raw evidence for world family quad-adversarial-reorder",
+      "path": "evidence/residual/quad-adversarial-reorder.json",
+      "sha256": "a9c54af8f91d7d64b0033ce6ace570cda998fdbb79dac0650d11213d76041a86"
+    },
+    {
+      "description": "Test 05C raw evidence for world family observer-duo",
+      "path": "evidence/observer/observer-duo.json",
+      "sha256": "9eea0d76f91ebc61f2509cd2d7ce8d47f540d09f1084a13e146c21a53964d8dc"
+    },
+    {
+      "description": "Test 05C raw evidence for world family observer-triad",
+      "path": "evidence/observer/observer-triad.json",
+      "sha256": "b81fdab09e6695dfc380cee644fec579444662411d1413c598ea2c24bdd59490"
+    },
+    {
+      "description": "Test 05D raw evidence for world family triad-standard",
+      "path": "evidence/resource/triad-standard.json",
+      "sha256": "a593902fb91c2edce0d70387b974cdf9db20d7cd3bdcabf107167a2ab398acce"
+    },
+    {
+      "description": "Test 05D raw evidence for world family quad-chain",
+      "path": "evidence/resource/quad-chain.json",
+      "sha256": "eeb95212abf4c16afb4026d52ae24b6cf19ebe54b0a777520c9fcfa5fe31637b"
+    },
+    {
+      "description": "Test 05D raw evidence for world family triad-lossy-reconstruction",
+      "path": "evidence/resource/triad-lossy-reconstruction.json",
+      "sha256": "ae4ecb0c6fef5f47cc116552aa656632147527e6e798fa598ffef57d65171288"
+    },
+    {
+      "description": "Test 05D raw evidence for world family triad-short-ledger",
+      "path": "evidence/resource/triad-short-ledger.json",
+      "sha256": "60957a4334605bb31f519b46772bef8789f3172926df36796ce0c3410cedf886"
+    },
+    {
+      "description": "Test 05D raw evidence for world family pentad-long-chain",
+      "path": "evidence/resource/pentad-long-chain.json",
+      "sha256": "d4d397667d24d92f8edba838ceb8e1a84e1b01749cf6c7676833cdc2f14be83a"
+    },
+    {
+      "description": "Test 05D raw evidence for world family triad-adversarial-identity",
+      "path": "evidence/resource/triad-adversarial-identity.json",
+      "sha256": "82f7a4ff2da5e605c9947179078009c5df06891da57fde76129e58c8210946e2"
+    },
+    {
+      "description": "Test 05D raw evidence for world family quad-adversarial-reorder",
+      "path": "evidence/resource/quad-adversarial-reorder.json",
+      "sha256": "37f7ebf3c651b8467aa90734777644d8f2ff2f2625601a45cba9d471fc77c281"
+    },
+    {
+      "description": "Test 05E integrated gating evaluation",
+      "path": "evidence/integrated.json",
+      "sha256": "be98e97e71641b468edad15f6e2dc36131793a3c91697e2d2406dab0ff20d450"
+    }
+  ],
+  "result_digest": "c0cdd03258c587ce2196f086eeb291903a93bdc6863e863837a5b2a05ac46158"
+}
