@@ -52,9 +52,14 @@ def all_world_families() -> list[WorldFamily]:
     # version of that same verification. history_length is kept far under
     # the protocol's 1,000,000-history exhaustive-enumeration bound
     # (alphabet size 4): standard_config uses the smallest length found
-    # feasible (1,024 / 4,096 admissible histories); observer_config keeps
-    # the prior "2*num_agents + 1" margin for a phase-matched interior
-    # window at a still-tiny 16,384 / 262,144 histories.
+    # feasible (1,024 / 4,096 admissible histories); observer_config uses
+    # the minimal history_length that still guarantees a phase-matched
+    # interior window (boundary_start = history_length - 2 >= num_agents),
+    # which happens to coincide with each family's own standard_config
+    # length (1,024 / 4,096 histories) -- far cheaper than an earlier
+    # "2*num_agents + 1" margin, which made 05C's exact enumeration
+    # impractically slow (a single full validation run measured at over
+    # 2000 seconds) at these corrected, larger agent counts.
     return [
         WorldFamily(
             family_id="friendly",
@@ -77,7 +82,7 @@ def all_world_families() -> list[WorldFamily]:
                 world_id="friendly-observer-horizon",
                 num_agents=3,
                 num_obligations=1,
-                history_length=7,  # 2*num_agents + 1: guarantees a phase-matched interior window
+                history_length=5,  # minimal sufficient (boundary_start=L-2>=n) for a phase-matched interior window
                 total_resource=3,
                 reconstruction_algorithm="faithful_replay",
                 ledger_capacity=64,
@@ -109,7 +114,7 @@ def all_world_families() -> list[WorldFamily]:
                 world_id="adversarial-observer-horizon",
                 num_agents=4,
                 num_obligations=2,
-                history_length=9,  # 2*num_agents + 1
+                history_length=6,  # minimal sufficient (boundary_start=L-2>=n) for a phase-matched interior window
                 total_resource=4,
                 reconstruction_algorithm="faithful_replay",
                 ledger_capacity=64,

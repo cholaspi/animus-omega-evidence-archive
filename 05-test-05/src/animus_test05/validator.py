@@ -842,6 +842,31 @@ def _validate_and_derive_integrated(evidence_root: Path, result: dict, report: V
                 "no common element -- the two implementations disagree about what is failing",
             )
 
+    # Protocol v1.3.0-dev4, correction 8: the generator's 16 gate names are
+    # identical to this independent derivation's 16 gate names by design
+    # (the gate registry maps each section-17 item to exactly one gate on
+    # both sides), so a per-gate-name comparison is meaningful and catches
+    # what the coarser status/failed_gates check above cannot: a gate
+    # individually removed from runs/integrated_gates.json, or a single
+    # gate's "ok" boolean individually flipped without the surrounding
+    # status/failed_gates fields being updated to match.
+    report.record("all_16_gates_present_and_individually_match")
+    if stored_gates_path.exists():
+        stored_by_name = {g.get("gate"): g.get("ok") for g in stored_gates.get("gates", [])}
+        derived_by_name = {g["gate"]: g["ok"] for g in derived["gates"]}
+        missing = set(derived_by_name) - set(stored_by_name)
+        extra = set(stored_by_name) - set(derived_by_name)
+        if missing:
+            report.reject("all_16_gates_present_and_individually_match", f"runs/integrated_gates.json is missing required gate(s): {sorted(missing)}")
+        if extra:
+            report.reject("all_16_gates_present_and_individually_match", f"runs/integrated_gates.json has unrecognized gate(s): {sorted(extra)}")
+        for name in sorted(set(derived_by_name) & set(stored_by_name)):
+            if stored_by_name[name] != derived_by_name[name]:
+                report.reject(
+                    "all_16_gates_present_and_individually_match",
+                    f"gate {name!r}: stored ok={stored_by_name[name]!r} != independently-derived ok={derived_by_name[name]!r}",
+                )
+
     report.record("integrated_supported_requires_all_gates_ok")
     if derived.get("status") == "supported":
         if derived.get("failed_gates") or derived.get("ineligible_gates") or derived.get("invalid_gates"):
