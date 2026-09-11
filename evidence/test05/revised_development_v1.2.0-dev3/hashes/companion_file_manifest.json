@@ -1,0 +1,90 @@
+{
+  "companion_manifest_digest": "0e05c46457bf0bd1e647111edccfdfa595c80a427d4e767a0ce1c033727ed46a",
+  "files": [
+    {
+      "path": "protocol/TEST_05_PROTOCOL_v1.2.0-dev3.md",
+      "sha256": "9fd636c0fe0e6693c7db8b7abac31ab462a78425e4b01e450c6e6c665695a2eb"
+    },
+    {
+      "path": "protocol/observer_spec.json",
+      "sha256": "65e41e15a5c5eac820bd7f6b51934aa9e5cfc712947df4866d9dedd2bbd90796"
+    },
+    {
+      "path": "config/physics_config.json",
+      "sha256": "e1fb482a1caeaf0e051ef36c7e3891e993f90ec5b76d2dcc09ff1056bd2cc0af"
+    },
+    {
+      "path": "protocol/beginning_contract_schema.json",
+      "sha256": "ef801adcf3683535d2b25422d35f6d630d141e8eb52c0e016fa8ffc232155e25"
+    },
+    {
+      "path": "protocol/causal_path_specification.json",
+      "sha256": "4f756689747899d71fca82e26e05a076ce286b08b499f0d30901d70d29e3578a"
+    },
+    {
+      "path": "protocol/field_classification_manifest.json",
+      "sha256": "4b639e9dd0227457d70192cca3aca1f35a050f414c22f955b1769f1c97f34c02"
+    },
+    {
+      "path": "protocol/delayed_probe_generator.json",
+      "sha256": "839e434d1294198e4425b080571b1c2287fb6d1c30453c91005e6b723145f7b6"
+    },
+    {
+      "path": "protocol/fault_predictions.json",
+      "sha256": "dc94e1e5a23871aa575236dfe9224348c87c8f70a4b61ba5c5d0b6601bc5a5b1"
+    },
+    {
+      "path": "protocol/mutation_definitions.json",
+      "sha256": "7ceeb4d54cd9ad8a0ea15373afbed1b7ea299898a55efcaf7fe1efcb172958b6"
+    },
+    {
+      "path": "protocol/semantic_probe_specification.json",
+      "sha256": "8be5862124d8bc0302896d393a94e9285beea02905839b3eca6d2e2043960f94"
+    },
+    {
+      "path": "protocol/byte_accounting_specification.json",
+      "sha256": "bf48a81dde1f74e6de195d3863b74fc341b6b630671f5ac65fb94563b0479510"
+    },
+    {
+      "path": "protocol/resource_objective.json",
+      "sha256": "2c47f5864ffb33a70e27502c1951c6dc35981f9d86bf5716d4e495cca7cba7e2"
+    },
+    {
+      "path": "config/seed_list.json",
+      "sha256": "87bf33a5b8de1c1321b88faf0754f8cb4f87ee4bf2b98134ececea567dfa24d4"
+    },
+    {
+      "path": "config/baseline_definitions.json",
+      "sha256": "5fa34460316aac51e84e4c7a232522e8ca4f37b590abd4135d347d6cc9c6309f"
+    },
+    {
+      "path": "worlds/friendly.json",
+      "sha256": "7fa53ca6b1972c71d2bd6ca36f2f929890a287ff8fef71cd23eb7a08a15a68ee"
+    },
+    {
+      "path": "worlds/adversarial.json",
+      "sha256": "41cf21a413c4bb454f8e0fddf427b8110e0fb0f5e6c233018840b6b22689a946"
+    }
+  ],
+  "protocol_hash": "9fd636c0fe0e6693c7db8b7abac31ab462a78425e4b01e450c6e6c665695a2eb",
+  "protocol_version": "1.2.0-dev3",
+  "source_files": {
+    "src/animus_test05/__init__.py": "1b9481258c82d8fbbff072126985f8dd7f7dbad944d804ee70987b15511ea558",
+    "src/animus_test05/boundary.py": "4bd5bfbb1614cfadbb2feecd4abc71867852b3a707287aae285105721fd82428",
+    "src/animus_test05/companion_specs.py": "9507b46c9e2192d45fd171415b5c548904e926f6ee7106821e1a497e9e39b599",
+    "src/animus_test05/execution_matrix.py": "d45e6a7de453d8d0de3b429eeab3e2606e58dea91854bd8b35e7634e8e71f7f9",
+    "src/animus_test05/expansion.py": "aa8d3e7742b51ff5b0adb066d78bf073c60aece9ee450a1dcb2ce8f7805b8172",
+    "src/animus_test05/hashing.py": "e00080df8f741637efa8cefec58c59f718ea03fc219c5ef3d8261365907a1039",
+    "src/animus_test05/integrated.py": "88855186875d97df79d84e79949e4c5554a6fd0ea7948f8d1f069bd7793317d4",
+    "src/animus_test05/label_audit.py": "3393e08880ca55df08e3b5779cdf1706c550b499ba4d4666cbd26bdb2fad3f90",
+    "src/animus_test05/observer.py": "c9c82bb149a700cfef67b6a8916b852e02118df336a1b7a773f3736b965cf381",
+    "src/animus_test05/residual.py": "a261abd20bbfd70dd241f9d92434969bf4b076cb53a93130a31dff226bd6273c",
+    "src/animus_test05/resource.py": "4b2f17e8d24da8606ce329c6a1556198a1ffcdf318f9b146d6600ba941503aee",
+    "src/animus_test05/run.py": "b487be64ab3b5d0a2fbfc0b36e74587811fcb1273d6b3aff15a771c63fa221db",
+    "src/animus_test05/seeds.py": "d96aa172d502a11bd17cecf291e5767260aa38da7cee325dea47b7c2e945c3ca",
+    "src/animus_test05/validator.py": "a3781a90a09c6d11e39c3d047fecb32ce752a442ada998a33030cc464dfb11ec",
+    "src/animus_test05/world.py": "003c5426ae0e680f50609ef3292d0940657045c844c47f1313089de3fb140f3a",
+    "src/animus_test05/worlds.py": "d9b529c84c6e4857455c3a508afe02d9f93609eaffcc9a1dc56ffdb0cebfc46a"
+  },
+  "source_hash": "16fe04ba3b2a1387df5ff0c1afe9840b1a08c001151ba79ac0bb3533bb4c84b5"
+}

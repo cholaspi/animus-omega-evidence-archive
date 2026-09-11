@@ -1,0 +1,14 @@
+{
+  "definition": "R(t) = agents with nonzero balance + obligations still open",
+  "example": null,
+  "histories_checked": 256,
+  "reason": "no admissible history can exhibit the pattern: R(genesis)=3, so 2x expansion would require R>=6, but this config's provable ceiling (every agent holding balance, no obligation yet resolved) is only 5",
+  "status": "unsupported",
+  "theoretical_max_r": {
+    "expansion_mathematically_possible": false,
+    "provable_ceiling": 5,
+    "r_at_genesis": 3,
+    "required_for_expansion": 6
+  },
+  "world_id": "friendly"
+}

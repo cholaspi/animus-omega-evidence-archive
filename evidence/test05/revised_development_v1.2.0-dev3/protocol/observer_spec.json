@@ -1,0 +1,70 @@
+{
+  "null_model": "histories uniformly likely over the full enumerated admissible-history space (exact, no sampling)",
+  "primary_observer_spec": {
+    "excluded_information": [
+      "global_clock",
+      "absolute_cycle_position",
+      "boundary_marker",
+      "full_state",
+      "unrestricted_full_ledger_access",
+      "other_agents_state"
+    ],
+    "frozen_before_execution": true,
+    "information_access": [
+      "own_identity",
+      "own_balance",
+      "direct_relationship_edge",
+      "own_current_obligation_status"
+    ],
+    "memory_ticks": 2,
+    "observer_id": "primary_bounded_observer",
+    "radius": "radius-one (own state plus the single ring edge it directly participates in)"
+  },
+  "primary_observer_spec_hash": "0a3359d2610431491b654be6110541394662f1dc141290a8f3cf9fd0552111a4",
+  "sensitivity_ladder": [
+    {
+      "description": "PRIMARY: radius-one, 2-tick memory, own identity/relationship/obligation only.",
+      "observer_id": "primary_bounded_observer",
+      "role": "primary"
+    },
+    {
+      "description": "Sensitivity analysis: own balance, last tick only (less information than primary).",
+      "observer_id": "radius_one_local",
+      "role": "sensitivity_analysis"
+    },
+    {
+      "description": "Sensitivity analysis: own balance across the window, no relationship/obligation field.",
+      "observer_id": "local_short_memory",
+      "role": "sensitivity_analysis"
+    },
+    {
+      "description": "Sensitivity analysis: own balance + was-actor interaction signal.",
+      "observer_id": "local_relationship_memory",
+      "role": "sensitivity_analysis"
+    },
+    {
+      "description": "Sensitivity analysis: own balance + was-actor + own obligation status.",
+      "observer_id": "local_obligation_history",
+      "role": "sensitivity_analysis"
+    },
+    {
+      "description": "Sensitivity analysis: wider in space (all agents' balances) rather than deeper in local detail.",
+      "observer_id": "bounded_longer_memory",
+      "role": "sensitivity_analysis"
+    },
+    {
+      "description": "MANDATORY POSITIVE CONTROL: tick + all balances + all obligation statuses.",
+      "observer_id": "full_state_positive_control",
+      "role": "positive_control"
+    }
+  ],
+  "thresholds": {
+    "indistinguishability_accuracy": 0.55,
+    "indistinguishability_tv": 0.05,
+    "min_matched_observations_per_class": 200,
+    "min_matching_coverage": 0.9,
+    "positive_control_accuracy": 0.75,
+    "positive_control_tv": 0.25
+  },
+  "window_ticks": 2
+}

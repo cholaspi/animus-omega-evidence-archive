@@ -1,0 +1,8 @@
+{
+  "diagnostic": "total_operation_count",
+  "noncanonical_diagnostic": "wall_clock_seconds",
+  "objective_id": "peak_canonical_bytes_v1",
+  "primary": "peak_canonical_bytes",
+  "secondary": "total_byte_ticks",
+  "support_rule": "strictly lower peak_canonical_bytes than every eligible baseline, in both world families"
+}

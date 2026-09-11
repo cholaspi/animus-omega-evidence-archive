@@ -1,0 +1,61 @@
+{
+  "evidence_manifest": [
+    {
+      "path": "runs/boundary/friendly.json",
+      "sha256": "8de97630c46e9e0baf851b21cfda57f854ad8ff2403485845e38296b624d84fc"
+    },
+    {
+      "path": "runs/boundary/adversarial.json",
+      "sha256": "478e0b97d582763845f76139a03ea1246306c966806ebc9f102b810667153464"
+    },
+    {
+      "path": "runs/residual/friendly.json",
+      "sha256": "0f35e156985d754881d434d3a29a487c941d539bae8fc9328c722bb30c4f2d85"
+    },
+    {
+      "path": "runs/residual/adversarial.json",
+      "sha256": "48c5efc39916473102b0a82734ef0c9c47dc39c724d9eeadd86275e244f882d6"
+    },
+    {
+      "path": "runs/observer/friendly.json",
+      "sha256": "f4f2a7a6ad4c4fe5eddf50c692c90d1a8f1e6badcf8e5fdd6ae0087ce356f9ba"
+    },
+    {
+      "path": "runs/observer/adversarial.json",
+      "sha256": "9ea0b37dc07a203732705b92d45224f4cf854745a2953ac27d4fc3eab866392d"
+    },
+    {
+      "path": "runs/resource/friendly.json",
+      "sha256": "0a7c36079ac4a3e7c96b453acc8e11344fe773b4d7428593ee63058ff3959279"
+    },
+    {
+      "path": "runs/resource/adversarial.json",
+      "sha256": "2d41b20c5e45b196853715e9ad97f0fe80648cdfba976edfd64bbd3a3519646b"
+    },
+    {
+      "path": "runs/expansion/friendly.json",
+      "sha256": "e9afc01cdb2d23a84cdbbb362df953227476410c937e8168c30e8723ebb303f9"
+    },
+    {
+      "path": "runs/expansion/adversarial.json",
+      "sha256": "ff2a87032983ba729a7e4f9d6c4de380f5667d2b4256bb5674e284d7bd4ada05"
+    },
+    {
+      "path": "runs/execution_matrix/friendly.json",
+      "sha256": "49a4ca9de84908914a4c3162fdffb5eea5ed597a5ff64b91c211a57771172076"
+    },
+    {
+      "path": "runs/execution_matrix/adversarial.json",
+      "sha256": "2d3d2614fe2e0aed8ea41388e3e264e57d0ec67d5fd576141dd9a3805fb29069"
+    },
+    {
+      "path": "runs/integrated_gates.json",
+      "sha256": "d2739155c29f9f0e2ba1508692edda212a04f492e5949feee9cc2ebb2dc6c986"
+    },
+    {
+      "path": "runs/label_audit.json",
+      "sha256": "d91b0197954bf7176ffb26b7cadd04212b76613dca49970364a376f44d863da3"
+    }
+  ],
+  "result_digest": "360dc89178d2a338059263e37367514d47510e902ef86dbd2ad1ef489d8feaaf"
+}

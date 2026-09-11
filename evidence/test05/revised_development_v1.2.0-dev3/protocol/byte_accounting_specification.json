@@ -1,0 +1,19 @@
+{
+  "categories": [
+    "authoritative_state_bytes",
+    "residual_bytes",
+    "ledger_bytes",
+    "event_log_bytes",
+    "observer_buffer_bytes",
+    "checkpoint_bytes",
+    "reconstruction_buffer_bytes",
+    "index_bytes",
+    "lookup_table_bytes",
+    "preprocessing_bytes"
+  ],
+  "diagnostic": "total_operation_count",
+  "noncanonical_diagnostic": "wall_clock_seconds (excluded from canonical_digest)",
+  "primary_objective": "peak_canonical_bytes",
+  "secondary_objective": "total_byte_ticks",
+  "state_machine_replicas": 3
+}

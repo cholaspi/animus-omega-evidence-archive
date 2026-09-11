@@ -1,0 +1,47 @@
+{
+  "causal_reorder": {
+    "description": "Reverse the order of the relevant ledger's entries.",
+    "expect_all_pass": false,
+    "expect_probe_flip": "identity_substitution_challenges"
+  },
+  "contradictory_ledger": {
+    "description": "Flip the first ledger entry's recorded effect to a value inconsistent with its (tick, action).",
+    "expect_all_pass": false,
+    "expect_probe_flip": "ledger_effects_consistent"
+  },
+  "duplicate_event": {
+    "description": "Duplicate the first ledger entry at the end of the ledger.",
+    "expect_all_pass": false,
+    "expect_probe_flip": null
+  },
+  "identity_substitution": {
+    "description": "Swap the balances of the generated substitution pair in the residual.",
+    "expect_all_pass": false,
+    "expect_probe_flip": "identity_substitution_challenges"
+  },
+  "missing_provenance": {
+    "description": "Remove the provenance field from the first obligation.",
+    "expect_all_pass": false,
+    "expect_probe_flip": "provenance"
+  },
+  "no_ledger": {
+    "description": "Supply an empty ledger alongside the true residual.",
+    "expect_all_pass": false,
+    "expect_probe_flip": "identity_substitution_challenges"
+  },
+  "obligation_deletion": {
+    "description": "Remove the first obligation entirely from the residual.",
+    "expect_all_pass": false,
+    "expect_probe_flip": "obligation_ownership"
+  },
+  "random_reconstruction": {
+    "description": "Replace residual balances and obligation owner/status with random values.",
+    "expect_all_pass": false,
+    "expect_probe_flip": null
+  },
+  "stale_event": {
+    "description": "Replace the ledger with an empty (stale/earlier-point) ledger.",
+    "expect_all_pass": false,
+    "expect_probe_flip": "identity_substitution_challenges"
+  }
+}

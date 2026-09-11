@@ -1,0 +1,79 @@
+{
+  "derived_by": "validator.py (independent of the generator; never asserted by run.py)",
+  "failed_gates": [
+    "no_qualifying_distinction_for_primary_bounded_observer",
+    "fidelity_matched_resource_advantage"
+  ],
+  "gates": [
+    {
+      "detail": "every 05A world family executes a history (expansion) followed by a J boundary transition (contraction)",
+      "gate": "expanding_and_contracting_represented_world",
+      "ok": true
+    },
+    {
+      "detail": "FrozenContract is a pure function of WorldConfig only, computed and hashed before any history executes (protocol v2, update E)",
+      "gate": "independently_locked_beginning_contract",
+      "ok": true
+    },
+    {
+      "detail": "return_value_of(ending_state) is computed and fed into J in every 05A arm",
+      "gate": "ending_derived_return_value_present",
+      "ok": true
+    },
+    {
+      "detail": "execute_J() is called and consumes the frozen contract for every arm of every evaluated world family",
+      "gate": "executed_transition_ending_to_beginning",
+      "ok": true
+    },
+    {
+      "detail": "at least one 05A world family exhibits both closing and non-closing natural histories",
+      "gate": "both_closing_and_non_closing_histories",
+      "ok": true
+    },
+    {
+      "detail": "at least one 05A world family shows relevant interventions breaking closure AND modifying the declared causal path, while irrelevant ones do neither",
+      "gate": "causal_sensitivity_and_specificity",
+      "ok": true
+    },
+    {
+      "detail": "every world family's residual has at least one collision group (two distinct admissible microstates mapping to the same residual)",
+      "gate": "genuine_information_loss",
+      "ok": true
+    },
+    {
+      "detail": "every world family's residual passes every semantic probe, every positive control passes, every negative control correctly fails, and the leakage audit is clean",
+      "gate": "preserved_semantic_behavior_through_loss",
+      "ok": true
+    },
+    {
+      "detail": "removing/staling/corrupting the ledger breaks semantic probes (05B) and corrupting the ledger breaks closure (05A arm 8) in every world family",
+      "gate": "narrative_ledger_causally_load_bearing",
+      "ok": true
+    },
+    {
+      "detail": "the full-state observer's TV distance exceeds the positive-control threshold in every 05C world family",
+      "gate": "positive_control_observer_detects_boundary",
+      "ok": true
+    },
+    {
+      "detail": "the single frozen PRIMARY bounded observer stays under the indistinguishability threshold in every 05C world family (sensitivity-analysis classes are diagnostic only and never gate this)",
+      "gate": "no_qualifying_distinction_for_primary_bounded_observer",
+      "ok": false
+    },
+    {
+      "detail": "",
+      "gate": "fidelity_matched_resource_advantage",
+      "ok": false
+    },
+    {
+      "detail": "every 05B world family's negative controls correctly fail at least one semantic probe",
+      "gate": "negative_and_fault_injection_controls_pass",
+      "ok": true
+    }
+  ],
+  "inconclusive_gates": [],
+  "ineligible_gates": [],
+  "interpretation": "At least one integration gate did not pass (see failed_gates/ineligible_gates/invalid_gates). The complete Animus Omega conjecture is therefore not supported by this development run. This is not evidence that it is disproved: it means this bounded model and protocol did not jointly demonstrate every required property in the same run. Every component result above remains valid and preserved regardless of this integrated outcome.",
+  "invalid_gates": [],
+  "status": "not_supported"
+}

@@ -1,0 +1,23 @@
+{
+  "committed_after_dump": true,
+  "delayed_probe_ids": [
+    "new_counterfactual_actions",
+    "unseen_obligation_queries",
+    "new_resource_disputes",
+    "identity_substitution_challenges",
+    "causal_prerequisite_challenges",
+    "deadline_urgency_queries",
+    "relationship_authorization_challenges",
+    "resolved_chain_completeness_queries"
+  ],
+  "generator_source_hash": "ad43c01ba89f13dd5e95a35b1736e58707d32c03af2c5197a0a2e76158583feb",
+  "instance_generation_rules": {
+    "authorization_pair": "the counterfactual_agent and its direct ring successor",
+    "counterfactual_agent": "agent currently holding the most balance in the committed residual (tie: lowest index)",
+    "dispute_pair": "pair of agents with the closest (preferring nonzero) balance difference in the committed residual",
+    "prerequisite_obligation": "open obligation with the latest declared deadline in the committed residual",
+    "substitution_pair": "same rule as dispute_pair",
+    "unseen_obligation": "most recently resolved obligation per causal_order_token, else the last obligation in the chain",
+    "urgent_obligation": "open obligation with the earliest declared deadline in the committed residual"
+  }
+}

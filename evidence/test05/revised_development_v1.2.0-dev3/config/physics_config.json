@@ -1,0 +1,81 @@
+{
+  "adversarial": {
+    "action_alphabet": [
+      "move",
+      "resolve",
+      "noop_x",
+      "noop_y"
+    ],
+    "adversarial_conditions": [
+      "identity_substitution",
+      "causal_reorder"
+    ],
+    "irrelevant_actions": [
+      "noop_x",
+      "noop_y"
+    ],
+    "loss_profile": "standard",
+    "observer_config": {
+      "history_length": 7,
+      "ledger_capacity": 64,
+      "num_agents": 3,
+      "num_obligations": 3,
+      "reconstruction_algorithm": "faithful_replay",
+      "total_resource": 3,
+      "world_id": "adversarial-observer-horizon"
+    },
+    "observer_config_hash": "2a1c1fac907d118113e9b2bd115fd21cc573e6070161c3db73144cefa6be29c1",
+    "relevant_actions": [
+      "move",
+      "resolve"
+    ],
+    "standard_config": {
+      "history_length": 4,
+      "ledger_capacity": 64,
+      "num_agents": 3,
+      "num_obligations": 3,
+      "reconstruction_algorithm": "faithful_replay",
+      "total_resource": 3,
+      "world_id": "adversarial"
+    },
+    "standard_config_hash": "b075f69707d714ea1042db7700a8ac72488418101ac206cdff661fbfb509a7de"
+  },
+  "friendly": {
+    "action_alphabet": [
+      "move",
+      "resolve",
+      "noop_x",
+      "noop_y"
+    ],
+    "adversarial_conditions": [],
+    "irrelevant_actions": [
+      "noop_x",
+      "noop_y"
+    ],
+    "loss_profile": "standard",
+    "observer_config": {
+      "history_length": 7,
+      "ledger_capacity": 64,
+      "num_agents": 3,
+      "num_obligations": 2,
+      "reconstruction_algorithm": "faithful_replay",
+      "total_resource": 3,
+      "world_id": "friendly-observer-horizon"
+    },
+    "observer_config_hash": "edfe1290219f90bb830c054f35b71c8c69b3ed84b6382305e6941fe0f40389f1",
+    "relevant_actions": [
+      "move",
+      "resolve"
+    ],
+    "standard_config": {
+      "history_length": 4,
+      "ledger_capacity": 64,
+      "num_agents": 3,
+      "num_obligations": 2,
+      "reconstruction_algorithm": "faithful_replay",
+      "total_resource": 3,
+      "world_id": "friendly"
+    },
+    "standard_config_hash": "21f196338b136d8b1c60e7ecc1fc2c28c434b8e9b6d043e9bff6b007b5782f08"
+  }
+}

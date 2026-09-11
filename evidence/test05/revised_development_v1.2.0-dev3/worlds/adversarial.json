@@ -1,0 +1,29 @@
+{
+  "adversarial": [
+    "identity_substitution",
+    "causal_reorder"
+  ],
+  "description": "Adversarial world: 3 agents, a 3-obligation causal chain, and adversarial probes for identity substitution and causal reordering layered on top of the same residual-collision, obligation-deletion, contradiction, stale-event, and duplicate-event controls applied to every world family (see residual.run_controls).",
+  "family_id": "adversarial",
+  "loss_profile": "standard",
+  "observer_config": {
+    "history_length": 7,
+    "ledger_capacity": 64,
+    "num_agents": 3,
+    "num_obligations": 3,
+    "reconstruction_algorithm": "faithful_replay",
+    "total_resource": 3,
+    "world_id": "adversarial-observer-horizon"
+  },
+  "observer_config_hash": "2a1c1fac907d118113e9b2bd115fd21cc573e6070161c3db73144cefa6be29c1",
+  "standard_config": {
+    "history_length": 4,
+    "ledger_capacity": 64,
+    "num_agents": 3,
+    "num_obligations": 3,
+    "reconstruction_algorithm": "faithful_replay",
+    "total_resource": 3,
+    "world_id": "adversarial"
+  },
+  "standard_config_hash": "b075f69707d714ea1042db7700a8ac72488418101ac206cdff661fbfb509a7de"
+}

@@ -1,0 +1,67 @@
+{
+  "additional_core_checks": [
+    "causal_prerequisite_last_obligation",
+    "unseen_chain_completion",
+    "ledger_effects_consistent"
+  ],
+  "banned_leakage_keys": [
+    "answer_key",
+    "arm_id",
+    "arm_identity",
+    "arm_label",
+    "boundary_flag",
+    "boundary_location",
+    "closure_status",
+    "expected",
+    "expected_answer",
+    "future_action_label",
+    "original_microstate_id",
+    "probe_answer",
+    "test_label"
+  ],
+  "core_probe_descriptions": {
+    "causal_ordering": "Is the last obligation blocked by an unresolved dependency?",
+    "causal_prerequisite_last_obligation": "Which obligation must resolve before the last obligation in the chain?",
+    "deadline_behavior": "Does obligation o0 carry its correct genesis deadline?",
+    "identity_continuity": "Is the residual's identity set exactly the configured agent set?",
+    "ledger_effects_consistent": "Does every ledger entry's stored effect match an independent recomputation?",
+    "obligation_ownership": "Which agent owns obligation o0?",
+    "observer_visible_consequences": "Who is the unique current primary resource holder?",
+    "permitted_future_actions": "Which agents may still move?",
+    "provenance": "Does obligation o0 carry its correct genesis provenance tag?",
+    "relationship_permissions": "Does the ring relationship authorize a transfer a0->a1?",
+    "resource_allocation_commitments": "Does balance + resolved-count add up to the declared total resource?",
+    "unseen_chain_completion": "What dependency must an appended successor obligation declare?"
+  },
+  "delayed_probe_descriptions": {
+    "causal_prerequisite_challenges": "What is the full prerequisite chain for the generated obligation?",
+    "deadline_urgency_queries": "Which generated obligation is most urgent, and what is its deadline?",
+    "identity_substitution_challenges": "Should an identity substitution on the generated pair be rejected?",
+    "new_counterfactual_actions": "If the generated agent attempted to move next, would it be permitted?",
+    "new_resource_disputes": "Given the generated contested pair, who wins the disputed unit under the frozen tie-break rule?",
+    "relationship_authorization_challenges": "Does the ring relationship authorize the generated pair's transfer?",
+    "resolved_chain_completeness_queries": "Has the generated obligation's entire prerequisite chain already resolved?",
+    "unseen_obligation_queries": "Who owns, and what prerequisite does, the generated (previously unseen) obligation query?"
+  },
+  "delayed_probe_ids": [
+    "new_counterfactual_actions",
+    "unseen_obligation_queries",
+    "new_resource_disputes",
+    "identity_substitution_challenges",
+    "causal_prerequisite_challenges",
+    "deadline_urgency_queries",
+    "relationship_authorization_challenges",
+    "resolved_chain_completeness_queries"
+  ],
+  "required_core_probe_ids": [
+    "identity_continuity",
+    "obligation_ownership",
+    "relationship_permissions",
+    "causal_ordering",
+    "provenance",
+    "deadline_behavior",
+    "resource_allocation_commitments",
+    "permitted_future_actions",
+    "observer_visible_consequences"
+  ]
+}

@@ -1,0 +1,1738 @@
+{
+  "adversarial_notes": {},
+  "collision_analysis": {
+    "admissible_microstate_count": 256,
+    "cardinality_reduction_ratio": 0.683594,
+    "collision_group_count": 65,
+    "distinct_residual_count": 81,
+    "example_collision": {
+      "group_size": 16,
+      "microstate_a": {
+        "history": [
+          "noop_x",
+          "noop_x",
+          "noop_x",
+          "noop_x"
+        ],
+        "microstate_hash": "f95b168d4ff4c5cc109d2f603809cb91c48d0dc3b529ffa504cb5675edb85b2e"
+      },
+      "microstate_b": {
+        "history": [
+          "noop_x",
+          "noop_x",
+          "noop_x",
+          "noop_y"
+        ],
+        "microstate_hash": "fe62cca9f61a148653520096de4d1eebeddc00d161a80fa1bb3b5eaaee45d1b4"
+      },
+      "residual_key_prefix": "b5b0840022b2e987"
+    },
+    "max_preimage_size": 16,
+    "non_injective": true,
+    "total_histories_enumerated": 256
+  },
+  "controls": {
+    "changed_causal_dependency": {
+      "all_pass": false,
+      "answers": {
+        "causal_ordering": false,
+        "causal_prerequisite_challenges": [
+          "o0"
+        ],
+        "causal_prerequisite_last_obligation": "o0",
+        "deadline_behavior": true,
+        "deadline_urgency_queries": {
+          "deadline": 3,
+          "obligation": "o1"
+        },
+        "identity_continuity": true,
+        "identity_substitution_challenges": false,
+        "ledger_effects_consistent": true,
+        "new_counterfactual_actions": true,
+        "new_resource_disputes": "a0",
+        "obligation_ownership": "a0",
+        "observer_visible_consequences": "a1",
+        "permitted_future_actions": [
+          "a1",
+          "a2"
+        ],
+        "provenance": true,
+        "relationship_authorization_challenges": true,
+        "relationship_permissions": true,
+        "resolved_chain_completeness_queries": true,
+        "resource_allocation_commitments": false,
+        "unseen_chain_completion": "CORRUPTED_DEP",
+        "unseen_obligation_queries": {
+          "__error__": "'CORRUPTED_DEP' is not in list"
+        }
+      },
+      "description": "causal_order_token corrupted (reversed and tagged).",
+      "grades": {
+        "causal_ordering": true,
+        "causal_prerequisite_challenges": true,
+        "causal_prerequisite_last_obligation": true,
+        "deadline_behavior": true,
+        "deadline_urgency_queries": true,
+        "identity_continuity": true,
+        "identity_substitution_challenges": true,
+        "ledger_effects_consistent": true,
+        "new_counterfactual_actions": true,
+        "new_resource_disputes": true,
+        "obligation_ownership": true,
+        "observer_visible_consequences": true,
+        "permitted_future_actions": true,
+        "provenance": true,
+        "relationship_authorization_challenges": true,
+        "relationship_permissions": true,
+        "resolved_chain_completeness_queries": true,
+        "resource_allocation_commitments": false,
+        "unseen_chain_completion": false,
+        "unseen_obligation_queries": false
+      },
+      "ground_truth": {
+        "causal_ordering": false,
+        "causal_prerequisite_challenges": [
+          "o0"
+        ],
+        "causal_prerequisite_last_obligation": "o0",
+        "deadline_behavior": true,
+        "deadline_urgency_queries": {
+          "deadline": 3,
+          "obligation": "o1"
+        },
+        "identity_continuity": true,
+        "identity_substitution_challenges": false,
+        "ledger_effects_consistent": true,
+        "new_counterfactual_actions": true,
+        "new_resource_disputes": "a0",
+        "obligation_ownership": "a0",
+        "observer_visible_consequences": "a1",
+        "permitted_future_actions": [
+          "a1",
+          "a2"
+        ],
+        "provenance": true,
+        "relationship_authorization_challenges": true,
+        "relationship_permissions": true,
+        "resolved_chain_completeness_queries": true,
+        "resource_allocation_commitments": true,
+        "unseen_chain_completion": "o0",
+        "unseen_obligation_queries": {
+          "owner": "a0",
+          "prerequisite": null
+        }
+      },
+      "pass_count": 17,
+      "scoring": {
+        "additional_core_checks": {
+          "all_pass": false,
+          "pass_count": 2,
+          "total": 3
+        },
+        "delayed": {
+          "all_pass": false,
+          "pass_count": 7,
+          "total": 8
+        },
+        "required_core": {
+          "all_pass": false,
+          "pass_count": 8,
+          "total": 9
+        }
+      },
+      "total": 20
+    },
+    "complete_checkpoint": {
+      "all_pass": true,
+      "answers": {
+        "causal_ordering": false,
+        "causal_prerequisite_challenges": [
+          "o0"
+        ],
+        "causal_prerequisite_last_obligation": "o0",
+        "deadline_behavior": true,
+        "deadline_urgency_queries": {
+          "deadline": 3,
+          "obligation": "o1"
+        },
+        "identity_continuity": true,
+        "identity_substitution_challenges": false,
+        "ledger_effects_consistent": true,
+        "new_counterfactual_actions": true,
+        "new_resource_disputes": "a0",
+        "obligation_ownership": "a0",
+        "observer_visible_consequences": "a1",
+        "permitted_future_actions": [
+          "a1",
+          "a2"
+        ],
+        "provenance": true,
+        "relationship_authorization_challenges": true,
+        "relationship_permissions": true,
+        "resolved_chain_completeness_queries": true,
+        "resource_allocation_commitments": true,
+        "unseen_chain_completion": "o0",
+        "unseen_obligation_queries": {
+          "owner": "a0",
+          "prerequisite": null
+        }
+      },
+      "description": "Full true microstate (private fields included) used directly.",
+      "grades": {
+        "causal_ordering": true,
+        "causal_prerequisite_challenges": true,
+        "causal_prerequisite_last_obligation": true,
+        "deadline_behavior": true,
+        "deadline_urgency_queries": true,
+        "identity_continuity": true,
+        "identity_substitution_challenges": true,
+        "ledger_effects_consistent": true,
+        "new_counterfactual_actions": true,
+        "new_resource_disputes": true,
+        "obligation_ownership": true,
+        "observer_visible_consequences": true,
+        "permitted_future_actions": true,
+        "provenance": true,
+        "relationship_authorization_challenges": true,
+        "relationship_permissions": true,
+        "resolved_chain_completeness_queries": true,
+        "resource_allocation_commitments": true,
+        "unseen_chain_completion": true,
+        "unseen_obligation_queries": true
+      },
+      "ground_truth": {
+        "causal_ordering": false,
+        "causal_prerequisite_challenges": [
+          "o0"
+        ],
+        "causal_prerequisite_last_obligation": "o0",
+        "deadline_behavior": true,
+        "deadline_urgency_queries": {
+          "deadline": 3,
+          "obligation": "o1"
+        },
+        "identity_continuity": true,
+        "identity_substitution_challenges": false,
+        "ledger_effects_consistent": true,
+        "new_counterfactual_actions": true,
+        "new_resource_disputes": "a0",
+        "obligation_ownership": "a0",
+        "observer_visible_consequences": "a1",
+        "permitted_future_actions": [
+          "a1",
+          "a2"
+        ],
+        "provenance": true,
+        "relationship_authorization_challenges": true,
+        "relationship_permissions": true,
+        "resolved_chain_completeness_queries": true,
+        "resource_allocation_commitments": true,
+        "unseen_chain_completion": "o0",
+        "unseen_obligation_queries": {
+          "owner": "a0",
+          "prerequisite": null
+        }
+      },
+      "pass_count": 20,
+      "scoring": {
+        "additional_core_checks": {
+          "all_pass": true,
+          "pass_count": 3,
+          "total": 3
+        },
+        "delayed": {
+          "all_pass": true,
+          "pass_count": 8,
+          "total": 8
+        },
+        "required_core": {
+          "all_pass": true,
+          "pass_count": 9,
+          "total": 9
+        }
+      },
+      "total": 20
+    },
+    "contradictory_ledger_entry": {
+      "all_pass": false,
+      "answers": {
+        "causal_ordering": false,
+        "causal_prerequisite_challenges": [
+          "o0"
+        ],
+        "causal_prerequisite_last_obligation": "o0",
+        "deadline_behavior": true,
+        "deadline_urgency_queries": {
+          "deadline": 3,
+          "obligation": "o1"
+        },
+        "identity_continuity": true,
+        "identity_substitution_challenges": false,
+        "ledger_effects_consistent": false,
+        "new_counterfactual_actions": true,
+        "new_resource_disputes": "a0",
+        "obligation_ownership": "a0",
+        "observer_visible_consequences": "a1",
+        "permitted_future_actions": [
+          "a1",
+          "a2"
+        ],
+        "provenance": true,
+        "relationship_authorization_challenges": true,
+        "relationship_permissions": true,
+        "resolved_chain_completeness_queries": true,
+        "resource_allocation_commitments": true,
+        "unseen_chain_completion": "o0",
+        "unseen_obligation_queries": {
+          "owner": "a0",
+          "prerequisite": null
+        }
+      },
+      "description": "First ledger entry's effect field replaced with a contradictory value.",
+      "grades": {
+        "causal_ordering": true,
+        "causal_prerequisite_challenges": true,
+        "causal_prerequisite_last_obligation": true,
+        "deadline_behavior": true,
+        "deadline_urgency_queries": true,
+        "identity_continuity": true,
+        "identity_substitution_challenges": true,
+        "ledger_effects_consistent": false,
+        "new_counterfactual_actions": true,
+        "new_resource_disputes": true,
+        "obligation_ownership": true,
+        "observer_visible_consequences": true,
+        "permitted_future_actions": true,
+        "provenance": true,
+        "relationship_authorization_challenges": true,
+        "relationship_permissions": true,
+        "resolved_chain_completeness_queries": true,
+        "resource_allocation_commitments": true,
+        "unseen_chain_completion": true,
+        "unseen_obligation_queries": true
+      },
+      "ground_truth": {
+        "causal_ordering": false,
+        "causal_prerequisite_challenges": [
+          "o0"
+        ],
+        "causal_prerequisite_last_obligation": "o0",
+        "deadline_behavior": true,
+        "deadline_urgency_queries": {
+          "deadline": 3,
+          "obligation": "o1"
+        },
+        "identity_continuity": true,
+        "identity_substitution_challenges": false,
+        "ledger_effects_consistent": true,
+        "new_counterfactual_actions": true,
+        "new_resource_disputes": "a0",
+        "obligation_ownership": "a0",
+        "observer_visible_consequences": "a1",
+        "permitted_future_actions": [
+          "a1",
+          "a2"
+        ],
+        "provenance": true,
+        "relationship_authorization_challenges": true,
+        "relationship_permissions": true,
+        "resolved_chain_completeness_queries": true,
+        "resource_allocation_commitments": true,
+        "unseen_chain_completion": "o0",
+        "unseen_obligation_queries": {
+          "owner": "a0",
+          "prerequisite": null
+        }
+      },
+      "pass_count": 19,
+      "scoring": {
+        "additional_core_checks": {
+          "all_pass": false,
+          "pass_count": 2,
+          "total": 3
+        },
+        "delayed": {
+          "all_pass": true,
+          "pass_count": 8,
+          "total": 8
+        },
+        "required_core": {
+          "all_pass": true,
+          "pass_count": 9,
+          "total": 9
+        }
+      },
+      "total": 20
+    },
+    "deleted_obligation": {
+      "all_pass": false,
+      "answers": {
+        "causal_ordering": true,
+        "causal_prerequisite_challenges": [
+          "o0"
+        ],
+        "causal_prerequisite_last_obligation": "o0",
+        "deadline_behavior": false,
+        "deadline_urgency_queries": {
+          "deadline": 3,
+          "obligation": "o1"
+        },
+        "identity_continuity": true,
+        "identity_substitution_challenges": false,
+        "ledger_effects_consistent": true,
+        "new_counterfactual_actions": true,
+        "new_resource_disputes": "a0",
+        "obligation_ownership": null,
+        "observer_visible_consequences": "a1",
+        "permitted_future_actions": [
+          "a1",
+          "a2"
+        ],
+        "provenance": false,
+        "relationship_authorization_challenges": true,
+        "relationship_permissions": true,
+        "resolved_chain_completeness_queries": false,
+        "resource_allocation_commitments": true,
+        "unseen_chain_completion": "o0",
+        "unseen_obligation_queries": {
+          "owner": null,
+          "prerequisite": null
+        }
+      },
+      "description": "Obligation o0 removed from the residual.",
+      "grades": {
+        "causal_ordering": false,
+        "causal_prerequisite_challenges": true,
+        "causal_prerequisite_last_obligation": true,
+        "deadline_behavior": false,
+        "deadline_urgency_queries": true,
+        "identity_continuity": true,
+        "identity_substitution_challenges": true,
+        "ledger_effects_consistent": true,
+        "new_counterfactual_actions": true,
+        "new_resource_disputes": true,
+        "obligation_ownership": false,
+        "observer_visible_consequences": true,
+        "permitted_future_actions": true,
+        "provenance": false,
+        "relationship_authorization_challenges": true,
+        "relationship_permissions": true,
+        "resolved_chain_completeness_queries": false,
+        "resource_allocation_commitments": true,
+        "unseen_chain_completion": true,
+        "unseen_obligation_queries": false
+      },
+      "ground_truth": {
+        "causal_ordering": false,
+        "causal_prerequisite_challenges": [
+          "o0"
+        ],
+        "causal_prerequisite_last_obligation": "o0",
+        "deadline_behavior": true,
+        "deadline_urgency_queries": {
+          "deadline": 3,
+          "obligation": "o1"
+        },
+        "identity_continuity": true,
+        "identity_substitution_challenges": false,
+        "ledger_effects_consistent": true,
+        "new_counterfactual_actions": true,
+        "new_resource_disputes": "a0",
+        "obligation_ownership": "a0",
+        "observer_visible_consequences": "a1",
+        "permitted_future_actions": [
+          "a1",
+          "a2"
+        ],
+        "provenance": true,
+        "relationship_authorization_challenges": true,
+        "relationship_permissions": true,
+        "resolved_chain_completeness_queries": true,
+        "resource_allocation_commitments": true,
+        "unseen_chain_completion": "o0",
+        "unseen_obligation_queries": {
+          "owner": "a0",
+          "prerequisite": null
+        }
+      },
+      "pass_count": 14,
+      "scoring": {
+        "additional_core_checks": {
+          "all_pass": true,
+          "pass_count": 3,
+          "total": 3
+        },
+        "delayed": {
+          "all_pass": false,
+          "pass_count": 6,
+          "total": 8
+        },
+        "required_core": {
+          "all_pass": false,
+          "pass_count": 5,
+          "total": 9
+        }
+      },
+      "total": 20
+    },
+    "duplicate_event": {
+      "all_pass": false,
+      "answers": {
+        "causal_ordering": false,
+        "causal_prerequisite_challenges": [
+          "o0"
+        ],
+        "causal_prerequisite_last_obligation": "o0",
+        "deadline_behavior": true,
+        "deadline_urgency_queries": {
+          "deadline": 3,
+          "obligation": "o1"
+        },
+        "identity_continuity": true,
+        "identity_substitution_challenges": false,
+        "ledger_effects_consistent": false,
+        "new_counterfactual_actions": true,
+        "new_resource_disputes": "a0",
+        "obligation_ownership": "a0",
+        "observer_visible_consequences": "a1",
+        "permitted_future_actions": [
+          "a1",
+          "a2"
+        ],
+        "provenance": true,
+        "relationship_authorization_challenges": true,
+        "relationship_permissions": true,
+        "resolved_chain_completeness_queries": true,
+        "resource_allocation_commitments": true,
+        "unseen_chain_completion": "o0",
+        "unseen_obligation_queries": {
+          "owner": "a0",
+          "prerequisite": null
+        }
+      },
+      "description": "First ledger entry duplicated at the end.",
+      "grades": {
+        "causal_ordering": true,
+        "causal_prerequisite_challenges": true,
+        "causal_prerequisite_last_obligation": true,
+        "deadline_behavior": true,
+        "deadline_urgency_queries": true,
+        "identity_continuity": true,
+        "identity_substitution_challenges": true,
+        "ledger_effects_consistent": false,
+        "new_counterfactual_actions": true,
+        "new_resource_disputes": true,
+        "obligation_ownership": true,
+        "observer_visible_consequences": true,
+        "permitted_future_actions": true,
+        "provenance": true,
+        "relationship_authorization_challenges": true,
+        "relationship_permissions": true,
+        "resolved_chain_completeness_queries": true,
+        "resource_allocation_commitments": true,
+        "unseen_chain_completion": true,
+        "unseen_obligation_queries": true
+      },
+      "ground_truth": {
+        "causal_ordering": false,
+        "causal_prerequisite_challenges": [
+          "o0"
+        ],
+        "causal_prerequisite_last_obligation": "o0",
+        "deadline_behavior": true,
+        "deadline_urgency_queries": {
+          "deadline": 3,
+          "obligation": "o1"
+        },
+        "identity_continuity": true,
+        "identity_substitution_challenges": false,
+        "ledger_effects_consistent": true,
+        "new_counterfactual_actions": true,
+        "new_resource_disputes": "a0",
+        "obligation_ownership": "a0",
+        "observer_visible_consequences": "a1",
+        "permitted_future_actions": [
+          "a1",
+          "a2"
+        ],
+        "provenance": true,
+        "relationship_authorization_challenges": true,
+        "relationship_permissions": true,
+        "resolved_chain_completeness_queries": true,
+        "resource_allocation_commitments": true,
+        "unseen_chain_completion": "o0",
+        "unseen_obligation_queries": {
+          "owner": "a0",
+          "prerequisite": null
+        }
+      },
+      "pass_count": 19,
+      "scoring": {
+        "additional_core_checks": {
+          "all_pass": false,
+          "pass_count": 2,
+          "total": 3
+        },
+        "delayed": {
+          "all_pass": true,
+          "pass_count": 8,
+          "total": 8
+        },
+        "required_core": {
+          "all_pass": true,
+          "pass_count": 9,
+          "total": 9
+        }
+      },
+      "total": 20
+    },
+    "general_purpose_compressed_baseline": {
+      "all_pass": true,
+      "answers": {
+        "causal_ordering": false,
+        "causal_prerequisite_challenges": [
+          "o0"
+        ],
+        "causal_prerequisite_last_obligation": "o0",
+        "deadline_behavior": true,
+        "deadline_urgency_queries": {
+          "deadline": 3,
+          "obligation": "o1"
+        },
+        "identity_continuity": true,
+        "identity_substitution_challenges": false,
+        "ledger_effects_consistent": true,
+        "new_counterfactual_actions": true,
+        "new_resource_disputes": "a0",
+        "obligation_ownership": "a0",
+        "observer_visible_consequences": "a1",
+        "permitted_future_actions": [
+          "a1",
+          "a2"
+        ],
+        "provenance": true,
+        "relationship_authorization_challenges": true,
+        "relationship_permissions": true,
+        "resolved_chain_completeness_queries": true,
+        "resource_allocation_commitments": true,
+        "unseen_chain_completion": "o0",
+        "unseen_obligation_queries": {
+          "owner": "a0",
+          "prerequisite": null
+        }
+      },
+      "compressed_bytes": 330,
+      "description": "Full microstate losslessly zlib-compressed then decompressed (generic compression).",
+      "grades": {
+        "causal_ordering": true,
+        "causal_prerequisite_challenges": true,
+        "causal_prerequisite_last_obligation": true,
+        "deadline_behavior": true,
+        "deadline_urgency_queries": true,
+        "identity_continuity": true,
+        "identity_substitution_challenges": true,
+        "ledger_effects_consistent": true,
+        "new_counterfactual_actions": true,
+        "new_resource_disputes": true,
+        "obligation_ownership": true,
+        "observer_visible_consequences": true,
+        "permitted_future_actions": true,
+        "provenance": true,
+        "relationship_authorization_challenges": true,
+        "relationship_permissions": true,
+        "resolved_chain_completeness_queries": true,
+        "resource_allocation_commitments": true,
+        "unseen_chain_completion": true,
+        "unseen_obligation_queries": true
+      },
+      "ground_truth": {
+        "causal_ordering": false,
+        "causal_prerequisite_challenges": [
+          "o0"
+        ],
+        "causal_prerequisite_last_obligation": "o0",
+        "deadline_behavior": true,
+        "deadline_urgency_queries": {
+          "deadline": 3,
+          "obligation": "o1"
+        },
+        "identity_continuity": true,
+        "identity_substitution_challenges": false,
+        "ledger_effects_consistent": true,
+        "new_counterfactual_actions": true,
+        "new_resource_disputes": "a0",
+        "obligation_ownership": "a0",
+        "observer_visible_consequences": "a1",
+        "permitted_future_actions": [
+          "a1",
+          "a2"
+        ],
+        "provenance": true,
+        "relationship_authorization_challenges": true,
+        "relationship_permissions": true,
+        "resolved_chain_completeness_queries": true,
+        "resource_allocation_commitments": true,
+        "unseen_chain_completion": "o0",
+        "unseen_obligation_queries": {
+          "owner": "a0",
+          "prerequisite": null
+        }
+      },
+      "pass_count": 20,
+      "raw_bytes": 847,
+      "scoring": {
+        "additional_core_checks": {
+          "all_pass": true,
+          "pass_count": 3,
+          "total": 3
+        },
+        "delayed": {
+          "all_pass": true,
+          "pass_count": 8,
+          "total": 8
+        },
+        "required_core": {
+          "all_pass": true,
+          "pass_count": 9,
+          "total": 9
+        }
+      },
+      "total": 20
+    },
+    "lossless_event_log": {
+      "all_pass": true,
+      "answers": {
+        "causal_ordering": false,
+        "causal_prerequisite_challenges": [
+          "o0"
+        ],
+        "causal_prerequisite_last_obligation": "o0",
+        "deadline_behavior": true,
+        "deadline_urgency_queries": {
+          "deadline": 3,
+          "obligation": "o1"
+        },
+        "identity_continuity": true,
+        "identity_substitution_challenges": false,
+        "ledger_effects_consistent": true,
+        "new_counterfactual_actions": true,
+        "new_resource_disputes": "a0",
+        "obligation_ownership": "a0",
+        "observer_visible_consequences": "a1",
+        "permitted_future_actions": [
+          "a1",
+          "a2"
+        ],
+        "provenance": true,
+        "relationship_authorization_challenges": true,
+        "relationship_permissions": true,
+        "resolved_chain_completeness_queries": true,
+        "resource_allocation_commitments": true,
+        "unseen_chain_completion": "o0",
+        "unseen_obligation_queries": {
+          "owner": "a0",
+          "prerequisite": null
+        }
+      },
+      "description": "Full unfiltered event_log supplied alongside the true residual.",
+      "grades": {
+        "causal_ordering": true,
+        "causal_prerequisite_challenges": true,
+        "causal_prerequisite_last_obligation": true,
+        "deadline_behavior": true,
+        "deadline_urgency_queries": true,
+        "identity_continuity": true,
+        "identity_substitution_challenges": true,
+        "ledger_effects_consistent": true,
+        "new_counterfactual_actions": true,
+        "new_resource_disputes": true,
+        "obligation_ownership": true,
+        "observer_visible_consequences": true,
+        "permitted_future_actions": true,
+        "provenance": true,
+        "relationship_authorization_challenges": true,
+        "relationship_permissions": true,
+        "resolved_chain_completeness_queries": true,
+        "resource_allocation_commitments": true,
+        "unseen_chain_completion": true,
+        "unseen_obligation_queries": true
+      },
+      "ground_truth": {
+        "causal_ordering": false,
+        "causal_prerequisite_challenges": [
+          "o0"
+        ],
+        "causal_prerequisite_last_obligation": "o0",
+        "deadline_behavior": true,
+        "deadline_urgency_queries": {
+          "deadline": 3,
+          "obligation": "o1"
+        },
+        "identity_continuity": true,
+        "identity_substitution_challenges": false,
+        "ledger_effects_consistent": true,
+        "new_counterfactual_actions": true,
+        "new_resource_disputes": "a0",
+        "obligation_ownership": "a0",
+        "observer_visible_consequences": "a1",
+        "permitted_future_actions": [
+          "a1",
+          "a2"
+        ],
+        "provenance": true,
+        "relationship_authorization_challenges": true,
+        "relationship_permissions": true,
+        "resolved_chain_completeness_queries": true,
+        "resource_allocation_commitments": true,
+        "unseen_chain_completion": "o0",
+        "unseen_obligation_queries": {
+          "owner": "a0",
+          "prerequisite": null
+        }
+      },
+      "pass_count": 20,
+      "scoring": {
+        "additional_core_checks": {
+          "all_pass": true,
+          "pass_count": 3,
+          "total": 3
+        },
+        "delayed": {
+          "all_pass": true,
+          "pass_count": 8,
+          "total": 8
+        },
+        "required_core": {
+          "all_pass": true,
+          "pass_count": 9,
+          "total": 9
+        }
+      },
+      "total": 20
+    },
+    "lossy_residual_with_valid_ledger": {
+      "all_pass": true,
+      "answers": {
+        "causal_ordering": false,
+        "causal_prerequisite_challenges": [
+          "o0"
+        ],
+        "causal_prerequisite_last_obligation": "o0",
+        "deadline_behavior": true,
+        "deadline_urgency_queries": {
+          "deadline": 3,
+          "obligation": "o1"
+        },
+        "identity_continuity": true,
+        "identity_substitution_challenges": false,
+        "ledger_effects_consistent": true,
+        "new_counterfactual_actions": true,
+        "new_resource_disputes": "a0",
+        "obligation_ownership": "a0",
+        "observer_visible_consequences": "a1",
+        "permitted_future_actions": [
+          "a1",
+          "a2"
+        ],
+        "provenance": true,
+        "relationship_authorization_challenges": true,
+        "relationship_permissions": true,
+        "resolved_chain_completeness_queries": true,
+        "resource_allocation_commitments": true,
+        "unseen_chain_completion": "o0",
+        "unseen_obligation_queries": {
+          "owner": "a0",
+          "prerequisite": null
+        }
+      },
+      "description": "The declared residual + its matching relevant ledger (the real architecture).",
+      "grades": {
+        "causal_ordering": true,
+        "causal_prerequisite_challenges": true,
+        "causal_prerequisite_last_obligation": true,
+        "deadline_behavior": true,
+        "deadline_urgency_queries": true,
+        "identity_continuity": true,
+        "identity_substitution_challenges": true,
+        "ledger_effects_consistent": true,
+        "new_counterfactual_actions": true,
+        "new_resource_disputes": true,
+        "obligation_ownership": true,
+        "observer_visible_consequences": true,
+        "permitted_future_actions": true,
+        "provenance": true,
+        "relationship_authorization_challenges": true,
+        "relationship_permissions": true,
+        "resolved_chain_completeness_queries": true,
+        "resource_allocation_commitments": true,
+        "unseen_chain_completion": true,
+        "unseen_obligation_queries": true
+      },
+      "ground_truth": {
+        "causal_ordering": false,
+        "causal_prerequisite_challenges": [
+          "o0"
+        ],
+        "causal_prerequisite_last_obligation": "o0",
+        "deadline_behavior": true,
+        "deadline_urgency_queries": {
+          "deadline": 3,
+          "obligation": "o1"
+        },
+        "identity_continuity": true,
+        "identity_substitution_challenges": false,
+        "ledger_effects_consistent": true,
+        "new_counterfactual_actions": true,
+        "new_resource_disputes": "a0",
+        "obligation_ownership": "a0",
+        "observer_visible_consequences": "a1",
+        "permitted_future_actions": [
+          "a1",
+          "a2"
+        ],
+        "provenance": true,
+        "relationship_authorization_challenges": true,
+        "relationship_permissions": true,
+        "resolved_chain_completeness_queries": true,
+        "resource_allocation_commitments": true,
+        "unseen_chain_completion": "o0",
+        "unseen_obligation_queries": {
+          "owner": "a0",
+          "prerequisite": null
+        }
+      },
+      "pass_count": 20,
+      "scoring": {
+        "additional_core_checks": {
+          "all_pass": true,
+          "pass_count": 3,
+          "total": 3
+        },
+        "delayed": {
+          "all_pass": true,
+          "pass_count": 8,
+          "total": 8
+        },
+        "required_core": {
+          "all_pass": true,
+          "pass_count": 9,
+          "total": 9
+        }
+      },
+      "total": 20
+    },
+    "lossy_residual_without_ledger": {
+      "all_pass": false,
+      "answers": {
+        "causal_ordering": false,
+        "causal_prerequisite_challenges": [
+          "o0"
+        ],
+        "causal_prerequisite_last_obligation": "o0",
+        "deadline_behavior": true,
+        "deadline_urgency_queries": {
+          "deadline": 3,
+          "obligation": "o1"
+        },
+        "identity_continuity": true,
+        "identity_substitution_challenges": true,
+        "ledger_effects_consistent": true,
+        "new_counterfactual_actions": true,
+        "new_resource_disputes": "a0",
+        "obligation_ownership": "a0",
+        "observer_visible_consequences": "a1",
+        "permitted_future_actions": [
+          "a1",
+          "a2"
+        ],
+        "provenance": true,
+        "relationship_authorization_challenges": true,
+        "relationship_permissions": true,
+        "resolved_chain_completeness_queries": true,
+        "resource_allocation_commitments": true,
+        "unseen_chain_completion": "o0",
+        "unseen_obligation_queries": {
+          "owner": "a0",
+          "prerequisite": null
+        }
+      },
+      "description": "The declared residual with an empty ledger (no narrative history available).",
+      "grades": {
+        "causal_ordering": true,
+        "causal_prerequisite_challenges": true,
+        "causal_prerequisite_last_obligation": true,
+        "deadline_behavior": true,
+        "deadline_urgency_queries": true,
+        "identity_continuity": true,
+        "identity_substitution_challenges": false,
+        "ledger_effects_consistent": true,
+        "new_counterfactual_actions": true,
+        "new_resource_disputes": true,
+        "obligation_ownership": true,
+        "observer_visible_consequences": true,
+        "permitted_future_actions": true,
+        "provenance": true,
+        "relationship_authorization_challenges": true,
+        "relationship_permissions": true,
+        "resolved_chain_completeness_queries": true,
+        "resource_allocation_commitments": true,
+        "unseen_chain_completion": true,
+        "unseen_obligation_queries": true
+      },
+      "ground_truth": {
+        "causal_ordering": false,
+        "causal_prerequisite_challenges": [
+          "o0"
+        ],
+        "causal_prerequisite_last_obligation": "o0",
+        "deadline_behavior": true,
+        "deadline_urgency_queries": {
+          "deadline": 3,
+          "obligation": "o1"
+        },
+        "identity_continuity": true,
+        "identity_substitution_challenges": false,
+        "ledger_effects_consistent": true,
+        "new_counterfactual_actions": true,
+        "new_resource_disputes": "a0",
+        "obligation_ownership": "a0",
+        "observer_visible_consequences": "a1",
+        "permitted_future_actions": [
+          "a1",
+          "a2"
+        ],
+        "provenance": true,
+        "relationship_authorization_challenges": true,
+        "relationship_permissions": true,
+        "resolved_chain_completeness_queries": true,
+        "resource_allocation_commitments": true,
+        "unseen_chain_completion": "o0",
+        "unseen_obligation_queries": {
+          "owner": "a0",
+          "prerequisite": null
+        }
+      },
+      "pass_count": 19,
+      "scoring": {
+        "additional_core_checks": {
+          "all_pass": true,
+          "pass_count": 3,
+          "total": 3
+        },
+        "delayed": {
+          "all_pass": false,
+          "pass_count": 7,
+          "total": 8
+        },
+        "required_core": {
+          "all_pass": true,
+          "pass_count": 9,
+          "total": 9
+        }
+      },
+      "total": 20
+    },
+    "missing_provenance": {
+      "all_pass": false,
+      "answers": {
+        "causal_ordering": false,
+        "causal_prerequisite_challenges": [
+          "o0"
+        ],
+        "causal_prerequisite_last_obligation": "o0",
+        "deadline_behavior": true,
+        "deadline_urgency_queries": {
+          "deadline": 3,
+          "obligation": "o1"
+        },
+        "identity_continuity": true,
+        "identity_substitution_challenges": false,
+        "ledger_effects_consistent": true,
+        "new_counterfactual_actions": true,
+        "new_resource_disputes": "a0",
+        "obligation_ownership": "a0",
+        "observer_visible_consequences": "a1",
+        "permitted_future_actions": [
+          "a1",
+          "a2"
+        ],
+        "provenance": false,
+        "relationship_authorization_challenges": true,
+        "relationship_permissions": true,
+        "resolved_chain_completeness_queries": true,
+        "resource_allocation_commitments": true,
+        "unseen_chain_completion": "o0",
+        "unseen_obligation_queries": {
+          "owner": "a0",
+          "prerequisite": null
+        }
+      },
+      "description": "First obligation's provenance field removed.",
+      "grades": {
+        "causal_ordering": true,
+        "causal_prerequisite_challenges": true,
+        "causal_prerequisite_last_obligation": true,
+        "deadline_behavior": true,
+        "deadline_urgency_queries": true,
+        "identity_continuity": true,
+        "identity_substitution_challenges": true,
+        "ledger_effects_consistent": true,
+        "new_counterfactual_actions": true,
+        "new_resource_disputes": true,
+        "obligation_ownership": true,
+        "observer_visible_consequences": true,
+        "permitted_future_actions": true,
+        "provenance": false,
+        "relationship_authorization_challenges": true,
+        "relationship_permissions": true,
+        "resolved_chain_completeness_queries": true,
+        "resource_allocation_commitments": true,
+        "unseen_chain_completion": true,
+        "unseen_obligation_queries": true
+      },
+      "ground_truth": {
+        "causal_ordering": false,
+        "causal_prerequisite_challenges": [
+          "o0"
+        ],
+        "causal_prerequisite_last_obligation": "o0",
+        "deadline_behavior": true,
+        "deadline_urgency_queries": {
+          "deadline": 3,
+          "obligation": "o1"
+        },
+        "identity_continuity": true,
+        "identity_substitution_challenges": false,
+        "ledger_effects_consistent": true,
+        "new_counterfactual_actions": true,
+        "new_resource_disputes": "a0",
+        "obligation_ownership": "a0",
+        "observer_visible_consequences": "a1",
+        "permitted_future_actions": [
+          "a1",
+          "a2"
+        ],
+        "provenance": true,
+        "relationship_authorization_challenges": true,
+        "relationship_permissions": true,
+        "resolved_chain_completeness_queries": true,
+        "resource_allocation_commitments": true,
+        "unseen_chain_completion": "o0",
+        "unseen_obligation_queries": {
+          "owner": "a0",
+          "prerequisite": null
+        }
+      },
+      "pass_count": 19,
+      "scoring": {
+        "additional_core_checks": {
+          "all_pass": true,
+          "pass_count": 3,
+          "total": 3
+        },
+        "delayed": {
+          "all_pass": true,
+          "pass_count": 8,
+          "total": 8
+        },
+        "required_core": {
+          "all_pass": false,
+          "pass_count": 8,
+          "total": 9
+        }
+      },
+      "total": 20
+    },
+    "random_reconstructed_payload": {
+      "all_pass": false,
+      "answers": {
+        "causal_ordering": true,
+        "causal_prerequisite_challenges": [],
+        "causal_prerequisite_last_obligation": "o0",
+        "deadline_behavior": true,
+        "deadline_urgency_queries": {
+          "deadline": 4,
+          "obligation": "o0"
+        },
+        "identity_continuity": true,
+        "identity_substitution_challenges": true,
+        "ledger_effects_consistent": true,
+        "new_counterfactual_actions": true,
+        "new_resource_disputes": "a0",
+        "obligation_ownership": "a0",
+        "observer_visible_consequences": "a0",
+        "permitted_future_actions": [
+          "a0",
+          "a1",
+          "a2"
+        ],
+        "provenance": true,
+        "relationship_authorization_challenges": true,
+        "relationship_permissions": true,
+        "resolved_chain_completeness_queries": true,
+        "resource_allocation_commitments": false,
+        "unseen_chain_completion": "o0",
+        "unseen_obligation_queries": {
+          "owner": "a0",
+          "prerequisite": null
+        }
+      },
+      "description": "Residual balances/obligation owners/status replaced with random values.",
+      "grades": {
+        "causal_ordering": false,
+        "causal_prerequisite_challenges": false,
+        "causal_prerequisite_last_obligation": true,
+        "deadline_behavior": true,
+        "deadline_urgency_queries": false,
+        "identity_continuity": true,
+        "identity_substitution_challenges": false,
+        "ledger_effects_consistent": true,
+        "new_counterfactual_actions": true,
+        "new_resource_disputes": true,
+        "obligation_ownership": true,
+        "observer_visible_consequences": false,
+        "permitted_future_actions": false,
+        "provenance": true,
+        "relationship_authorization_challenges": true,
+        "relationship_permissions": true,
+        "resolved_chain_completeness_queries": true,
+        "resource_allocation_commitments": false,
+        "unseen_chain_completion": true,
+        "unseen_obligation_queries": true
+      },
+      "ground_truth": {
+        "causal_ordering": false,
+        "causal_prerequisite_challenges": [
+          "o0"
+        ],
+        "causal_prerequisite_last_obligation": "o0",
+        "deadline_behavior": true,
+        "deadline_urgency_queries": {
+          "deadline": 3,
+          "obligation": "o1"
+        },
+        "identity_continuity": true,
+        "identity_substitution_challenges": false,
+        "ledger_effects_consistent": true,
+        "new_counterfactual_actions": true,
+        "new_resource_disputes": "a0",
+        "obligation_ownership": "a0",
+        "observer_visible_consequences": "a1",
+        "permitted_future_actions": [
+          "a1",
+          "a2"
+        ],
+        "provenance": true,
+        "relationship_authorization_challenges": true,
+        "relationship_permissions": true,
+        "resolved_chain_completeness_queries": true,
+        "resource_allocation_commitments": true,
+        "unseen_chain_completion": "o0",
+        "unseen_obligation_queries": {
+          "owner": "a0",
+          "prerequisite": null
+        }
+      },
+      "pass_count": 13,
+      "scoring": {
+        "additional_core_checks": {
+          "all_pass": true,
+          "pass_count": 3,
+          "total": 3
+        },
+        "delayed": {
+          "all_pass": false,
+          "pass_count": 5,
+          "total": 8
+        },
+        "required_core": {
+          "all_pass": false,
+          "pass_count": 5,
+          "total": 9
+        }
+      },
+      "total": 20
+    },
+    "shuffled_identities": {
+      "all_pass": false,
+      "answers": {
+        "causal_ordering": false,
+        "causal_prerequisite_challenges": [
+          "o0"
+        ],
+        "causal_prerequisite_last_obligation": "o0",
+        "deadline_behavior": true,
+        "deadline_urgency_queries": {
+          "deadline": 3,
+          "obligation": "o1"
+        },
+        "identity_continuity": true,
+        "identity_substitution_challenges": true,
+        "ledger_effects_consistent": true,
+        "new_counterfactual_actions": true,
+        "new_resource_disputes": "a0",
+        "obligation_ownership": "a0",
+        "observer_visible_consequences": "a0",
+        "permitted_future_actions": [
+          "a0",
+          "a2"
+        ],
+        "provenance": true,
+        "relationship_authorization_challenges": true,
+        "relationship_permissions": true,
+        "resolved_chain_completeness_queries": true,
+        "resource_allocation_commitments": true,
+        "unseen_chain_completion": "o0",
+        "unseen_obligation_queries": {
+          "owner": "a0",
+          "prerequisite": null
+        }
+      },
+      "description": "Generated pair ['a0', 'a1']'s balances swapped in the residual (identity relabeling).",
+      "grades": {
+        "causal_ordering": true,
+        "causal_prerequisite_challenges": true,
+        "causal_prerequisite_last_obligation": true,
+        "deadline_behavior": true,
+        "deadline_urgency_queries": true,
+        "identity_continuity": true,
+        "identity_substitution_challenges": false,
+        "ledger_effects_consistent": true,
+        "new_counterfactual_actions": true,
+        "new_resource_disputes": true,
+        "obligation_ownership": true,
+        "observer_visible_consequences": false,
+        "permitted_future_actions": false,
+        "provenance": true,
+        "relationship_authorization_challenges": true,
+        "relationship_permissions": true,
+        "resolved_chain_completeness_queries": true,
+        "resource_allocation_commitments": true,
+        "unseen_chain_completion": true,
+        "unseen_obligation_queries": true
+      },
+      "ground_truth": {
+        "causal_ordering": false,
+        "causal_prerequisite_challenges": [
+          "o0"
+        ],
+        "causal_prerequisite_last_obligation": "o0",
+        "deadline_behavior": true,
+        "deadline_urgency_queries": {
+          "deadline": 3,
+          "obligation": "o1"
+        },
+        "identity_continuity": true,
+        "identity_substitution_challenges": false,
+        "ledger_effects_consistent": true,
+        "new_counterfactual_actions": true,
+        "new_resource_disputes": "a0",
+        "obligation_ownership": "a0",
+        "observer_visible_consequences": "a1",
+        "permitted_future_actions": [
+          "a1",
+          "a2"
+        ],
+        "provenance": true,
+        "relationship_authorization_challenges": true,
+        "relationship_permissions": true,
+        "resolved_chain_completeness_queries": true,
+        "resource_allocation_commitments": true,
+        "unseen_chain_completion": "o0",
+        "unseen_obligation_queries": {
+          "owner": "a0",
+          "prerequisite": null
+        }
+      },
+      "pass_count": 17,
+      "scoring": {
+        "additional_core_checks": {
+          "all_pass": true,
+          "pass_count": 3,
+          "total": 3
+        },
+        "delayed": {
+          "all_pass": false,
+          "pass_count": 7,
+          "total": 8
+        },
+        "required_core": {
+          "all_pass": false,
+          "pass_count": 7,
+          "total": 9
+        }
+      },
+      "total": 20
+    },
+    "stale_ledger_entry": {
+      "all_pass": false,
+      "answers": {
+        "causal_ordering": false,
+        "causal_prerequisite_challenges": [
+          "o0"
+        ],
+        "causal_prerequisite_last_obligation": "o0",
+        "deadline_behavior": true,
+        "deadline_urgency_queries": {
+          "deadline": 3,
+          "obligation": "o1"
+        },
+        "identity_continuity": true,
+        "identity_substitution_challenges": true,
+        "ledger_effects_consistent": true,
+        "new_counterfactual_actions": true,
+        "new_resource_disputes": "a0",
+        "obligation_ownership": "a0",
+        "observer_visible_consequences": "a1",
+        "permitted_future_actions": [
+          "a1",
+          "a2"
+        ],
+        "provenance": true,
+        "relationship_authorization_challenges": true,
+        "relationship_permissions": true,
+        "resolved_chain_completeness_queries": true,
+        "resource_allocation_commitments": true,
+        "unseen_chain_completion": "o0",
+        "unseen_obligation_queries": {
+          "owner": "a0",
+          "prerequisite": null
+        }
+      },
+      "description": "Ledger replaced with an empty/stale ledger from a different (earlier) point.",
+      "grades": {
+        "causal_ordering": true,
+        "causal_prerequisite_challenges": true,
+        "causal_prerequisite_last_obligation": true,
+        "deadline_behavior": true,
+        "deadline_urgency_queries": true,
+        "identity_continuity": true,
+        "identity_substitution_challenges": false,
+        "ledger_effects_consistent": true,
+        "new_counterfactual_actions": true,
+        "new_resource_disputes": true,
+        "obligation_ownership": true,
+        "observer_visible_consequences": true,
+        "permitted_future_actions": true,
+        "provenance": true,
+        "relationship_authorization_challenges": true,
+        "relationship_permissions": true,
+        "resolved_chain_completeness_queries": true,
+        "resource_allocation_commitments": true,
+        "unseen_chain_completion": true,
+        "unseen_obligation_queries": true
+      },
+      "ground_truth": {
+        "causal_ordering": false,
+        "causal_prerequisite_challenges": [
+          "o0"
+        ],
+        "causal_prerequisite_last_obligation": "o0",
+        "deadline_behavior": true,
+        "deadline_urgency_queries": {
+          "deadline": 3,
+          "obligation": "o1"
+        },
+        "identity_continuity": true,
+        "identity_substitution_challenges": false,
+        "ledger_effects_consistent": true,
+        "new_counterfactual_actions": true,
+        "new_resource_disputes": "a0",
+        "obligation_ownership": "a0",
+        "observer_visible_consequences": "a1",
+        "permitted_future_actions": [
+          "a1",
+          "a2"
+        ],
+        "provenance": true,
+        "relationship_authorization_challenges": true,
+        "relationship_permissions": true,
+        "resolved_chain_completeness_queries": true,
+        "resource_allocation_commitments": true,
+        "unseen_chain_completion": "o0",
+        "unseen_obligation_queries": {
+          "owner": "a0",
+          "prerequisite": null
+        }
+      },
+      "pass_count": 19,
+      "scoring": {
+        "additional_core_checks": {
+          "all_pass": true,
+          "pass_count": 3,
+          "total": 3
+        },
+        "delayed": {
+          "all_pass": false,
+          "pass_count": 7,
+          "total": 8
+        },
+        "required_core": {
+          "all_pass": true,
+          "pass_count": 9,
+          "total": 9
+        }
+      },
+      "total": 20
+    }
+  },
+  "core_probe_ids": [
+    "identity_continuity",
+    "obligation_ownership",
+    "relationship_permissions",
+    "causal_ordering",
+    "provenance",
+    "deadline_behavior",
+    "resource_allocation_commitments",
+    "permitted_future_actions",
+    "observer_visible_consequences",
+    "causal_prerequisite_last_obligation",
+    "unseen_chain_completion",
+    "ledger_effects_consistent"
+  ],
+  "delayed_probe_generator_hash": "ad43c01ba89f13dd5e95a35b1736e58707d32c03af2c5197a0a2e76158583feb",
+  "delayed_probe_ids": [
+    "new_counterfactual_actions",
+    "unseen_obligation_queries",
+    "new_resource_disputes",
+    "identity_substitution_challenges",
+    "causal_prerequisite_challenges",
+    "deadline_urgency_queries",
+    "relationship_authorization_challenges",
+    "resolved_chain_completeness_queries"
+  ],
+  "field_classification": {
+    "agents.*.balance": "reconstructed",
+    "agents.*.internal_seed": "intentionally_discarded",
+    "agents.*.private_trace": "intentionally_discarded",
+    "causal_order_token": "derived_through_later_execution",
+    "event_log[blocked/noop entries]": "intentionally_discarded",
+    "obligations.*.deadline": "copied",
+    "obligations.*.owner": "copied",
+    "obligations.*.provenance": "copied",
+    "obligations.*.resource": "copied",
+    "obligations.*.status": "reconstructed",
+    "obligations.*.target": "copied",
+    "provenance_digest": "derived_through_later_execution",
+    "relationships.*": "copied"
+  },
+  "leakage_audit": {
+    "clean": true,
+    "violations": []
+  },
+  "ledger_snapshot": [
+    {
+      "action": "move",
+      "actor": "a0",
+      "effect": "transferred",
+      "target": "a1",
+      "tick": 0
+    },
+    {
+      "action": "move",
+      "actor": "a1",
+      "effect": "transferred",
+      "target": "a2",
+      "tick": 1
+    },
+    {
+      "action": "resolve",
+      "actor": "a2",
+      "effect": "resolved",
+      "obligation": "o0",
+      "tick": 2
+    },
+    {
+      "action": "move",
+      "actor": "a0",
+      "effect": "transferred",
+      "target": "a1",
+      "tick": 3
+    }
+  ],
+  "main_probe_grade": {
+    "all_pass": true,
+    "answers": {
+      "causal_ordering": false,
+      "causal_prerequisite_challenges": [
+        "o0"
+      ],
+      "causal_prerequisite_last_obligation": "o0",
+      "deadline_behavior": true,
+      "deadline_urgency_queries": {
+        "deadline": 3,
+        "obligation": "o1"
+      },
+      "identity_continuity": true,
+      "identity_substitution_challenges": false,
+      "ledger_effects_consistent": true,
+      "new_counterfactual_actions": true,
+      "new_resource_disputes": "a0",
+      "obligation_ownership": "a0",
+      "observer_visible_consequences": "a1",
+      "permitted_future_actions": [
+        "a1",
+        "a2"
+      ],
+      "provenance": true,
+      "relationship_authorization_challenges": true,
+      "relationship_permissions": true,
+      "resolved_chain_completeness_queries": true,
+      "resource_allocation_commitments": true,
+      "unseen_chain_completion": "o0",
+      "unseen_obligation_queries": {
+        "owner": "a0",
+        "prerequisite": null
+      }
+    },
+    "grades": {
+      "causal_ordering": true,
+      "causal_prerequisite_challenges": true,
+      "causal_prerequisite_last_obligation": true,
+      "deadline_behavior": true,
+      "deadline_urgency_queries": true,
+      "identity_continuity": true,
+      "identity_substitution_challenges": true,
+      "ledger_effects_consistent": true,
+      "new_counterfactual_actions": true,
+      "new_resource_disputes": true,
+      "obligation_ownership": true,
+      "observer_visible_consequences": true,
+      "permitted_future_actions": true,
+      "provenance": true,
+      "relationship_authorization_challenges": true,
+      "relationship_permissions": true,
+      "resolved_chain_completeness_queries": true,
+      "resource_allocation_commitments": true,
+      "unseen_chain_completion": true,
+      "unseen_obligation_queries": true
+    },
+    "ground_truth": {
+      "causal_ordering": false,
+      "causal_prerequisite_challenges": [
+        "o0"
+      ],
+      "causal_prerequisite_last_obligation": "o0",
+      "deadline_behavior": true,
+      "deadline_urgency_queries": {
+        "deadline": 3,
+        "obligation": "o1"
+      },
+      "identity_continuity": true,
+      "identity_substitution_challenges": false,
+      "ledger_effects_consistent": true,
+      "new_counterfactual_actions": true,
+      "new_resource_disputes": "a0",
+      "obligation_ownership": "a0",
+      "observer_visible_consequences": "a1",
+      "permitted_future_actions": [
+        "a1",
+        "a2"
+      ],
+      "provenance": true,
+      "relationship_authorization_challenges": true,
+      "relationship_permissions": true,
+      "resolved_chain_completeness_queries": true,
+      "resource_allocation_commitments": true,
+      "unseen_chain_completion": "o0",
+      "unseen_obligation_queries": {
+        "owner": "a0",
+        "prerequisite": null
+      }
+    },
+    "pass_count": 20,
+    "scoring": {
+      "additional_core_checks": {
+        "all_pass": true,
+        "pass_count": 3,
+        "total": 3
+      },
+      "delayed": {
+        "all_pass": true,
+        "pass_count": 8,
+        "total": 8
+      },
+      "required_core": {
+        "all_pass": true,
+        "pass_count": 9,
+        "total": 9
+      }
+    },
+    "total": 20
+  },
+  "reference_history": [
+    "move",
+    "move",
+    "resolve",
+    "move"
+  ],
+  "residual_snapshot": {
+    "agents": {
+      "a0": {
+        "balance": 0
+      },
+      "a1": {
+        "balance": 1
+      },
+      "a2": {
+        "balance": 1
+      }
+    },
+    "causal_order_token": [
+      "o0"
+    ],
+    "obligations": {
+      "o0": {
+        "deadline": 4,
+        "owner": "a0",
+        "provenance": "genesis:0",
+        "resource": 1,
+        "status": "closed",
+        "target": "a1"
+      },
+      "o1": {
+        "deadline": 3,
+        "owner": "a1",
+        "provenance": "genesis:1",
+        "resource": 1,
+        "status": "open",
+        "target": "a2"
+      }
+    },
+    "provenance_digest": "f53d31d32c6dbfffda9a0f8f91270eceb7c4d3b9985a4ea4845dea3c27d2d81d",
+    "relationships": {
+      "a0->a1": 1,
+      "a1->a2": 1,
+      "a2->a0": 1
+    }
+  },
+  "rng_seed": 13001,
+  "semantic_contract": {
+    "causal_ordering": "an obligation can be closed only if its causal dependency is closed",
+    "obligation_ownership": "every obligation's owner/target/provenance matches genesis",
+    "observer_visible_consequence": "primary_holder is derivable and unique",
+    "permitted_future_actions": "an agent may move iff balance>0 and its ring edge exists",
+    "provenance": "every obligation carries a genesis:<i> provenance tag",
+    "relationship_permissions": "residual.relationships == the config ring exactly",
+    "resource_commitment": "sum(balances) + resolved_count == config.total_resource",
+    "stable_identity": "residual.agents keys == config.agent_ids() exactly"
+  },
+  "semantic_distinctions": {
+    "behavioral_semantic_equivalence": "Two representations answer every core and delayed probe identically, even if their raw bytes differ; evidenced by main_probe_grade / control grades in run_controls().",
+    "derivation_through_later_execution": "A field is computed by processing the ledger/residual after the dump (e.g. causal_order_token, provenance_digest); see FIELD_CLASSIFICATION entries marked 'derived_through_later_execution'.",
+    "exact_microstate_equality": "Two full ending states (private fields included) are byte-identical; evidenced by the microstate-signature hashes compared in collision_analysis().",
+    "intentionally_discarded_information": "A field is deliberately never retained in any form; see FIELD_CLASSIFICATION entries marked 'intentionally_discarded', and the microstate/residual cardinality gap in collision_analysis().",
+    "preservation_by_direct_copying": "A field's value is carried into the residual unchanged, verbatim; see FIELD_CLASSIFICATION entries marked 'copied'.",
+    "reconstruction": "A field's value is *recomputed* from the ledger via world.replay(), not copied from the true ending; see FIELD_CLASSIFICATION entries marked 'reconstructed'."
+  },
+  "status": "supported",
+  "support_checks": {
+    "expected_answers_not_directly_copied": true,
+    "leakage_audit_clean": true,
+    "main_residual_passes_all_probes": true,
+    "negative_controls_correctly_fail": true,
+    "non_injective_loss_demonstrated": true,
+    "positive_controls_pass": true
+  },
+  "world_id": "friendly"
+}

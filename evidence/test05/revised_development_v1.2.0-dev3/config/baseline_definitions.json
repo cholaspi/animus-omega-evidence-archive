@@ -1,0 +1,15 @@
+{
+  "focal_arm": "proposed_architecture_residual_plus_ledger",
+  "required_baselines": [
+    "complete_checkpointing",
+    "snapshot_plus_event_log",
+    "always_expanded_lossless",
+    "open_chain_execution",
+    "general_purpose_lossless_compression",
+    "general_purpose_lossy_compression_matched_fidelity",
+    "lossy_execution_without_ledger",
+    "no_loss_cyclic_execution",
+    "scripted_cyclic_replay",
+    "state_machine_replication"
+  ]
+}

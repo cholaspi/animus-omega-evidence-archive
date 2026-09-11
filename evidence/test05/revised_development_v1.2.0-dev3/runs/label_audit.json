@@ -1,0 +1,15 @@
+{
+  "clean": true,
+  "functions_checked": [
+    "boundary.contract_satisfied",
+    "boundary.exact_closure",
+    "boundary.execute_J",
+    "world._apply_action_effect",
+    "world.relevant_ledger",
+    "world.replay",
+    "world.return_value_of",
+    "world.run_history",
+    "world.step"
+  ],
+  "violations": []
+}

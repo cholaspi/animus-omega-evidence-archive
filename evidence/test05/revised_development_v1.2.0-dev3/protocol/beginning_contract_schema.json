@@ -1,0 +1,29 @@
+{
+  "committed_at_tick": -1,
+  "documented_full_schema_fields": [
+    "protocol_version",
+    "world_family_id",
+    "physics_configuration_hash",
+    "identity_table_commitment",
+    "relationship_schema",
+    "obligation_schema",
+    "causal_order_rules",
+    "locked_beginning_payload_schema",
+    "dump_operator",
+    "residual_schema",
+    "ledger_schema",
+    "observer_specification_hash",
+    "resource_objective_id",
+    "declared_causal_path",
+    "intentionally_discarded_fields",
+    "irrelevant_fields",
+    "frozen_semantic_probe_ids",
+    "delayed_probe_generator_hash"
+  ],
+  "immutability_mechanism": "FrozenContract (__slots__, __setattr__/__delattr__ raise TypeError); consumed flag set exactly once by execute_J",
+  "note_on_operational_scope": "FrozenContract carries exactly the two fields above, which are sufficient to drive every 05A necessity/specificity intervention arm and the contract-consumption check. The fuller field list below (protocol section 8's 'minimum contract contents') is documented for completeness and future extension; most of those fields are already implicitly fixed elsewhere in this protocol version (e.g. the world-family ID and physics-config hash are recorded per world family in physics_configuration(), the observer-spec hash in observer_specification(), the semantic-probe IDs in semantic_probe_specification()) but are not yet folded into the FrozenContract object J actually consumes. This is a declared scope limitation, not a silent gap: see the development report's Limitations section.",
+  "operationally_implemented_fields": {
+    "min_resolutions": "int; resolved_count must be >= this for contract satisfaction",
+    "total_conserved_invariant": "int; sum(balances)+resolved_count must equal this"
+  }
+}

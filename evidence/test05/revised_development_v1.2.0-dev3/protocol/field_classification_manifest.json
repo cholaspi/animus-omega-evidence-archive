@@ -1,0 +1,31 @@
+{
+  "categories": [
+    "copied",
+    "reconstructed",
+    "derived_through_later_execution",
+    "intentionally_discarded"
+  ],
+  "classification": {
+    "agents.*.balance": "reconstructed",
+    "agents.*.internal_seed": "intentionally_discarded",
+    "agents.*.private_trace": "intentionally_discarded",
+    "causal_order_token": "derived_through_later_execution",
+    "event_log[blocked/noop entries]": "intentionally_discarded",
+    "obligations.*.deadline": "copied",
+    "obligations.*.owner": "copied",
+    "obligations.*.provenance": "copied",
+    "obligations.*.resource": "copied",
+    "obligations.*.status": "reconstructed",
+    "obligations.*.target": "copied",
+    "provenance_digest": "derived_through_later_execution",
+    "relationships.*": "copied"
+  },
+  "semantic_distinctions": {
+    "behavioral_semantic_equivalence": "Two representations answer every core and delayed probe identically, even if their raw bytes differ; evidenced by main_probe_grade / control grades in run_controls().",
+    "derivation_through_later_execution": "A field is computed by processing the ledger/residual after the dump (e.g. causal_order_token, provenance_digest); see FIELD_CLASSIFICATION entries marked 'derived_through_later_execution'.",
+    "exact_microstate_equality": "Two full ending states (private fields included) are byte-identical; evidenced by the microstate-signature hashes compared in collision_analysis().",
+    "intentionally_discarded_information": "A field is deliberately never retained in any form; see FIELD_CLASSIFICATION entries marked 'intentionally_discarded', and the microstate/residual cardinality gap in collision_analysis().",
+    "preservation_by_direct_copying": "A field's value is carried into the residual unchanged, verbatim; see FIELD_CLASSIFICATION entries marked 'copied'.",
+    "reconstruction": "A field's value is *recomputed* from the ledger via world.replay(), not copied from the true ending; see FIELD_CLASSIFICATION entries marked 'reconstructed'."
+  }
+}

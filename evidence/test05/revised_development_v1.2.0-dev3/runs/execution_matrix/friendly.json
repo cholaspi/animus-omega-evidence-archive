@@ -1,0 +1,93 @@
+{
+  "all_predictions_matched": true,
+  "execution_count": 3,
+  "executions": [
+    {
+      "after_hash": "558c7035e0fde334d40978dae34e99fc979fdb42d6dbf21999ea49a0f09a6fdd",
+      "before_hash": "558c7035e0fde334d40978dae34e99fc979fdb42d6dbf21999ea49a0f09a6fdd",
+      "execution_id": "friendly-seed13001-unfaulted",
+      "family": "friendly",
+      "mutated_fields": [],
+      "mutation_id": "unfaulted",
+      "observed_failure": {
+        "all_pass": true,
+        "failing_probes": [],
+        "pass_count": 20,
+        "total": 20
+      },
+      "predicted_failure": {
+        "description": "unfaulted baseline; no mutation applied",
+        "expect_all_pass": true
+      },
+      "prediction_matched": true,
+      "reference_history": [
+        "resolve",
+        "noop_y",
+        "resolve",
+        "noop_x"
+      ],
+      "seed": 13001
+    },
+    {
+      "after_hash": "2110b8505b01946e67e2d379772b7fbcdfc8b3f92c543efa1924d2d01b3ab34a",
+      "before_hash": "2110b8505b01946e67e2d379772b7fbcdfc8b3f92c543efa1924d2d01b3ab34a",
+      "execution_id": "friendly-seed13002-unfaulted",
+      "family": "friendly",
+      "mutated_fields": [],
+      "mutation_id": "unfaulted",
+      "observed_failure": {
+        "all_pass": true,
+        "failing_probes": [],
+        "pass_count": 20,
+        "total": 20
+      },
+      "predicted_failure": {
+        "description": "unfaulted baseline; no mutation applied",
+        "expect_all_pass": true
+      },
+      "prediction_matched": true,
+      "reference_history": [
+        "resolve",
+        "noop_x",
+        "noop_x",
+        "resolve"
+      ],
+      "seed": 13002
+    },
+    {
+      "after_hash": "63bccad41aeb8bed0a109be1ba7628a2057a76ade67608fabf57b91c244867b0",
+      "before_hash": "63bccad41aeb8bed0a109be1ba7628a2057a76ade67608fabf57b91c244867b0",
+      "execution_id": "friendly-seed13003-unfaulted",
+      "family": "friendly",
+      "mutated_fields": [],
+      "mutation_id": "unfaulted",
+      "observed_failure": {
+        "all_pass": true,
+        "failing_probes": [],
+        "pass_count": 20,
+        "total": 20
+      },
+      "predicted_failure": {
+        "description": "unfaulted baseline; no mutation applied",
+        "expect_all_pass": true
+      },
+      "prediction_matched": true,
+      "reference_history": [
+        "resolve",
+        "resolve",
+        "move",
+        "noop_y"
+      ],
+      "seed": 13003
+    }
+  ],
+  "family_id": "friendly",
+  "is_adversarial": false,
+  "seeds": [
+    13001,
+    13002,
+    13003
+  ],
+  "status": "supported",
+  "unexpected_predictions": []
+}

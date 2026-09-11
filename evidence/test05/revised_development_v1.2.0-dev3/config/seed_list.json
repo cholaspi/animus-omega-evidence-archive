@@ -1,0 +1,101 @@
+{
+  "development_seeds": {
+    "adversarial": [
+      14001,
+      14002,
+      14003
+    ],
+    "friendly": [
+      13001,
+      13002,
+      13003
+    ]
+  },
+  "eligibility": {
+    "eligible": true,
+    "per_seed": {
+      "13001": {
+        "checks": {
+          "not_a_tuning_seed": true,
+          "not_in_earlier_protocol_band": true,
+          "not_reserved_confirmatory": true,
+          "not_used_by_pilot": true
+        },
+        "eligible": true,
+        "family": "friendly"
+      },
+      "13002": {
+        "checks": {
+          "not_a_tuning_seed": true,
+          "not_in_earlier_protocol_band": true,
+          "not_reserved_confirmatory": true,
+          "not_used_by_pilot": true
+        },
+        "eligible": true,
+        "family": "friendly"
+      },
+      "13003": {
+        "checks": {
+          "not_a_tuning_seed": true,
+          "not_in_earlier_protocol_band": true,
+          "not_reserved_confirmatory": true,
+          "not_used_by_pilot": true
+        },
+        "eligible": true,
+        "family": "friendly"
+      },
+      "14001": {
+        "checks": {
+          "not_a_tuning_seed": true,
+          "not_in_earlier_protocol_band": true,
+          "not_reserved_confirmatory": true,
+          "not_used_by_pilot": true
+        },
+        "eligible": true,
+        "family": "adversarial"
+      },
+      "14002": {
+        "checks": {
+          "not_a_tuning_seed": true,
+          "not_in_earlier_protocol_band": true,
+          "not_reserved_confirmatory": true,
+          "not_used_by_pilot": true
+        },
+        "eligible": true,
+        "family": "adversarial"
+      },
+      "14003": {
+        "checks": {
+          "not_a_tuning_seed": true,
+          "not_in_earlier_protocol_band": true,
+          "not_reserved_confirmatory": true,
+          "not_used_by_pilot": true
+        },
+        "eligible": true,
+        "family": "adversarial"
+      }
+    }
+  },
+  "reserved_bands": {
+    "05A": [
+      58000,
+      58020
+    ],
+    "05B": [
+      58100,
+      58120
+    ],
+    "05C": [
+      58200,
+      58220
+    ],
+    "05D": [
+      58300,
+      58320
+    ],
+    "05E": [
+      58400,
+      58420
+    ]
+  }
+}

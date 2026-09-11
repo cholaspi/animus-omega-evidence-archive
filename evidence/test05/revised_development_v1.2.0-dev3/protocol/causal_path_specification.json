@@ -1,0 +1,10 @@
+{
+  "description": "boundary.serialize_causal_path records these five stages for a history anchored at an intervention tick; boundary.diff_causal_paths compares two such records stage-by-stage so a 'relevant' intervention can be shown to actually modify executed data (sensitivity) and an 'irrelevant' one shown not to (specificity), rather than inferring this from the closure outcome alone.",
+  "stages": [
+    "intermediate_action",
+    "later_state",
+    "ending_state",
+    "return_value",
+    "reconstruction"
+  ]
+}

@@ -1,0 +1,2722 @@
+{
+  "component_summaries": {
+    "genuine_information_loss": {
+      "per_world_family": {
+        "adversarial": true,
+        "friendly": true
+      },
+      "reason": "every world family's residual has at least one collision group (two distinct admissible microstates mapping to the same residual)",
+      "status": "supported"
+    },
+    "ledger_causality": {
+      "per_family": {
+        "05A:adversarial": true,
+        "05A:friendly": true,
+        "05B:adversarial": true,
+        "05B:friendly": true
+      },
+      "reason": "removing/staling/corrupting the ledger breaks semantic probes (05B) and corrupting the ledger breaks closure (05A arm 8) in every world family",
+      "status": "supported"
+    },
+    "resource_advantage": {
+      "internal_status": "unsupported",
+      "per_world_family": {
+        "adversarial": {
+          "arms": {
+            "always_expanded_lossless": {
+              "arm_id": "always_expanded_lossless",
+              "description": "Every one of 3 regions keeps an independent full copy of state at every tick; never dumps or merges.",
+              "dump_ops": 0,
+              "merge_ops": 0,
+              "notes": "",
+              "observer_update_ops": 12,
+              "peak_canonical_bytes": 2898,
+              "reconstruction_ops": 0,
+              "resource_breakdown": {
+                "authoritative_state_bytes": 2898,
+                "checkpoint_bytes": 0,
+                "event_log_bytes": 0,
+                "index_bytes": 0,
+                "ledger_bytes": 0,
+                "lookup_table_bytes": 0,
+                "observer_buffer_bytes": 0,
+                "preprocessing_bytes": 0,
+                "reconstruction_buffer_bytes": 0,
+                "residual_bytes": 0
+              },
+              "semantic_eligible": true,
+              "semantic_grade": {
+                "note": "full state retained at all times; trivially passes every probe"
+              },
+              "sync_ops": 0,
+              "total_byte_ticks": 10104,
+              "total_operation_count": 12
+            },
+            "complete_checkpointing": {
+              "arm_id": "complete_checkpointing",
+              "description": "Full state (all private fields) serialized and retained at every tick.",
+              "dump_ops": 4,
+              "merge_ops": 0,
+              "notes": "",
+              "observer_update_ops": 4,
+              "peak_canonical_bytes": 966,
+              "reconstruction_ops": 0,
+              "resource_breakdown": {
+                "authoritative_state_bytes": 966,
+                "checkpoint_bytes": 966,
+                "event_log_bytes": 0,
+                "index_bytes": 0,
+                "ledger_bytes": 0,
+                "lookup_table_bytes": 0,
+                "observer_buffer_bytes": 0,
+                "preprocessing_bytes": 0,
+                "reconstruction_buffer_bytes": 0,
+                "residual_bytes": 0
+              },
+              "semantic_eligible": true,
+              "semantic_grade": {
+                "grades": {
+                  "causal_ordering": true,
+                  "causal_prerequisite_challenges": true,
+                  "causal_prerequisite_last_obligation": true,
+                  "deadline_behavior": true,
+                  "deadline_urgency_queries": true,
+                  "identity_continuity": true,
+                  "identity_substitution_challenges": true,
+                  "ledger_effects_consistent": true,
+                  "new_counterfactual_actions": true,
+                  "new_resource_disputes": true,
+                  "obligation_ownership": true,
+                  "observer_visible_consequences": true,
+                  "permitted_future_actions": true,
+                  "provenance": true,
+                  "relationship_authorization_challenges": true,
+                  "relationship_permissions": true,
+                  "resolved_chain_completeness_queries": true,
+                  "resource_allocation_commitments": true,
+                  "unseen_chain_completion": true,
+                  "unseen_obligation_queries": true
+                },
+                "pass_count": 20,
+                "total": 20
+              },
+              "sync_ops": 0,
+              "total_byte_ticks": 3368,
+              "total_operation_count": 8
+            },
+            "general_purpose_lossless_compression": {
+              "arm_id": "general_purpose_lossless_compression",
+              "description": "Full state zlib-compressed (level 9) and later decompressed in full.",
+              "dump_ops": 1,
+              "merge_ops": 0,
+              "notes": "",
+              "observer_update_ops": 1,
+              "peak_canonical_bytes": 367,
+              "reconstruction_ops": 1,
+              "resource_breakdown": {
+                "authoritative_state_bytes": 367,
+                "checkpoint_bytes": 0,
+                "event_log_bytes": 0,
+                "index_bytes": 0,
+                "ledger_bytes": 0,
+                "lookup_table_bytes": 0,
+                "observer_buffer_bytes": 0,
+                "preprocessing_bytes": 0,
+                "reconstruction_buffer_bytes": 966,
+                "residual_bytes": 0
+              },
+              "semantic_eligible": true,
+              "semantic_grade": {
+                "all_pass": true,
+                "answers": {
+                  "causal_ordering": true,
+                  "causal_prerequisite_challenges": [
+                    "o0"
+                  ],
+                  "causal_prerequisite_last_obligation": "o1",
+                  "deadline_behavior": true,
+                  "deadline_urgency_queries": {
+                    "deadline": 2,
+                    "obligation": "o2"
+                  },
+                  "identity_continuity": true,
+                  "identity_substitution_challenges": false,
+                  "ledger_effects_consistent": true,
+                  "new_counterfactual_actions": true,
+                  "new_resource_disputes": "a0",
+                  "obligation_ownership": "a0",
+                  "observer_visible_consequences": "a0",
+                  "permitted_future_actions": [
+                    "a0",
+                    "a2"
+                  ],
+                  "provenance": true,
+                  "relationship_authorization_challenges": true,
+                  "relationship_permissions": true,
+                  "resolved_chain_completeness_queries": true,
+                  "resource_allocation_commitments": true,
+                  "unseen_chain_completion": "o0",
+                  "unseen_obligation_queries": {
+                    "owner": "a0",
+                    "prerequisite": null
+                  }
+                },
+                "grades": {
+                  "causal_ordering": true,
+                  "causal_prerequisite_challenges": true,
+                  "causal_prerequisite_last_obligation": true,
+                  "deadline_behavior": true,
+                  "deadline_urgency_queries": true,
+                  "identity_continuity": true,
+                  "identity_substitution_challenges": true,
+                  "ledger_effects_consistent": true,
+                  "new_counterfactual_actions": true,
+                  "new_resource_disputes": true,
+                  "obligation_ownership": true,
+                  "observer_visible_consequences": true,
+                  "permitted_future_actions": true,
+                  "provenance": true,
+                  "relationship_authorization_challenges": true,
+                  "relationship_permissions": true,
+                  "resolved_chain_completeness_queries": true,
+                  "resource_allocation_commitments": true,
+                  "unseen_chain_completion": true,
+                  "unseen_obligation_queries": true
+                },
+                "ground_truth": {
+                  "causal_ordering": true,
+                  "causal_prerequisite_challenges": [
+                    "o0"
+                  ],
+                  "causal_prerequisite_last_obligation": "o1",
+                  "deadline_behavior": true,
+                  "deadline_urgency_queries": {
+                    "deadline": 2,
+                    "obligation": "o2"
+                  },
+                  "identity_continuity": true,
+                  "identity_substitution_challenges": false,
+                  "ledger_effects_consistent": true,
+                  "new_counterfactual_actions": true,
+                  "new_resource_disputes": "a0",
+                  "obligation_ownership": "a0",
+                  "observer_visible_consequences": "a0",
+                  "permitted_future_actions": [
+                    "a0",
+                    "a2"
+                  ],
+                  "provenance": true,
+                  "relationship_authorization_challenges": true,
+                  "relationship_permissions": true,
+                  "resolved_chain_completeness_queries": true,
+                  "resource_allocation_commitments": true,
+                  "unseen_chain_completion": "o0",
+                  "unseen_obligation_queries": {
+                    "owner": "a0",
+                    "prerequisite": null
+                  }
+                },
+                "pass_count": 20,
+                "scoring": {
+                  "additional_core_checks": {
+                    "all_pass": true,
+                    "pass_count": 3,
+                    "total": 3
+                  },
+                  "delayed": {
+                    "all_pass": true,
+                    "pass_count": 8,
+                    "total": 8
+                  },
+                  "required_core": {
+                    "all_pass": true,
+                    "pass_count": 9,
+                    "total": 9
+                  }
+                },
+                "total": 20
+              },
+              "sync_ops": 0,
+              "total_byte_ticks": 1468,
+              "total_operation_count": 3
+            },
+            "general_purpose_lossy_compression_matched_fidelity": {
+              "arm_id": "general_purpose_lossy_compression_matched_fidelity",
+              "description": "Residual+ledger (same content as our own architecture) generically zlib-compressed instead of kept structured.",
+              "dump_ops": 1,
+              "merge_ops": 0,
+              "notes": "",
+              "observer_update_ops": 3,
+              "peak_canonical_bytes": 338,
+              "reconstruction_ops": 1,
+              "resource_breakdown": {
+                "authoritative_state_bytes": 0,
+                "checkpoint_bytes": 0,
+                "event_log_bytes": 0,
+                "index_bytes": 0,
+                "ledger_bytes": 111,
+                "lookup_table_bytes": 0,
+                "observer_buffer_bytes": 0,
+                "preprocessing_bytes": 0,
+                "reconstruction_buffer_bytes": 815,
+                "residual_bytes": 267
+              },
+              "semantic_eligible": true,
+              "semantic_grade": {
+                "all_pass": true,
+                "answers": {
+                  "causal_ordering": true,
+                  "causal_prerequisite_challenges": [
+                    "o0"
+                  ],
+                  "causal_prerequisite_last_obligation": "o1",
+                  "deadline_behavior": true,
+                  "deadline_urgency_queries": {
+                    "deadline": 2,
+                    "obligation": "o2"
+                  },
+                  "identity_continuity": true,
+                  "identity_substitution_challenges": false,
+                  "ledger_effects_consistent": true,
+                  "new_counterfactual_actions": true,
+                  "new_resource_disputes": "a0",
+                  "obligation_ownership": "a0",
+                  "observer_visible_consequences": "a0",
+                  "permitted_future_actions": [
+                    "a0",
+                    "a2"
+                  ],
+                  "provenance": true,
+                  "relationship_authorization_challenges": true,
+                  "relationship_permissions": true,
+                  "resolved_chain_completeness_queries": true,
+                  "resource_allocation_commitments": true,
+                  "unseen_chain_completion": "o0",
+                  "unseen_obligation_queries": {
+                    "owner": "a0",
+                    "prerequisite": null
+                  }
+                },
+                "grades": {
+                  "causal_ordering": true,
+                  "causal_prerequisite_challenges": true,
+                  "causal_prerequisite_last_obligation": true,
+                  "deadline_behavior": true,
+                  "deadline_urgency_queries": true,
+                  "identity_continuity": true,
+                  "identity_substitution_challenges": true,
+                  "ledger_effects_consistent": true,
+                  "new_counterfactual_actions": true,
+                  "new_resource_disputes": true,
+                  "obligation_ownership": true,
+                  "observer_visible_consequences": true,
+                  "permitted_future_actions": true,
+                  "provenance": true,
+                  "relationship_authorization_challenges": true,
+                  "relationship_permissions": true,
+                  "resolved_chain_completeness_queries": true,
+                  "resource_allocation_commitments": true,
+                  "unseen_chain_completion": true,
+                  "unseen_obligation_queries": true
+                },
+                "ground_truth": {
+                  "causal_ordering": true,
+                  "causal_prerequisite_challenges": [
+                    "o0"
+                  ],
+                  "causal_prerequisite_last_obligation": "o1",
+                  "deadline_behavior": true,
+                  "deadline_urgency_queries": {
+                    "deadline": 2,
+                    "obligation": "o2"
+                  },
+                  "identity_continuity": true,
+                  "identity_substitution_challenges": false,
+                  "ledger_effects_consistent": true,
+                  "new_counterfactual_actions": true,
+                  "new_resource_disputes": "a0",
+                  "obligation_ownership": "a0",
+                  "observer_visible_consequences": "a0",
+                  "permitted_future_actions": [
+                    "a0",
+                    "a2"
+                  ],
+                  "provenance": true,
+                  "relationship_authorization_challenges": true,
+                  "relationship_permissions": true,
+                  "resolved_chain_completeness_queries": true,
+                  "resource_allocation_commitments": true,
+                  "unseen_chain_completion": "o0",
+                  "unseen_obligation_queries": {
+                    "owner": "a0",
+                    "prerequisite": null
+                  }
+                },
+                "pass_count": 20,
+                "scoring": {
+                  "additional_core_checks": {
+                    "all_pass": true,
+                    "pass_count": 3,
+                    "total": 3
+                  },
+                  "delayed": {
+                    "all_pass": true,
+                    "pass_count": 8,
+                    "total": 8
+                  },
+                  "required_core": {
+                    "all_pass": true,
+                    "pass_count": 9,
+                    "total": 9
+                  }
+                },
+                "total": 20
+              },
+              "sync_ops": 0,
+              "total_byte_ticks": 1352,
+              "total_operation_count": 5
+            },
+            "lossy_execution_without_ledger": {
+              "arm_id": "lossy_execution_without_ledger",
+              "description": "The same residual as our architecture, but with the narrative ledger discarded entirely.",
+              "dump_ops": 1,
+              "merge_ops": 0,
+              "notes": "",
+              "observer_update_ops": 0,
+              "peak_canonical_bytes": 556,
+              "reconstruction_ops": 0,
+              "resource_breakdown": {
+                "authoritative_state_bytes": 0,
+                "checkpoint_bytes": 0,
+                "event_log_bytes": 0,
+                "index_bytes": 0,
+                "ledger_bytes": 0,
+                "lookup_table_bytes": 0,
+                "observer_buffer_bytes": 0,
+                "preprocessing_bytes": 0,
+                "reconstruction_buffer_bytes": 0,
+                "residual_bytes": 556
+              },
+              "semantic_eligible": false,
+              "semantic_grade": {
+                "all_pass": false,
+                "answers": {
+                  "causal_ordering": true,
+                  "causal_prerequisite_challenges": [
+                    "o0"
+                  ],
+                  "causal_prerequisite_last_obligation": "o1",
+                  "deadline_behavior": true,
+                  "deadline_urgency_queries": {
+                    "deadline": 2,
+                    "obligation": "o2"
+                  },
+                  "identity_continuity": true,
+                  "identity_substitution_challenges": true,
+                  "ledger_effects_consistent": true,
+                  "new_counterfactual_actions": true,
+                  "new_resource_disputes": "a0",
+                  "obligation_ownership": "a0",
+                  "observer_visible_consequences": "a0",
+                  "permitted_future_actions": [
+                    "a0",
+                    "a2"
+                  ],
+                  "provenance": true,
+                  "relationship_authorization_challenges": true,
+                  "relationship_permissions": true,
+                  "resolved_chain_completeness_queries": true,
+                  "resource_allocation_commitments": true,
+                  "unseen_chain_completion": "o0",
+                  "unseen_obligation_queries": {
+                    "owner": "a0",
+                    "prerequisite": null
+                  }
+                },
+                "grades": {
+                  "causal_ordering": true,
+                  "causal_prerequisite_challenges": true,
+                  "causal_prerequisite_last_obligation": true,
+                  "deadline_behavior": true,
+                  "deadline_urgency_queries": true,
+                  "identity_continuity": true,
+                  "identity_substitution_challenges": false,
+                  "ledger_effects_consistent": true,
+                  "new_counterfactual_actions": true,
+                  "new_resource_disputes": true,
+                  "obligation_ownership": true,
+                  "observer_visible_consequences": true,
+                  "permitted_future_actions": true,
+                  "provenance": true,
+                  "relationship_authorization_challenges": true,
+                  "relationship_permissions": true,
+                  "resolved_chain_completeness_queries": true,
+                  "resource_allocation_commitments": true,
+                  "unseen_chain_completion": true,
+                  "unseen_obligation_queries": true
+                },
+                "ground_truth": {
+                  "causal_ordering": true,
+                  "causal_prerequisite_challenges": [
+                    "o0"
+                  ],
+                  "causal_prerequisite_last_obligation": "o1",
+                  "deadline_behavior": true,
+                  "deadline_urgency_queries": {
+                    "deadline": 2,
+                    "obligation": "o2"
+                  },
+                  "identity_continuity": true,
+                  "identity_substitution_challenges": false,
+                  "ledger_effects_consistent": true,
+                  "new_counterfactual_actions": true,
+                  "new_resource_disputes": "a0",
+                  "obligation_ownership": "a0",
+                  "observer_visible_consequences": "a0",
+                  "permitted_future_actions": [
+                    "a0",
+                    "a2"
+                  ],
+                  "provenance": true,
+                  "relationship_authorization_challenges": true,
+                  "relationship_permissions": true,
+                  "resolved_chain_completeness_queries": true,
+                  "resource_allocation_commitments": true,
+                  "unseen_chain_completion": "o0",
+                  "unseen_obligation_queries": {
+                    "owner": "a0",
+                    "prerequisite": null
+                  }
+                },
+                "pass_count": 19,
+                "scoring": {
+                  "additional_core_checks": {
+                    "all_pass": true,
+                    "pass_count": 3,
+                    "total": 3
+                  },
+                  "delayed": {
+                    "all_pass": false,
+                    "pass_count": 7,
+                    "total": 8
+                  },
+                  "required_core": {
+                    "all_pass": true,
+                    "pass_count": 9,
+                    "total": 9
+                  }
+                },
+                "total": 20
+              },
+              "sync_ops": 0,
+              "total_byte_ticks": 556,
+              "total_operation_count": 1
+            },
+            "no_loss_cyclic_execution": {
+              "arm_id": "no_loss_cyclic_execution",
+              "description": "A single full copy of state is kept live at every tick; nothing is ever dumped or discarded.",
+              "dump_ops": 0,
+              "merge_ops": 0,
+              "notes": "",
+              "observer_update_ops": 4,
+              "peak_canonical_bytes": 966,
+              "reconstruction_ops": 0,
+              "resource_breakdown": {
+                "authoritative_state_bytes": 966,
+                "checkpoint_bytes": 0,
+                "event_log_bytes": 0,
+                "index_bytes": 0,
+                "ledger_bytes": 0,
+                "lookup_table_bytes": 0,
+                "observer_buffer_bytes": 0,
+                "preprocessing_bytes": 0,
+                "reconstruction_buffer_bytes": 0,
+                "residual_bytes": 0
+              },
+              "semantic_eligible": true,
+              "semantic_grade": {
+                "note": "full state retained at all times; trivially passes every probe"
+              },
+              "sync_ops": 0,
+              "total_byte_ticks": 3368,
+              "total_operation_count": 4
+            },
+            "open_chain_execution": {
+              "arm_id": "open_chain_execution",
+              "description": "Only the final public state is retained; no ledger, no boundary transition, no narrative continuity.",
+              "dump_ops": 1,
+              "merge_ops": 0,
+              "notes": "Test 05A arm 11 control: no return transition executed.",
+              "observer_update_ops": 1,
+              "peak_canonical_bytes": 441,
+              "reconstruction_ops": 0,
+              "resource_breakdown": {
+                "authoritative_state_bytes": 441,
+                "checkpoint_bytes": 0,
+                "event_log_bytes": 0,
+                "index_bytes": 0,
+                "ledger_bytes": 0,
+                "lookup_table_bytes": 0,
+                "observer_buffer_bytes": 0,
+                "preprocessing_bytes": 0,
+                "reconstruction_buffer_bytes": 0,
+                "residual_bytes": 0
+              },
+              "semantic_eligible": false,
+              "semantic_grade": {
+                "all_pass": false,
+                "answers": {
+                  "causal_ordering": true,
+                  "causal_prerequisite_challenges": [
+                    "o0"
+                  ],
+                  "causal_prerequisite_last_obligation": "o1",
+                  "deadline_behavior": true,
+                  "deadline_urgency_queries": {
+                    "deadline": 2,
+                    "obligation": "o2"
+                  },
+                  "identity_continuity": true,
+                  "identity_substitution_challenges": true,
+                  "ledger_effects_consistent": true,
+                  "new_counterfactual_actions": true,
+                  "new_resource_disputes": "a0",
+                  "obligation_ownership": "a0",
+                  "observer_visible_consequences": "a0",
+                  "permitted_future_actions": [
+                    "a0",
+                    "a2"
+                  ],
+                  "provenance": true,
+                  "relationship_authorization_challenges": true,
+                  "relationship_permissions": true,
+                  "resolved_chain_completeness_queries": true,
+                  "resource_allocation_commitments": false,
+                  "unseen_chain_completion": null,
+                  "unseen_obligation_queries": {
+                    "owner": "a2",
+                    "prerequisite": "o1"
+                  }
+                },
+                "grades": {
+                  "causal_ordering": true,
+                  "causal_prerequisite_challenges": true,
+                  "causal_prerequisite_last_obligation": true,
+                  "deadline_behavior": true,
+                  "deadline_urgency_queries": true,
+                  "identity_continuity": true,
+                  "identity_substitution_challenges": false,
+                  "ledger_effects_consistent": true,
+                  "new_counterfactual_actions": true,
+                  "new_resource_disputes": true,
+                  "obligation_ownership": true,
+                  "observer_visible_consequences": true,
+                  "permitted_future_actions": true,
+                  "provenance": true,
+                  "relationship_authorization_challenges": true,
+                  "relationship_permissions": true,
+                  "resolved_chain_completeness_queries": true,
+                  "resource_allocation_commitments": false,
+                  "unseen_chain_completion": false,
+                  "unseen_obligation_queries": false
+                },
+                "ground_truth": {
+                  "causal_ordering": true,
+                  "causal_prerequisite_challenges": [
+                    "o0"
+                  ],
+                  "causal_prerequisite_last_obligation": "o1",
+                  "deadline_behavior": true,
+                  "deadline_urgency_queries": {
+                    "deadline": 2,
+                    "obligation": "o2"
+                  },
+                  "identity_continuity": true,
+                  "identity_substitution_challenges": false,
+                  "ledger_effects_consistent": true,
+                  "new_counterfactual_actions": true,
+                  "new_resource_disputes": "a0",
+                  "obligation_ownership": "a0",
+                  "observer_visible_consequences": "a0",
+                  "permitted_future_actions": [
+                    "a0",
+                    "a2"
+                  ],
+                  "provenance": true,
+                  "relationship_authorization_challenges": true,
+                  "relationship_permissions": true,
+                  "resolved_chain_completeness_queries": true,
+                  "resource_allocation_commitments": true,
+                  "unseen_chain_completion": "o0",
+                  "unseen_obligation_queries": {
+                    "owner": "a0",
+                    "prerequisite": null
+                  }
+                },
+                "pass_count": 16,
+                "scoring": {
+                  "additional_core_checks": {
+                    "all_pass": false,
+                    "pass_count": 2,
+                    "total": 3
+                  },
+                  "delayed": {
+                    "all_pass": false,
+                    "pass_count": 6,
+                    "total": 8
+                  },
+                  "required_core": {
+                    "all_pass": false,
+                    "pass_count": 8,
+                    "total": 9
+                  }
+                },
+                "total": 20
+              },
+              "sync_ops": 0,
+              "total_byte_ticks": 441,
+              "total_operation_count": 2
+            },
+            "proposed_architecture_residual_plus_ledger": {
+              "arm_id": "proposed_architecture_residual_plus_ledger",
+              "description": "The architecture under test: reconstructed residual + narrative ledger, one boundary transition.",
+              "dump_ops": 1,
+              "merge_ops": 1,
+              "notes": "",
+              "observer_update_ops": 3,
+              "peak_canonical_bytes": 792,
+              "reconstruction_ops": 1,
+              "resource_breakdown": {
+                "authoritative_state_bytes": 0,
+                "checkpoint_bytes": 0,
+                "event_log_bytes": 0,
+                "index_bytes": 0,
+                "ledger_bytes": 236,
+                "lookup_table_bytes": 0,
+                "observer_buffer_bytes": 0,
+                "preprocessing_bytes": 0,
+                "reconstruction_buffer_bytes": 0,
+                "residual_bytes": 556
+              },
+              "semantic_eligible": true,
+              "semantic_grade": {
+                "all_pass": true,
+                "answers": {
+                  "causal_ordering": true,
+                  "causal_prerequisite_challenges": [
+                    "o0"
+                  ],
+                  "causal_prerequisite_last_obligation": "o1",
+                  "deadline_behavior": true,
+                  "deadline_urgency_queries": {
+                    "deadline": 2,
+                    "obligation": "o2"
+                  },
+                  "identity_continuity": true,
+                  "identity_substitution_challenges": false,
+                  "ledger_effects_consistent": true,
+                  "new_counterfactual_actions": true,
+                  "new_resource_disputes": "a0",
+                  "obligation_ownership": "a0",
+                  "observer_visible_consequences": "a0",
+                  "permitted_future_actions": [
+                    "a0",
+                    "a2"
+                  ],
+                  "provenance": true,
+                  "relationship_authorization_challenges": true,
+                  "relationship_permissions": true,
+                  "resolved_chain_completeness_queries": true,
+                  "resource_allocation_commitments": true,
+                  "unseen_chain_completion": "o0",
+                  "unseen_obligation_queries": {
+                    "owner": "a0",
+                    "prerequisite": null
+                  }
+                },
+                "grades": {
+                  "causal_ordering": true,
+                  "causal_prerequisite_challenges": true,
+                  "causal_prerequisite_last_obligation": true,
+                  "deadline_behavior": true,
+                  "deadline_urgency_queries": true,
+                  "identity_continuity": true,
+                  "identity_substitution_challenges": true,
+                  "ledger_effects_consistent": true,
+                  "new_counterfactual_actions": true,
+                  "new_resource_disputes": true,
+                  "obligation_ownership": true,
+                  "observer_visible_consequences": true,
+                  "permitted_future_actions": true,
+                  "provenance": true,
+                  "relationship_authorization_challenges": true,
+                  "relationship_permissions": true,
+                  "resolved_chain_completeness_queries": true,
+                  "resource_allocation_commitments": true,
+                  "unseen_chain_completion": true,
+                  "unseen_obligation_queries": true
+                },
+                "ground_truth": {
+                  "causal_ordering": true,
+                  "causal_prerequisite_challenges": [
+                    "o0"
+                  ],
+                  "causal_prerequisite_last_obligation": "o1",
+                  "deadline_behavior": true,
+                  "deadline_urgency_queries": {
+                    "deadline": 2,
+                    "obligation": "o2"
+                  },
+                  "identity_continuity": true,
+                  "identity_substitution_challenges": false,
+                  "ledger_effects_consistent": true,
+                  "new_counterfactual_actions": true,
+                  "new_resource_disputes": "a0",
+                  "obligation_ownership": "a0",
+                  "observer_visible_consequences": "a0",
+                  "permitted_future_actions": [
+                    "a0",
+                    "a2"
+                  ],
+                  "provenance": true,
+                  "relationship_authorization_challenges": true,
+                  "relationship_permissions": true,
+                  "resolved_chain_completeness_queries": true,
+                  "resource_allocation_commitments": true,
+                  "unseen_chain_completion": "o0",
+                  "unseen_obligation_queries": {
+                    "owner": "a0",
+                    "prerequisite": null
+                  }
+                },
+                "pass_count": 20,
+                "scoring": {
+                  "additional_core_checks": {
+                    "all_pass": true,
+                    "pass_count": 3,
+                    "total": 3
+                  },
+                  "delayed": {
+                    "all_pass": true,
+                    "pass_count": 8,
+                    "total": 8
+                  },
+                  "required_core": {
+                    "all_pass": true,
+                    "pass_count": 9,
+                    "total": 9
+                  }
+                },
+                "total": 20
+              },
+              "sync_ops": 0,
+              "total_byte_ticks": 1180,
+              "total_operation_count": 6
+            },
+            "scripted_cyclic_replay": {
+              "arm_id": "scripted_cyclic_replay",
+              "description": "Only the exact action-symbol script is stored; the full history is re-executed from scratch to reconstruct state.",
+              "dump_ops": 1,
+              "merge_ops": 0,
+              "notes": "Passes fidelity trivially because it is exempt from the loss requirement entirely (it stores the exact script, not a lossy summary): this is not an apples-to-apples comparison with the lossy arms, and this arm cannot reconstruct a history it was not given the exact script for.",
+              "observer_update_ops": 0,
+              "peak_canonical_bytes": 34,
+              "reconstruction_ops": 4,
+              "resource_breakdown": {
+                "authoritative_state_bytes": 0,
+                "checkpoint_bytes": 0,
+                "event_log_bytes": 0,
+                "index_bytes": 0,
+                "ledger_bytes": 0,
+                "lookup_table_bytes": 0,
+                "observer_buffer_bytes": 0,
+                "preprocessing_bytes": 34,
+                "reconstruction_buffer_bytes": 0,
+                "residual_bytes": 0
+              },
+              "semantic_eligible": true,
+              "semantic_grade": {
+                "all_pass": true,
+                "answers": {
+                  "causal_ordering": true,
+                  "causal_prerequisite_challenges": [
+                    "o0"
+                  ],
+                  "causal_prerequisite_last_obligation": "o1",
+                  "deadline_behavior": true,
+                  "deadline_urgency_queries": {
+                    "deadline": 2,
+                    "obligation": "o2"
+                  },
+                  "identity_continuity": true,
+                  "identity_substitution_challenges": false,
+                  "ledger_effects_consistent": true,
+                  "new_counterfactual_actions": true,
+                  "new_resource_disputes": "a0",
+                  "obligation_ownership": "a0",
+                  "observer_visible_consequences": "a0",
+                  "permitted_future_actions": [
+                    "a0",
+                    "a2"
+                  ],
+                  "provenance": true,
+                  "relationship_authorization_challenges": true,
+                  "relationship_permissions": true,
+                  "resolved_chain_completeness_queries": true,
+                  "resource_allocation_commitments": true,
+                  "unseen_chain_completion": "o0",
+                  "unseen_obligation_queries": {
+                    "owner": "a0",
+                    "prerequisite": null
+                  }
+                },
+                "grades": {
+                  "causal_ordering": true,
+                  "causal_prerequisite_challenges": true,
+                  "causal_prerequisite_last_obligation": true,
+                  "deadline_behavior": true,
+                  "deadline_urgency_queries": true,
+                  "identity_continuity": true,
+                  "identity_substitution_challenges": true,
+                  "ledger_effects_consistent": true,
+                  "new_counterfactual_actions": true,
+                  "new_resource_disputes": true,
+                  "obligation_ownership": true,
+                  "observer_visible_consequences": true,
+                  "permitted_future_actions": true,
+                  "provenance": true,
+                  "relationship_authorization_challenges": true,
+                  "relationship_permissions": true,
+                  "resolved_chain_completeness_queries": true,
+                  "resource_allocation_commitments": true,
+                  "unseen_chain_completion": true,
+                  "unseen_obligation_queries": true
+                },
+                "ground_truth": {
+                  "causal_ordering": true,
+                  "causal_prerequisite_challenges": [
+                    "o0"
+                  ],
+                  "causal_prerequisite_last_obligation": "o1",
+                  "deadline_behavior": true,
+                  "deadline_urgency_queries": {
+                    "deadline": 2,
+                    "obligation": "o2"
+                  },
+                  "identity_continuity": true,
+                  "identity_substitution_challenges": false,
+                  "ledger_effects_consistent": true,
+                  "new_counterfactual_actions": true,
+                  "new_resource_disputes": "a0",
+                  "obligation_ownership": "a0",
+                  "observer_visible_consequences": "a0",
+                  "permitted_future_actions": [
+                    "a0",
+                    "a2"
+                  ],
+                  "provenance": true,
+                  "relationship_authorization_challenges": true,
+                  "relationship_permissions": true,
+                  "resolved_chain_completeness_queries": true,
+                  "resource_allocation_commitments": true,
+                  "unseen_chain_completion": "o0",
+                  "unseen_obligation_queries": {
+                    "owner": "a0",
+                    "prerequisite": null
+                  }
+                },
+                "pass_count": 20,
+                "scoring": {
+                  "additional_core_checks": {
+                    "all_pass": true,
+                    "pass_count": 3,
+                    "total": 3
+                  },
+                  "delayed": {
+                    "all_pass": true,
+                    "pass_count": 8,
+                    "total": 8
+                  },
+                  "required_core": {
+                    "all_pass": true,
+                    "pass_count": 9,
+                    "total": 9
+                  }
+                },
+                "total": 20
+              },
+              "sync_ops": 0,
+              "total_byte_ticks": 136,
+              "total_operation_count": 5
+            },
+            "snapshot_plus_event_log": {
+              "arm_id": "snapshot_plus_event_log",
+              "description": "One genesis snapshot plus the full (unfiltered) growing event log; replayed once at the end.",
+              "dump_ops": 5,
+              "merge_ops": 0,
+              "notes": "",
+              "observer_update_ops": 4,
+              "peak_canonical_bytes": 955,
+              "reconstruction_ops": 1,
+              "resource_breakdown": {
+                "authoritative_state_bytes": 0,
+                "checkpoint_bytes": 645,
+                "event_log_bytes": 310,
+                "index_bytes": 0,
+                "ledger_bytes": 0,
+                "lookup_table_bytes": 0,
+                "observer_buffer_bytes": 0,
+                "preprocessing_bytes": 0,
+                "reconstruction_buffer_bytes": 0,
+                "residual_bytes": 0
+              },
+              "semantic_eligible": true,
+              "semantic_grade": {
+                "all_pass": true,
+                "answers": {
+                  "causal_ordering": true,
+                  "causal_prerequisite_challenges": [
+                    "o0"
+                  ],
+                  "causal_prerequisite_last_obligation": "o1",
+                  "deadline_behavior": true,
+                  "deadline_urgency_queries": {
+                    "deadline": 2,
+                    "obligation": "o2"
+                  },
+                  "identity_continuity": true,
+                  "identity_substitution_challenges": false,
+                  "ledger_effects_consistent": true,
+                  "new_counterfactual_actions": true,
+                  "new_resource_disputes": "a0",
+                  "obligation_ownership": "a0",
+                  "observer_visible_consequences": "a0",
+                  "permitted_future_actions": [
+                    "a0",
+                    "a2"
+                  ],
+                  "provenance": true,
+                  "relationship_authorization_challenges": true,
+                  "relationship_permissions": true,
+                  "resolved_chain_completeness_queries": true,
+                  "resource_allocation_commitments": true,
+                  "unseen_chain_completion": "o0",
+                  "unseen_obligation_queries": {
+                    "owner": "a0",
+                    "prerequisite": null
+                  }
+                },
+                "grades": {
+                  "causal_ordering": true,
+                  "causal_prerequisite_challenges": true,
+                  "causal_prerequisite_last_obligation": true,
+                  "deadline_behavior": true,
+                  "deadline_urgency_queries": true,
+                  "identity_continuity": true,
+                  "identity_substitution_challenges": true,
+                  "ledger_effects_consistent": true,
+                  "new_counterfactual_actions": true,
+                  "new_resource_disputes": true,
+                  "obligation_ownership": true,
+                  "observer_visible_consequences": true,
+                  "permitted_future_actions": true,
+                  "provenance": true,
+                  "relationship_authorization_challenges": true,
+                  "relationship_permissions": true,
+                  "resolved_chain_completeness_queries": true,
+                  "resource_allocation_commitments": true,
+                  "unseen_chain_completion": true,
+                  "unseen_obligation_queries": true
+                },
+                "ground_truth": {
+                  "causal_ordering": true,
+                  "causal_prerequisite_challenges": [
+                    "o0"
+                  ],
+                  "causal_prerequisite_last_obligation": "o1",
+                  "deadline_behavior": true,
+                  "deadline_urgency_queries": {
+                    "deadline": 2,
+                    "obligation": "o2"
+                  },
+                  "identity_continuity": true,
+                  "identity_substitution_challenges": false,
+                  "ledger_effects_consistent": true,
+                  "new_counterfactual_actions": true,
+                  "new_resource_disputes": "a0",
+                  "obligation_ownership": "a0",
+                  "observer_visible_consequences": "a0",
+                  "permitted_future_actions": [
+                    "a0",
+                    "a2"
+                  ],
+                  "provenance": true,
+                  "relationship_authorization_challenges": true,
+                  "relationship_permissions": true,
+                  "resolved_chain_completeness_queries": true,
+                  "resource_allocation_commitments": true,
+                  "unseen_chain_completion": "o0",
+                  "unseen_obligation_queries": {
+                    "owner": "a0",
+                    "prerequisite": null
+                  }
+                },
+                "pass_count": 20,
+                "scoring": {
+                  "additional_core_checks": {
+                    "all_pass": true,
+                    "pass_count": 3,
+                    "total": 3
+                  },
+                  "delayed": {
+                    "all_pass": true,
+                    "pass_count": 8,
+                    "total": 8
+                  },
+                  "required_core": {
+                    "all_pass": true,
+                    "pass_count": 9,
+                    "total": 9
+                  }
+                },
+                "total": 20
+              },
+              "sync_ops": 0,
+              "total_byte_ticks": 3352,
+              "total_operation_count": 10
+            },
+            "state_machine_replication": {
+              "arm_id": "state_machine_replication",
+              "description": "3 replicas of the residual, synchronized once per tick.",
+              "dump_ops": 1,
+              "merge_ops": 0,
+              "notes": "",
+              "observer_update_ops": 3,
+              "peak_canonical_bytes": 1668,
+              "reconstruction_ops": 0,
+              "resource_breakdown": {
+                "authoritative_state_bytes": 0,
+                "checkpoint_bytes": 0,
+                "event_log_bytes": 0,
+                "index_bytes": 0,
+                "ledger_bytes": 0,
+                "lookup_table_bytes": 0,
+                "observer_buffer_bytes": 0,
+                "preprocessing_bytes": 0,
+                "reconstruction_buffer_bytes": 0,
+                "residual_bytes": 1668
+              },
+              "semantic_eligible": true,
+              "semantic_grade": {
+                "all_pass": true,
+                "answers": {
+                  "causal_ordering": true,
+                  "causal_prerequisite_challenges": [
+                    "o0"
+                  ],
+                  "causal_prerequisite_last_obligation": "o1",
+                  "deadline_behavior": true,
+                  "deadline_urgency_queries": {
+                    "deadline": 2,
+                    "obligation": "o2"
+                  },
+                  "identity_continuity": true,
+                  "identity_substitution_challenges": false,
+                  "ledger_effects_consistent": true,
+                  "new_counterfactual_actions": true,
+                  "new_resource_disputes": "a0",
+                  "obligation_ownership": "a0",
+                  "observer_visible_consequences": "a0",
+                  "permitted_future_actions": [
+                    "a0",
+                    "a2"
+                  ],
+                  "provenance": true,
+                  "relationship_authorization_challenges": true,
+                  "relationship_permissions": true,
+                  "resolved_chain_completeness_queries": true,
+                  "resource_allocation_commitments": true,
+                  "unseen_chain_completion": "o0",
+                  "unseen_obligation_queries": {
+                    "owner": "a0",
+                    "prerequisite": null
+                  }
+                },
+                "grades": {
+                  "causal_ordering": true,
+                  "causal_prerequisite_challenges": true,
+                  "causal_prerequisite_last_obligation": true,
+                  "deadline_behavior": true,
+                  "deadline_urgency_queries": true,
+                  "identity_continuity": true,
+                  "identity_substitution_challenges": true,
+                  "ledger_effects_consistent": true,
+                  "new_counterfactual_actions": true,
+                  "new_resource_disputes": true,
+                  "obligation_ownership": true,
+                  "observer_visible_consequences": true,
+                  "permitted_future_actions": true,
+                  "provenance": true,
+                  "relationship_authorization_challenges": true,
+                  "relationship_permissions": true,
+                  "resolved_chain_completeness_queries": true,
+                  "resource_allocation_commitments": true,
+                  "unseen_chain_completion": true,
+                  "unseen_obligation_queries": true
+                },
+                "ground_truth": {
+                  "causal_ordering": true,
+                  "causal_prerequisite_challenges": [
+                    "o0"
+                  ],
+                  "causal_prerequisite_last_obligation": "o1",
+                  "deadline_behavior": true,
+                  "deadline_urgency_queries": {
+                    "deadline": 2,
+                    "obligation": "o2"
+                  },
+                  "identity_continuity": true,
+                  "identity_substitution_challenges": false,
+                  "ledger_effects_consistent": true,
+                  "new_counterfactual_actions": true,
+                  "new_resource_disputes": "a0",
+                  "obligation_ownership": "a0",
+                  "observer_visible_consequences": "a0",
+                  "permitted_future_actions": [
+                    "a0",
+                    "a2"
+                  ],
+                  "provenance": true,
+                  "relationship_authorization_challenges": true,
+                  "relationship_permissions": true,
+                  "resolved_chain_completeness_queries": true,
+                  "resource_allocation_commitments": true,
+                  "unseen_chain_completion": "o0",
+                  "unseen_obligation_queries": {
+                    "owner": "a0",
+                    "prerequisite": null
+                  }
+                },
+                "pass_count": 20,
+                "scoring": {
+                  "additional_core_checks": {
+                    "all_pass": true,
+                    "pass_count": 3,
+                    "total": 3
+                  },
+                  "delayed": {
+                    "all_pass": true,
+                    "pass_count": 8,
+                    "total": 8
+                  },
+                  "required_core": {
+                    "all_pass": true,
+                    "pass_count": 9,
+                    "total": 9
+                  }
+                },
+                "total": 20
+              },
+              "sync_ops": 4,
+              "total_byte_ticks": 6672,
+              "total_operation_count": 8
+            }
+          },
+          "pareto": {
+            "comparisons_vs_focal": {
+              "always_expanded_lossless": {
+                "diagnostic_op_count_ratio_focal_over_baseline": 0.5,
+                "focal_fewer_ops": true,
+                "focal_smaller_byte_ticks": true,
+                "focal_smaller_peak_bytes": true,
+                "primary_peak_bytes_ratio_focal_over_baseline": 0.273292,
+                "secondary_byte_ticks_ratio_focal_over_baseline": 0.116785
+              },
+              "complete_checkpointing": {
+                "diagnostic_op_count_ratio_focal_over_baseline": 0.75,
+                "focal_fewer_ops": true,
+                "focal_smaller_byte_ticks": true,
+                "focal_smaller_peak_bytes": true,
+                "primary_peak_bytes_ratio_focal_over_baseline": 0.819876,
+                "secondary_byte_ticks_ratio_focal_over_baseline": 0.350356
+              },
+              "general_purpose_lossless_compression": {
+                "diagnostic_op_count_ratio_focal_over_baseline": 2.0,
+                "focal_fewer_ops": false,
+                "focal_smaller_byte_ticks": true,
+                "focal_smaller_peak_bytes": false,
+                "primary_peak_bytes_ratio_focal_over_baseline": 2.158038,
+                "secondary_byte_ticks_ratio_focal_over_baseline": 0.803815
+              },
+              "general_purpose_lossy_compression_matched_fidelity": {
+                "diagnostic_op_count_ratio_focal_over_baseline": 1.2,
+                "focal_fewer_ops": false,
+                "focal_smaller_byte_ticks": true,
+                "focal_smaller_peak_bytes": false,
+                "primary_peak_bytes_ratio_focal_over_baseline": 2.343195,
+                "secondary_byte_ticks_ratio_focal_over_baseline": 0.872781
+              },
+              "no_loss_cyclic_execution": {
+                "diagnostic_op_count_ratio_focal_over_baseline": 1.5,
+                "focal_fewer_ops": false,
+                "focal_smaller_byte_ticks": true,
+                "focal_smaller_peak_bytes": true,
+                "primary_peak_bytes_ratio_focal_over_baseline": 0.819876,
+                "secondary_byte_ticks_ratio_focal_over_baseline": 0.350356
+              },
+              "scripted_cyclic_replay": {
+                "diagnostic_op_count_ratio_focal_over_baseline": 1.2,
+                "focal_fewer_ops": false,
+                "focal_smaller_byte_ticks": false,
+                "focal_smaller_peak_bytes": false,
+                "primary_peak_bytes_ratio_focal_over_baseline": 23.294118,
+                "secondary_byte_ticks_ratio_focal_over_baseline": 8.676471
+              },
+              "snapshot_plus_event_log": {
+                "diagnostic_op_count_ratio_focal_over_baseline": 0.6,
+                "focal_fewer_ops": true,
+                "focal_smaller_byte_ticks": true,
+                "focal_smaller_peak_bytes": true,
+                "primary_peak_bytes_ratio_focal_over_baseline": 0.829319,
+                "secondary_byte_ticks_ratio_focal_over_baseline": 0.352029
+              },
+              "state_machine_replication": {
+                "diagnostic_op_count_ratio_focal_over_baseline": 0.75,
+                "focal_fewer_ops": true,
+                "focal_smaller_byte_ticks": true,
+                "focal_smaller_peak_bytes": true,
+                "primary_peak_bytes_ratio_focal_over_baseline": 0.47482,
+                "secondary_byte_ticks_ratio_focal_over_baseline": 0.176859
+              }
+            },
+            "diagnostic_metric": "total_operation_count",
+            "dominates_count": 5,
+            "eligible_arms": [
+              "complete_checkpointing",
+              "snapshot_plus_event_log",
+              "always_expanded_lossless",
+              "general_purpose_lossless_compression",
+              "general_purpose_lossy_compression_matched_fidelity",
+              "no_loss_cyclic_execution",
+              "scripted_cyclic_replay",
+              "state_machine_replication",
+              "proposed_architecture_residual_plus_ledger"
+            ],
+            "focal_arm": "proposed_architecture_residual_plus_ledger",
+            "ineligible_arms": [
+              "open_chain_execution",
+              "lossy_execution_without_ledger"
+            ],
+            "primary_metric": "peak_canonical_bytes",
+            "reason": "loses on peak canonical bytes to at least one eligible baseline (see regression_arms_on_primary_metric: ['general_purpose_lossless_compression', 'general_purpose_lossy_compression_matched_fidelity', 'scripted_cyclic_replay'])",
+            "regression_arms_on_primary_metric": [
+              "general_purpose_lossless_compression",
+              "general_purpose_lossy_compression_matched_fidelity",
+              "scripted_cyclic_replay"
+            ],
+            "secondary_metric": "total_byte_ticks",
+            "status": "unsupported"
+          },
+          "reference_history": [
+            "move",
+            "move",
+            "noop_x",
+            "resolve"
+          ],
+          "status": "unsupported",
+          "world_id": "adversarial"
+        },
+        "friendly": {
+          "arms": {
+            "always_expanded_lossless": {
+              "arm_id": "always_expanded_lossless",
+              "description": "Every one of 3 regions keeps an independent full copy of state at every tick; never dumps or merges.",
+              "dump_ops": 0,
+              "merge_ops": 0,
+              "notes": "",
+              "observer_update_ops": 12,
+              "peak_canonical_bytes": 2556,
+              "reconstruction_ops": 0,
+              "resource_breakdown": {
+                "authoritative_state_bytes": 2556,
+                "checkpoint_bytes": 0,
+                "event_log_bytes": 0,
+                "index_bytes": 0,
+                "ledger_bytes": 0,
+                "lookup_table_bytes": 0,
+                "observer_buffer_bytes": 0,
+                "preprocessing_bytes": 0,
+                "reconstruction_buffer_bytes": 0,
+                "residual_bytes": 0
+              },
+              "semantic_eligible": true,
+              "semantic_grade": {
+                "note": "full state retained at all times; trivially passes every probe"
+              },
+              "sync_ops": 0,
+              "total_byte_ticks": 8757,
+              "total_operation_count": 12
+            },
+            "complete_checkpointing": {
+              "arm_id": "complete_checkpointing",
+              "description": "Full state (all private fields) serialized and retained at every tick.",
+              "dump_ops": 4,
+              "merge_ops": 0,
+              "notes": "",
+              "observer_update_ops": 4,
+              "peak_canonical_bytes": 852,
+              "reconstruction_ops": 0,
+              "resource_breakdown": {
+                "authoritative_state_bytes": 852,
+                "checkpoint_bytes": 852,
+                "event_log_bytes": 0,
+                "index_bytes": 0,
+                "ledger_bytes": 0,
+                "lookup_table_bytes": 0,
+                "observer_buffer_bytes": 0,
+                "preprocessing_bytes": 0,
+                "reconstruction_buffer_bytes": 0,
+                "residual_bytes": 0
+              },
+              "semantic_eligible": true,
+              "semantic_grade": {
+                "grades": {
+                  "causal_ordering": true,
+                  "causal_prerequisite_challenges": true,
+                  "causal_prerequisite_last_obligation": true,
+                  "deadline_behavior": true,
+                  "deadline_urgency_queries": true,
+                  "identity_continuity": true,
+                  "identity_substitution_challenges": true,
+                  "ledger_effects_consistent": true,
+                  "new_counterfactual_actions": true,
+                  "new_resource_disputes": true,
+                  "obligation_ownership": true,
+                  "observer_visible_consequences": true,
+                  "permitted_future_actions": true,
+                  "provenance": true,
+                  "relationship_authorization_challenges": true,
+                  "relationship_permissions": true,
+                  "resolved_chain_completeness_queries": true,
+                  "resource_allocation_commitments": true,
+                  "unseen_chain_completion": true,
+                  "unseen_obligation_queries": true
+                },
+                "pass_count": 20,
+                "total": 20
+              },
+              "sync_ops": 0,
+              "total_byte_ticks": 2919,
+              "total_operation_count": 8
+            },
+            "general_purpose_lossless_compression": {
+              "arm_id": "general_purpose_lossless_compression",
+              "description": "Full state zlib-compressed (level 9) and later decompressed in full.",
+              "dump_ops": 1,
+              "merge_ops": 0,
+              "notes": "",
+              "observer_update_ops": 1,
+              "peak_canonical_bytes": 349,
+              "reconstruction_ops": 1,
+              "resource_breakdown": {
+                "authoritative_state_bytes": 349,
+                "checkpoint_bytes": 0,
+                "event_log_bytes": 0,
+                "index_bytes": 0,
+                "ledger_bytes": 0,
+                "lookup_table_bytes": 0,
+                "observer_buffer_bytes": 0,
+                "preprocessing_bytes": 0,
+                "reconstruction_buffer_bytes": 852,
+                "residual_bytes": 0
+              },
+              "semantic_eligible": true,
+              "semantic_grade": {
+                "all_pass": true,
+                "answers": {
+                  "causal_ordering": false,
+                  "causal_prerequisite_challenges": [
+                    "o0"
+                  ],
+                  "causal_prerequisite_last_obligation": "o0",
+                  "deadline_behavior": true,
+                  "deadline_urgency_queries": {
+                    "deadline": 3,
+                    "obligation": "o1"
+                  },
+                  "identity_continuity": true,
+                  "identity_substitution_challenges": false,
+                  "ledger_effects_consistent": true,
+                  "new_counterfactual_actions": true,
+                  "new_resource_disputes": "a0",
+                  "obligation_ownership": "a0",
+                  "observer_visible_consequences": "a0",
+                  "permitted_future_actions": [
+                    "a0",
+                    "a2"
+                  ],
+                  "provenance": true,
+                  "relationship_authorization_challenges": true,
+                  "relationship_permissions": true,
+                  "resolved_chain_completeness_queries": true,
+                  "resource_allocation_commitments": true,
+                  "unseen_chain_completion": "o0",
+                  "unseen_obligation_queries": {
+                    "owner": "a0",
+                    "prerequisite": null
+                  }
+                },
+                "grades": {
+                  "causal_ordering": true,
+                  "causal_prerequisite_challenges": true,
+                  "causal_prerequisite_last_obligation": true,
+                  "deadline_behavior": true,
+                  "deadline_urgency_queries": true,
+                  "identity_continuity": true,
+                  "identity_substitution_challenges": true,
+                  "ledger_effects_consistent": true,
+                  "new_counterfactual_actions": true,
+                  "new_resource_disputes": true,
+                  "obligation_ownership": true,
+                  "observer_visible_consequences": true,
+                  "permitted_future_actions": true,
+                  "provenance": true,
+                  "relationship_authorization_challenges": true,
+                  "relationship_permissions": true,
+                  "resolved_chain_completeness_queries": true,
+                  "resource_allocation_commitments": true,
+                  "unseen_chain_completion": true,
+                  "unseen_obligation_queries": true
+                },
+                "ground_truth": {
+                  "causal_ordering": false,
+                  "causal_prerequisite_challenges": [
+                    "o0"
+                  ],
+                  "causal_prerequisite_last_obligation": "o0",
+                  "deadline_behavior": true,
+                  "deadline_urgency_queries": {
+                    "deadline": 3,
+                    "obligation": "o1"
+                  },
+                  "identity_continuity": true,
+                  "identity_substitution_challenges": false,
+                  "ledger_effects_consistent": true,
+                  "new_counterfactual_actions": true,
+                  "new_resource_disputes": "a0",
+                  "obligation_ownership": "a0",
+                  "observer_visible_consequences": "a0",
+                  "permitted_future_actions": [
+                    "a0",
+                    "a2"
+                  ],
+                  "provenance": true,
+                  "relationship_authorization_challenges": true,
+                  "relationship_permissions": true,
+                  "resolved_chain_completeness_queries": true,
+                  "resource_allocation_commitments": true,
+                  "unseen_chain_completion": "o0",
+                  "unseen_obligation_queries": {
+                    "owner": "a0",
+                    "prerequisite": null
+                  }
+                },
+                "pass_count": 20,
+                "scoring": {
+                  "additional_core_checks": {
+                    "all_pass": true,
+                    "pass_count": 3,
+                    "total": 3
+                  },
+                  "delayed": {
+                    "all_pass": true,
+                    "pass_count": 8,
+                    "total": 8
+                  },
+                  "required_core": {
+                    "all_pass": true,
+                    "pass_count": 9,
+                    "total": 9
+                  }
+                },
+                "total": 20
+              },
+              "sync_ops": 0,
+              "total_byte_ticks": 1396,
+              "total_operation_count": 3
+            },
+            "general_purpose_lossy_compression_matched_fidelity": {
+              "arm_id": "general_purpose_lossy_compression_matched_fidelity",
+              "description": "Residual+ledger (same content as our own architecture) generically zlib-compressed instead of kept structured.",
+              "dump_ops": 1,
+              "merge_ops": 0,
+              "notes": "",
+              "observer_update_ops": 3,
+              "peak_canonical_bytes": 325,
+              "reconstruction_ops": 1,
+              "resource_breakdown": {
+                "authoritative_state_bytes": 0,
+                "checkpoint_bytes": 0,
+                "event_log_bytes": 0,
+                "index_bytes": 0,
+                "ledger_bytes": 112,
+                "lookup_table_bytes": 0,
+                "observer_buffer_bytes": 0,
+                "preprocessing_bytes": 0,
+                "reconstruction_buffer_bytes": 714,
+                "residual_bytes": 253
+              },
+              "semantic_eligible": true,
+              "semantic_grade": {
+                "all_pass": true,
+                "answers": {
+                  "causal_ordering": false,
+                  "causal_prerequisite_challenges": [
+                    "o0"
+                  ],
+                  "causal_prerequisite_last_obligation": "o0",
+                  "deadline_behavior": true,
+                  "deadline_urgency_queries": {
+                    "deadline": 3,
+                    "obligation": "o1"
+                  },
+                  "identity_continuity": true,
+                  "identity_substitution_challenges": false,
+                  "ledger_effects_consistent": true,
+                  "new_counterfactual_actions": true,
+                  "new_resource_disputes": "a0",
+                  "obligation_ownership": "a0",
+                  "observer_visible_consequences": "a0",
+                  "permitted_future_actions": [
+                    "a0",
+                    "a2"
+                  ],
+                  "provenance": true,
+                  "relationship_authorization_challenges": true,
+                  "relationship_permissions": true,
+                  "resolved_chain_completeness_queries": true,
+                  "resource_allocation_commitments": true,
+                  "unseen_chain_completion": "o0",
+                  "unseen_obligation_queries": {
+                    "owner": "a0",
+                    "prerequisite": null
+                  }
+                },
+                "grades": {
+                  "causal_ordering": true,
+                  "causal_prerequisite_challenges": true,
+                  "causal_prerequisite_last_obligation": true,
+                  "deadline_behavior": true,
+                  "deadline_urgency_queries": true,
+                  "identity_continuity": true,
+                  "identity_substitution_challenges": true,
+                  "ledger_effects_consistent": true,
+                  "new_counterfactual_actions": true,
+                  "new_resource_disputes": true,
+                  "obligation_ownership": true,
+                  "observer_visible_consequences": true,
+                  "permitted_future_actions": true,
+                  "provenance": true,
+                  "relationship_authorization_challenges": true,
+                  "relationship_permissions": true,
+                  "resolved_chain_completeness_queries": true,
+                  "resource_allocation_commitments": true,
+                  "unseen_chain_completion": true,
+                  "unseen_obligation_queries": true
+                },
+                "ground_truth": {
+                  "causal_ordering": false,
+                  "causal_prerequisite_challenges": [
+                    "o0"
+                  ],
+                  "causal_prerequisite_last_obligation": "o0",
+                  "deadline_behavior": true,
+                  "deadline_urgency_queries": {
+                    "deadline": 3,
+                    "obligation": "o1"
+                  },
+                  "identity_continuity": true,
+                  "identity_substitution_challenges": false,
+                  "ledger_effects_consistent": true,
+                  "new_counterfactual_actions": true,
+                  "new_resource_disputes": "a0",
+                  "obligation_ownership": "a0",
+                  "observer_visible_consequences": "a0",
+                  "permitted_future_actions": [
+                    "a0",
+                    "a2"
+                  ],
+                  "provenance": true,
+                  "relationship_authorization_challenges": true,
+                  "relationship_permissions": true,
+                  "resolved_chain_completeness_queries": true,
+                  "resource_allocation_commitments": true,
+                  "unseen_chain_completion": "o0",
+                  "unseen_obligation_queries": {
+                    "owner": "a0",
+                    "prerequisite": null
+                  }
+                },
+                "pass_count": 20,
+                "scoring": {
+                  "additional_core_checks": {
+                    "all_pass": true,
+                    "pass_count": 3,
+                    "total": 3
+                  },
+                  "delayed": {
+                    "all_pass": true,
+                    "pass_count": 8,
+                    "total": 8
+                  },
+                  "required_core": {
+                    "all_pass": true,
+                    "pass_count": 9,
+                    "total": 9
+                  }
+                },
+                "total": 20
+              },
+              "sync_ops": 0,
+              "total_byte_ticks": 1300,
+              "total_operation_count": 5
+            },
+            "lossy_execution_without_ledger": {
+              "arm_id": "lossy_execution_without_ledger",
+              "description": "The same residual as our architecture, but with the narrative ledger discarded entirely.",
+              "dump_ops": 1,
+              "merge_ops": 0,
+              "notes": "",
+              "observer_update_ops": 0,
+              "peak_canonical_bytes": 455,
+              "reconstruction_ops": 0,
+              "resource_breakdown": {
+                "authoritative_state_bytes": 0,
+                "checkpoint_bytes": 0,
+                "event_log_bytes": 0,
+                "index_bytes": 0,
+                "ledger_bytes": 0,
+                "lookup_table_bytes": 0,
+                "observer_buffer_bytes": 0,
+                "preprocessing_bytes": 0,
+                "reconstruction_buffer_bytes": 0,
+                "residual_bytes": 455
+              },
+              "semantic_eligible": false,
+              "semantic_grade": {
+                "all_pass": false,
+                "answers": {
+                  "causal_ordering": false,
+                  "causal_prerequisite_challenges": [
+                    "o0"
+                  ],
+                  "causal_prerequisite_last_obligation": "o0",
+                  "deadline_behavior": true,
+                  "deadline_urgency_queries": {
+                    "deadline": 3,
+                    "obligation": "o1"
+                  },
+                  "identity_continuity": true,
+                  "identity_substitution_challenges": true,
+                  "ledger_effects_consistent": true,
+                  "new_counterfactual_actions": true,
+                  "new_resource_disputes": "a0",
+                  "obligation_ownership": "a0",
+                  "observer_visible_consequences": "a0",
+                  "permitted_future_actions": [
+                    "a0",
+                    "a2"
+                  ],
+                  "provenance": true,
+                  "relationship_authorization_challenges": true,
+                  "relationship_permissions": true,
+                  "resolved_chain_completeness_queries": true,
+                  "resource_allocation_commitments": true,
+                  "unseen_chain_completion": "o0",
+                  "unseen_obligation_queries": {
+                    "owner": "a0",
+                    "prerequisite": null
+                  }
+                },
+                "grades": {
+                  "causal_ordering": true,
+                  "causal_prerequisite_challenges": true,
+                  "causal_prerequisite_last_obligation": true,
+                  "deadline_behavior": true,
+                  "deadline_urgency_queries": true,
+                  "identity_continuity": true,
+                  "identity_substitution_challenges": false,
+                  "ledger_effects_consistent": true,
+                  "new_counterfactual_actions": true,
+                  "new_resource_disputes": true,
+                  "obligation_ownership": true,
+                  "observer_visible_consequences": true,
+                  "permitted_future_actions": true,
+                  "provenance": true,
+                  "relationship_authorization_challenges": true,
+                  "relationship_permissions": true,
+                  "resolved_chain_completeness_queries": true,
+                  "resource_allocation_commitments": true,
+                  "unseen_chain_completion": true,
+                  "unseen_obligation_queries": true
+                },
+                "ground_truth": {
+                  "causal_ordering": false,
+                  "causal_prerequisite_challenges": [
+                    "o0"
+                  ],
+                  "causal_prerequisite_last_obligation": "o0",
+                  "deadline_behavior": true,
+                  "deadline_urgency_queries": {
+                    "deadline": 3,
+                    "obligation": "o1"
+                  },
+                  "identity_continuity": true,
+                  "identity_substitution_challenges": false,
+                  "ledger_effects_consistent": true,
+                  "new_counterfactual_actions": true,
+                  "new_resource_disputes": "a0",
+                  "obligation_ownership": "a0",
+                  "observer_visible_consequences": "a0",
+                  "permitted_future_actions": [
+                    "a0",
+                    "a2"
+                  ],
+                  "provenance": true,
+                  "relationship_authorization_challenges": true,
+                  "relationship_permissions": true,
+                  "resolved_chain_completeness_queries": true,
+                  "resource_allocation_commitments": true,
+                  "unseen_chain_completion": "o0",
+                  "unseen_obligation_queries": {
+                    "owner": "a0",
+                    "prerequisite": null
+                  }
+                },
+                "pass_count": 19,
+                "scoring": {
+                  "additional_core_checks": {
+                    "all_pass": true,
+                    "pass_count": 3,
+                    "total": 3
+                  },
+                  "delayed": {
+                    "all_pass": false,
+                    "pass_count": 7,
+                    "total": 8
+                  },
+                  "required_core": {
+                    "all_pass": true,
+                    "pass_count": 9,
+                    "total": 9
+                  }
+                },
+                "total": 20
+              },
+              "sync_ops": 0,
+              "total_byte_ticks": 455,
+              "total_operation_count": 1
+            },
+            "no_loss_cyclic_execution": {
+              "arm_id": "no_loss_cyclic_execution",
+              "description": "A single full copy of state is kept live at every tick; nothing is ever dumped or discarded.",
+              "dump_ops": 0,
+              "merge_ops": 0,
+              "notes": "",
+              "observer_update_ops": 4,
+              "peak_canonical_bytes": 852,
+              "reconstruction_ops": 0,
+              "resource_breakdown": {
+                "authoritative_state_bytes": 852,
+                "checkpoint_bytes": 0,
+                "event_log_bytes": 0,
+                "index_bytes": 0,
+                "ledger_bytes": 0,
+                "lookup_table_bytes": 0,
+                "observer_buffer_bytes": 0,
+                "preprocessing_bytes": 0,
+                "reconstruction_buffer_bytes": 0,
+                "residual_bytes": 0
+              },
+              "semantic_eligible": true,
+              "semantic_grade": {
+                "note": "full state retained at all times; trivially passes every probe"
+              },
+              "sync_ops": 0,
+              "total_byte_ticks": 2919,
+              "total_operation_count": 4
+            },
+            "open_chain_execution": {
+              "arm_id": "open_chain_execution",
+              "description": "Only the final public state is retained; no ledger, no boundary transition, no narrative continuity.",
+              "dump_ops": 1,
+              "merge_ops": 0,
+              "notes": "Test 05A arm 11 control: no return transition executed.",
+              "observer_update_ops": 1,
+              "peak_canonical_bytes": 340,
+              "reconstruction_ops": 0,
+              "resource_breakdown": {
+                "authoritative_state_bytes": 340,
+                "checkpoint_bytes": 0,
+                "event_log_bytes": 0,
+                "index_bytes": 0,
+                "ledger_bytes": 0,
+                "lookup_table_bytes": 0,
+                "observer_buffer_bytes": 0,
+                "preprocessing_bytes": 0,
+                "reconstruction_buffer_bytes": 0,
+                "residual_bytes": 0
+              },
+              "semantic_eligible": false,
+              "semantic_grade": {
+                "all_pass": false,
+                "answers": {
+                  "causal_ordering": false,
+                  "causal_prerequisite_challenges": [
+                    "o0"
+                  ],
+                  "causal_prerequisite_last_obligation": "o0",
+                  "deadline_behavior": true,
+                  "deadline_urgency_queries": {
+                    "deadline": 3,
+                    "obligation": "o1"
+                  },
+                  "identity_continuity": true,
+                  "identity_substitution_challenges": true,
+                  "ledger_effects_consistent": true,
+                  "new_counterfactual_actions": true,
+                  "new_resource_disputes": "a0",
+                  "obligation_ownership": "a0",
+                  "observer_visible_consequences": "a0",
+                  "permitted_future_actions": [
+                    "a0",
+                    "a2"
+                  ],
+                  "provenance": true,
+                  "relationship_authorization_challenges": true,
+                  "relationship_permissions": true,
+                  "resolved_chain_completeness_queries": true,
+                  "resource_allocation_commitments": false,
+                  "unseen_chain_completion": null,
+                  "unseen_obligation_queries": {
+                    "owner": "a1",
+                    "prerequisite": "o0"
+                  }
+                },
+                "grades": {
+                  "causal_ordering": true,
+                  "causal_prerequisite_challenges": true,
+                  "causal_prerequisite_last_obligation": true,
+                  "deadline_behavior": true,
+                  "deadline_urgency_queries": true,
+                  "identity_continuity": true,
+                  "identity_substitution_challenges": false,
+                  "ledger_effects_consistent": true,
+                  "new_counterfactual_actions": true,
+                  "new_resource_disputes": true,
+                  "obligation_ownership": true,
+                  "observer_visible_consequences": true,
+                  "permitted_future_actions": true,
+                  "provenance": true,
+                  "relationship_authorization_challenges": true,
+                  "relationship_permissions": true,
+                  "resolved_chain_completeness_queries": true,
+                  "resource_allocation_commitments": false,
+                  "unseen_chain_completion": false,
+                  "unseen_obligation_queries": false
+                },
+                "ground_truth": {
+                  "causal_ordering": false,
+                  "causal_prerequisite_challenges": [
+                    "o0"
+                  ],
+                  "causal_prerequisite_last_obligation": "o0",
+                  "deadline_behavior": true,
+                  "deadline_urgency_queries": {
+                    "deadline": 3,
+                    "obligation": "o1"
+                  },
+                  "identity_continuity": true,
+                  "identity_substitution_challenges": false,
+                  "ledger_effects_consistent": true,
+                  "new_counterfactual_actions": true,
+                  "new_resource_disputes": "a0",
+                  "obligation_ownership": "a0",
+                  "observer_visible_consequences": "a0",
+                  "permitted_future_actions": [
+                    "a0",
+                    "a2"
+                  ],
+                  "provenance": true,
+                  "relationship_authorization_challenges": true,
+                  "relationship_permissions": true,
+                  "resolved_chain_completeness_queries": true,
+                  "resource_allocation_commitments": true,
+                  "unseen_chain_completion": "o0",
+                  "unseen_obligation_queries": {
+                    "owner": "a0",
+                    "prerequisite": null
+                  }
+                },
+                "pass_count": 16,
+                "scoring": {
+                  "additional_core_checks": {
+                    "all_pass": false,
+                    "pass_count": 2,
+                    "total": 3
+                  },
+                  "delayed": {
+                    "all_pass": false,
+                    "pass_count": 6,
+                    "total": 8
+                  },
+                  "required_core": {
+                    "all_pass": false,
+                    "pass_count": 8,
+                    "total": 9
+                  }
+                },
+                "total": 20
+              },
+              "sync_ops": 0,
+              "total_byte_ticks": 340,
+              "total_operation_count": 2
+            },
+            "proposed_architecture_residual_plus_ledger": {
+              "arm_id": "proposed_architecture_residual_plus_ledger",
+              "description": "The architecture under test: reconstructed residual + narrative ledger, one boundary transition.",
+              "dump_ops": 1,
+              "merge_ops": 1,
+              "notes": "",
+              "observer_update_ops": 3,
+              "peak_canonical_bytes": 691,
+              "reconstruction_ops": 1,
+              "resource_breakdown": {
+                "authoritative_state_bytes": 0,
+                "checkpoint_bytes": 0,
+                "event_log_bytes": 0,
+                "index_bytes": 0,
+                "ledger_bytes": 236,
+                "lookup_table_bytes": 0,
+                "observer_buffer_bytes": 0,
+                "preprocessing_bytes": 0,
+                "reconstruction_buffer_bytes": 0,
+                "residual_bytes": 455
+              },
+              "semantic_eligible": true,
+              "semantic_grade": {
+                "all_pass": true,
+                "answers": {
+                  "causal_ordering": false,
+                  "causal_prerequisite_challenges": [
+                    "o0"
+                  ],
+                  "causal_prerequisite_last_obligation": "o0",
+                  "deadline_behavior": true,
+                  "deadline_urgency_queries": {
+                    "deadline": 3,
+                    "obligation": "o1"
+                  },
+                  "identity_continuity": true,
+                  "identity_substitution_challenges": false,
+                  "ledger_effects_consistent": true,
+                  "new_counterfactual_actions": true,
+                  "new_resource_disputes": "a0",
+                  "obligation_ownership": "a0",
+                  "observer_visible_consequences": "a0",
+                  "permitted_future_actions": [
+                    "a0",
+                    "a2"
+                  ],
+                  "provenance": true,
+                  "relationship_authorization_challenges": true,
+                  "relationship_permissions": true,
+                  "resolved_chain_completeness_queries": true,
+                  "resource_allocation_commitments": true,
+                  "unseen_chain_completion": "o0",
+                  "unseen_obligation_queries": {
+                    "owner": "a0",
+                    "prerequisite": null
+                  }
+                },
+                "grades": {
+                  "causal_ordering": true,
+                  "causal_prerequisite_challenges": true,
+                  "causal_prerequisite_last_obligation": true,
+                  "deadline_behavior": true,
+                  "deadline_urgency_queries": true,
+                  "identity_continuity": true,
+                  "identity_substitution_challenges": true,
+                  "ledger_effects_consistent": true,
+                  "new_counterfactual_actions": true,
+                  "new_resource_disputes": true,
+                  "obligation_ownership": true,
+                  "observer_visible_consequences": true,
+                  "permitted_future_actions": true,
+                  "provenance": true,
+                  "relationship_authorization_challenges": true,
+                  "relationship_permissions": true,
+                  "resolved_chain_completeness_queries": true,
+                  "resource_allocation_commitments": true,
+                  "unseen_chain_completion": true,
+                  "unseen_obligation_queries": true
+                },
+                "ground_truth": {
+                  "causal_ordering": false,
+                  "causal_prerequisite_challenges": [
+                    "o0"
+                  ],
+                  "causal_prerequisite_last_obligation": "o0",
+                  "deadline_behavior": true,
+                  "deadline_urgency_queries": {
+                    "deadline": 3,
+                    "obligation": "o1"
+                  },
+                  "identity_continuity": true,
+                  "identity_substitution_challenges": false,
+                  "ledger_effects_consistent": true,
+                  "new_counterfactual_actions": true,
+                  "new_resource_disputes": "a0",
+                  "obligation_ownership": "a0",
+                  "observer_visible_consequences": "a0",
+                  "permitted_future_actions": [
+                    "a0",
+                    "a2"
+                  ],
+                  "provenance": true,
+                  "relationship_authorization_challenges": true,
+                  "relationship_permissions": true,
+                  "resolved_chain_completeness_queries": true,
+                  "resource_allocation_commitments": true,
+                  "unseen_chain_completion": "o0",
+                  "unseen_obligation_queries": {
+                    "owner": "a0",
+                    "prerequisite": null
+                  }
+                },
+                "pass_count": 20,
+                "scoring": {
+                  "additional_core_checks": {
+                    "all_pass": true,
+                    "pass_count": 3,
+                    "total": 3
+                  },
+                  "delayed": {
+                    "all_pass": true,
+                    "pass_count": 8,
+                    "total": 8
+                  },
+                  "required_core": {
+                    "all_pass": true,
+                    "pass_count": 9,
+                    "total": 9
+                  }
+                },
+                "total": 20
+              },
+              "sync_ops": 0,
+              "total_byte_ticks": 1160,
+              "total_operation_count": 6
+            },
+            "scripted_cyclic_replay": {
+              "arm_id": "scripted_cyclic_replay",
+              "description": "Only the exact action-symbol script is stored; the full history is re-executed from scratch to reconstruct state.",
+              "dump_ops": 1,
+              "merge_ops": 0,
+              "notes": "Passes fidelity trivially because it is exempt from the loss requirement entirely (it stores the exact script, not a lossy summary): this is not an apples-to-apples comparison with the lossy arms, and this arm cannot reconstruct a history it was not given the exact script for.",
+              "observer_update_ops": 0,
+              "peak_canonical_bytes": 34,
+              "reconstruction_ops": 4,
+              "resource_breakdown": {
+                "authoritative_state_bytes": 0,
+                "checkpoint_bytes": 0,
+                "event_log_bytes": 0,
+                "index_bytes": 0,
+                "ledger_bytes": 0,
+                "lookup_table_bytes": 0,
+                "observer_buffer_bytes": 0,
+                "preprocessing_bytes": 34,
+                "reconstruction_buffer_bytes": 0,
+                "residual_bytes": 0
+              },
+              "semantic_eligible": true,
+              "semantic_grade": {
+                "all_pass": true,
+                "answers": {
+                  "causal_ordering": false,
+                  "causal_prerequisite_challenges": [
+                    "o0"
+                  ],
+                  "causal_prerequisite_last_obligation": "o0",
+                  "deadline_behavior": true,
+                  "deadline_urgency_queries": {
+                    "deadline": 3,
+                    "obligation": "o1"
+                  },
+                  "identity_continuity": true,
+                  "identity_substitution_challenges": false,
+                  "ledger_effects_consistent": true,
+                  "new_counterfactual_actions": true,
+                  "new_resource_disputes": "a0",
+                  "obligation_ownership": "a0",
+                  "observer_visible_consequences": "a0",
+                  "permitted_future_actions": [
+                    "a0",
+                    "a2"
+                  ],
+                  "provenance": true,
+                  "relationship_authorization_challenges": true,
+                  "relationship_permissions": true,
+                  "resolved_chain_completeness_queries": true,
+                  "resource_allocation_commitments": true,
+                  "unseen_chain_completion": "o0",
+                  "unseen_obligation_queries": {
+                    "owner": "a0",
+                    "prerequisite": null
+                  }
+                },
+                "grades": {
+                  "causal_ordering": true,
+                  "causal_prerequisite_challenges": true,
+                  "causal_prerequisite_last_obligation": true,
+                  "deadline_behavior": true,
+                  "deadline_urgency_queries": true,
+                  "identity_continuity": true,
+                  "identity_substitution_challenges": true,
+                  "ledger_effects_consistent": true,
+                  "new_counterfactual_actions": true,
+                  "new_resource_disputes": true,
+                  "obligation_ownership": true,
+                  "observer_visible_consequences": true,
+                  "permitted_future_actions": true,
+                  "provenance": true,
+                  "relationship_authorization_challenges": true,
+                  "relationship_permissions": true,
+                  "resolved_chain_completeness_queries": true,
+                  "resource_allocation_commitments": true,
+                  "unseen_chain_completion": true,
+                  "unseen_obligation_queries": true
+                },
+                "ground_truth": {
+                  "causal_ordering": false,
+                  "causal_prerequisite_challenges": [
+                    "o0"
+                  ],
+                  "causal_prerequisite_last_obligation": "o0",
+                  "deadline_behavior": true,
+                  "deadline_urgency_queries": {
+                    "deadline": 3,
+                    "obligation": "o1"
+                  },
+                  "identity_continuity": true,
+                  "identity_substitution_challenges": false,
+                  "ledger_effects_consistent": true,
+                  "new_counterfactual_actions": true,
+                  "new_resource_disputes": "a0",
+                  "obligation_ownership": "a0",
+                  "observer_visible_consequences": "a0",
+                  "permitted_future_actions": [
+                    "a0",
+                    "a2"
+                  ],
+                  "provenance": true,
+                  "relationship_authorization_challenges": true,
+                  "relationship_permissions": true,
+                  "resolved_chain_completeness_queries": true,
+                  "resource_allocation_commitments": true,
+                  "unseen_chain_completion": "o0",
+                  "unseen_obligation_queries": {
+                    "owner": "a0",
+                    "prerequisite": null
+                  }
+                },
+                "pass_count": 20,
+                "scoring": {
+                  "additional_core_checks": {
+                    "all_pass": true,
+                    "pass_count": 3,
+                    "total": 3
+                  },
+                  "delayed": {
+                    "all_pass": true,
+                    "pass_count": 8,
+                    "total": 8
+                  },
+                  "required_core": {
+                    "all_pass": true,
+                    "pass_count": 9,
+                    "total": 9
+                  }
+                },
+                "total": 20
+              },
+              "sync_ops": 0,
+              "total_byte_ticks": 136,
+              "total_operation_count": 5
+            },
+            "snapshot_plus_event_log": {
+              "arm_id": "snapshot_plus_event_log",
+              "description": "One genesis snapshot plus the full (unfiltered) growing event log; replayed once at the end.",
+              "dump_ops": 5,
+              "merge_ops": 0,
+              "notes": "",
+              "observer_update_ops": 4,
+              "peak_canonical_bytes": 844,
+              "reconstruction_ops": 1,
+              "resource_breakdown": {
+                "authoritative_state_bytes": 0,
+                "checkpoint_bytes": 534,
+                "event_log_bytes": 310,
+                "index_bytes": 0,
+                "ledger_bytes": 0,
+                "lookup_table_bytes": 0,
+                "observer_buffer_bytes": 0,
+                "preprocessing_bytes": 0,
+                "reconstruction_buffer_bytes": 0,
+                "residual_bytes": 0
+              },
+              "semantic_eligible": true,
+              "semantic_grade": {
+                "all_pass": true,
+                "answers": {
+                  "causal_ordering": false,
+                  "causal_prerequisite_challenges": [
+                    "o0"
+                  ],
+                  "causal_prerequisite_last_obligation": "o0",
+                  "deadline_behavior": true,
+                  "deadline_urgency_queries": {
+                    "deadline": 3,
+                    "obligation": "o1"
+                  },
+                  "identity_continuity": true,
+                  "identity_substitution_challenges": false,
+                  "ledger_effects_consistent": true,
+                  "new_counterfactual_actions": true,
+                  "new_resource_disputes": "a0",
+                  "obligation_ownership": "a0",
+                  "observer_visible_consequences": "a0",
+                  "permitted_future_actions": [
+                    "a0",
+                    "a2"
+                  ],
+                  "provenance": true,
+                  "relationship_authorization_challenges": true,
+                  "relationship_permissions": true,
+                  "resolved_chain_completeness_queries": true,
+                  "resource_allocation_commitments": true,
+                  "unseen_chain_completion": "o0",
+                  "unseen_obligation_queries": {
+                    "owner": "a0",
+                    "prerequisite": null
+                  }
+                },
+                "grades": {
+                  "causal_ordering": true,
+                  "causal_prerequisite_challenges": true,
+                  "causal_prerequisite_last_obligation": true,
+                  "deadline_behavior": true,
+                  "deadline_urgency_queries": true,
+                  "identity_continuity": true,
+                  "identity_substitution_challenges": true,
+                  "ledger_effects_consistent": true,
+                  "new_counterfactual_actions": true,
+                  "new_resource_disputes": true,
+                  "obligation_ownership": true,
+                  "observer_visible_consequences": true,
+                  "permitted_future_actions": true,
+                  "provenance": true,
+                  "relationship_authorization_challenges": true,
+                  "relationship_permissions": true,
+                  "resolved_chain_completeness_queries": true,
+                  "resource_allocation_commitments": true,
+                  "unseen_chain_completion": true,
+                  "unseen_obligation_queries": true
+                },
+                "ground_truth": {
+                  "causal_ordering": false,
+                  "causal_prerequisite_challenges": [
+                    "o0"
+                  ],
+                  "causal_prerequisite_last_obligation": "o0",
+                  "deadline_behavior": true,
+                  "deadline_urgency_queries": {
+                    "deadline": 3,
+                    "obligation": "o1"
+                  },
+                  "identity_continuity": true,
+                  "identity_substitution_challenges": false,
+                  "ledger_effects_consistent": true,
+                  "new_counterfactual_actions": true,
+                  "new_resource_disputes": "a0",
+                  "obligation_ownership": "a0",
+                  "observer_visible_consequences": "a0",
+                  "permitted_future_actions": [
+                    "a0",
+                    "a2"
+                  ],
+                  "provenance": true,
+                  "relationship_authorization_challenges": true,
+                  "relationship_permissions": true,
+                  "resolved_chain_completeness_queries": true,
+                  "resource_allocation_commitments": true,
+                  "unseen_chain_completion": "o0",
+                  "unseen_obligation_queries": {
+                    "owner": "a0",
+                    "prerequisite": null
+                  }
+                },
+                "pass_count": 20,
+                "scoring": {
+                  "additional_core_checks": {
+                    "all_pass": true,
+                    "pass_count": 3,
+                    "total": 3
+                  },
+                  "delayed": {
+                    "all_pass": true,
+                    "pass_count": 8,
+                    "total": 8
+                  },
+                  "required_core": {
+                    "all_pass": true,
+                    "pass_count": 9,
+                    "total": 9
+                  }
+                },
+                "total": 20
+              },
+              "sync_ops": 0,
+              "total_byte_ticks": 2915,
+              "total_operation_count": 10
+            },
+            "state_machine_replication": {
+              "arm_id": "state_machine_replication",
+              "description": "3 replicas of the residual, synchronized once per tick.",
+              "dump_ops": 1,
+              "merge_ops": 0,
+              "notes": "",
+              "observer_update_ops": 3,
+              "peak_canonical_bytes": 1365,
+              "reconstruction_ops": 0,
+              "resource_breakdown": {
+                "authoritative_state_bytes": 0,
+                "checkpoint_bytes": 0,
+                "event_log_bytes": 0,
+                "index_bytes": 0,
+                "ledger_bytes": 0,
+                "lookup_table_bytes": 0,
+                "observer_buffer_bytes": 0,
+                "preprocessing_bytes": 0,
+                "reconstruction_buffer_bytes": 0,
+                "residual_bytes": 1365
+              },
+              "semantic_eligible": true,
+              "semantic_grade": {
+                "all_pass": true,
+                "answers": {
+                  "causal_ordering": false,
+                  "causal_prerequisite_challenges": [
+                    "o0"
+                  ],
+                  "causal_prerequisite_last_obligation": "o0",
+                  "deadline_behavior": true,
+                  "deadline_urgency_queries": {
+                    "deadline": 3,
+                    "obligation": "o1"
+                  },
+                  "identity_continuity": true,
+                  "identity_substitution_challenges": false,
+                  "ledger_effects_consistent": true,
+                  "new_counterfactual_actions": true,
+                  "new_resource_disputes": "a0",
+                  "obligation_ownership": "a0",
+                  "observer_visible_consequences": "a0",
+                  "permitted_future_actions": [
+                    "a0",
+                    "a2"
+                  ],
+                  "provenance": true,
+                  "relationship_authorization_challenges": true,
+                  "relationship_permissions": true,
+                  "resolved_chain_completeness_queries": true,
+                  "resource_allocation_commitments": true,
+                  "unseen_chain_completion": "o0",
+                  "unseen_obligation_queries": {
+                    "owner": "a0",
+                    "prerequisite": null
+                  }
+                },
+                "grades": {
+                  "causal_ordering": true,
+                  "causal_prerequisite_challenges": true,
+                  "causal_prerequisite_last_obligation": true,
+                  "deadline_behavior": true,
+                  "deadline_urgency_queries": true,
+                  "identity_continuity": true,
+                  "identity_substitution_challenges": true,
+                  "ledger_effects_consistent": true,
+                  "new_counterfactual_actions": true,
+                  "new_resource_disputes": true,
+                  "obligation_ownership": true,
+                  "observer_visible_consequences": true,
+                  "permitted_future_actions": true,
+                  "provenance": true,
+                  "relationship_authorization_challenges": true,
+                  "relationship_permissions": true,
+                  "resolved_chain_completeness_queries": true,
+                  "resource_allocation_commitments": true,
+                  "unseen_chain_completion": true,
+                  "unseen_obligation_queries": true
+                },
+                "ground_truth": {
+                  "causal_ordering": false,
+                  "causal_prerequisite_challenges": [
+                    "o0"
+                  ],
+                  "causal_prerequisite_last_obligation": "o0",
+                  "deadline_behavior": true,
+                  "deadline_urgency_queries": {
+                    "deadline": 3,
+                    "obligation": "o1"
+                  },
+                  "identity_continuity": true,
+                  "identity_substitution_challenges": false,
+                  "ledger_effects_consistent": true,
+                  "new_counterfactual_actions": true,
+                  "new_resource_disputes": "a0",
+                  "obligation_ownership": "a0",
+                  "observer_visible_consequences": "a0",
+                  "permitted_future_actions": [
+                    "a0",
+                    "a2"
+                  ],
+                  "provenance": true,
+                  "relationship_authorization_challenges": true,
+                  "relationship_permissions": true,
+                  "resolved_chain_completeness_queries": true,
+                  "resource_allocation_commitments": true,
+                  "unseen_chain_completion": "o0",
+                  "unseen_obligation_queries": {
+                    "owner": "a0",
+                    "prerequisite": null
+                  }
+                },
+                "pass_count": 20,
+                "scoring": {
+                  "additional_core_checks": {
+                    "all_pass": true,
+                    "pass_count": 3,
+                    "total": 3
+                  },
+                  "delayed": {
+                    "all_pass": true,
+                    "pass_count": 8,
+                    "total": 8
+                  },
+                  "required_core": {
+                    "all_pass": true,
+                    "pass_count": 9,
+                    "total": 9
+                  }
+                },
+                "total": 20
+              },
+              "sync_ops": 4,
+              "total_byte_ticks": 5460,
+              "total_operation_count": 8
+            }
+          },
+          "pareto": {
+            "comparisons_vs_focal": {
+              "always_expanded_lossless": {
+                "diagnostic_op_count_ratio_focal_over_baseline": 0.5,
+                "focal_fewer_ops": true,
+                "focal_smaller_byte_ticks": true,
+                "focal_smaller_peak_bytes": true,
+                "primary_peak_bytes_ratio_focal_over_baseline": 0.270344,
+                "secondary_byte_ticks_ratio_focal_over_baseline": 0.132465
+              },
+              "complete_checkpointing": {
+                "diagnostic_op_count_ratio_focal_over_baseline": 0.75,
+                "focal_fewer_ops": true,
+                "focal_smaller_byte_ticks": true,
+                "focal_smaller_peak_bytes": true,
+                "primary_peak_bytes_ratio_focal_over_baseline": 0.811033,
+                "secondary_byte_ticks_ratio_focal_over_baseline": 0.397396
+              },
+              "general_purpose_lossless_compression": {
+                "diagnostic_op_count_ratio_focal_over_baseline": 2.0,
+                "focal_fewer_ops": false,
+                "focal_smaller_byte_ticks": true,
+                "focal_smaller_peak_bytes": false,
+                "primary_peak_bytes_ratio_focal_over_baseline": 1.979943,
+                "secondary_byte_ticks_ratio_focal_over_baseline": 0.830946
+              },
+              "general_purpose_lossy_compression_matched_fidelity": {
+                "diagnostic_op_count_ratio_focal_over_baseline": 1.2,
+                "focal_fewer_ops": false,
+                "focal_smaller_byte_ticks": true,
+                "focal_smaller_peak_bytes": false,
+                "primary_peak_bytes_ratio_focal_over_baseline": 2.126154,
+                "secondary_byte_ticks_ratio_focal_over_baseline": 0.892308
+              },
+              "no_loss_cyclic_execution": {
+                "diagnostic_op_count_ratio_focal_over_baseline": 1.5,
+                "focal_fewer_ops": false,
+                "focal_smaller_byte_ticks": true,
+                "focal_smaller_peak_bytes": true,
+                "primary_peak_bytes_ratio_focal_over_baseline": 0.811033,
+                "secondary_byte_ticks_ratio_focal_over_baseline": 0.397396
+              },
+              "scripted_cyclic_replay": {
+                "diagnostic_op_count_ratio_focal_over_baseline": 1.2,
+                "focal_fewer_ops": false,
+                "focal_smaller_byte_ticks": false,
+                "focal_smaller_peak_bytes": false,
+                "primary_peak_bytes_ratio_focal_over_baseline": 20.323529,
+                "secondary_byte_ticks_ratio_focal_over_baseline": 8.529412
+              },
+              "snapshot_plus_event_log": {
+                "diagnostic_op_count_ratio_focal_over_baseline": 0.6,
+                "focal_fewer_ops": true,
+                "focal_smaller_byte_ticks": true,
+                "focal_smaller_peak_bytes": true,
+                "primary_peak_bytes_ratio_focal_over_baseline": 0.81872,
+                "secondary_byte_ticks_ratio_focal_over_baseline": 0.397942
+              },
+              "state_machine_replication": {
+                "diagnostic_op_count_ratio_focal_over_baseline": 0.75,
+                "focal_fewer_ops": true,
+                "focal_smaller_byte_ticks": true,
+                "focal_smaller_peak_bytes": true,
+                "primary_peak_bytes_ratio_focal_over_baseline": 0.506227,
+                "secondary_byte_ticks_ratio_focal_over_baseline": 0.212454
+              }
+            },
+            "diagnostic_metric": "total_operation_count",
+            "dominates_count": 5,
+            "eligible_arms": [
+              "complete_checkpointing",
+              "snapshot_plus_event_log",
+              "always_expanded_lossless",
+              "general_purpose_lossless_compression",
+              "general_purpose_lossy_compression_matched_fidelity",
+              "no_loss_cyclic_execution",
+              "scripted_cyclic_replay",
+              "state_machine_replication",
+              "proposed_architecture_residual_plus_ledger"
+            ],
+            "focal_arm": "proposed_architecture_residual_plus_ledger",
+            "ineligible_arms": [
+              "open_chain_execution",
+              "lossy_execution_without_ledger"
+            ],
+            "primary_metric": "peak_canonical_bytes",
+            "reason": "loses on peak canonical bytes to at least one eligible baseline (see regression_arms_on_primary_metric: ['general_purpose_lossless_compression', 'general_purpose_lossy_compression_matched_fidelity', 'scripted_cyclic_replay'])",
+            "regression_arms_on_primary_metric": [
+              "general_purpose_lossless_compression",
+              "general_purpose_lossy_compression_matched_fidelity",
+              "scripted_cyclic_replay"
+            ],
+            "secondary_metric": "total_byte_ticks",
+            "status": "unsupported"
+          },
+          "reference_history": [
+            "move",
+            "move",
+            "resolve",
+            "noop_x"
+          ],
+          "status": "unsupported",
+          "world_id": "friendly"
+        }
+      },
+      "reason": "at least one world family showed an undeclared total regression on the primary metric or no strict dominance over any eligible baseline (see per_world_family)",
+      "status": "unsupported"
+    },
+    "semantic_continuity": {
+      "per_world_family": {
+        "adversarial": true,
+        "friendly": true
+      },
+      "reason": "every world family's residual passes every semantic probe, every positive control passes, every negative control correctly fails, and the leakage audit is clean",
+      "status": "supported"
+    }
+  },
+  "failed_gates": [
+    "no_qualifying_distinction_for_primary_bounded_observer",
+    "fidelity_matched_resource_advantage"
+  ],
+  "gates": [
+    {
+      "detail": "every 05A world family executes a history (expansion) followed by a J boundary transition (contraction)",
+      "gate": "expanding_and_contracting_represented_world",
+      "ok": true
+    },
+    {
+      "detail": "FrozenContract is a pure function of WorldConfig only, computed and hashed before any history executes (protocol v2, update E)",
+      "gate": "independently_locked_beginning_contract",
+      "ok": true
+    },
+    {
+      "detail": "return_value_of(ending_state) is computed and fed into J in every 05A arm",
+      "gate": "ending_derived_return_value_present",
+      "ok": true
+    },
+    {
+      "detail": "execute_J() is called and consumes the frozen contract for every arm of every evaluated world family",
+      "gate": "executed_transition_ending_to_beginning",
+      "ok": true
+    },
+    {
+      "detail": "at least one 05A world family exhibits both closing and non-closing natural histories",
+      "gate": "both_closing_and_non_closing_histories",
+      "ok": true
+    },
+    {
+      "detail": "at least one 05A world family shows relevant interventions breaking closure AND modifying the declared causal path, while irrelevant ones do neither",
+      "gate": "causal_sensitivity_and_specificity",
+      "ok": true
+    },
+    {
+      "detail": "every world family's residual has at least one collision group (two distinct admissible microstates mapping to the same residual)",
+      "gate": "genuine_information_loss",
+      "ok": true
+    },
+    {
+      "detail": "every world family's residual passes every semantic probe, every positive control passes, every negative control correctly fails, and the leakage audit is clean",
+      "gate": "preserved_semantic_behavior_through_loss",
+      "ok": true
+    },
+    {
+      "detail": "removing/staling/corrupting the ledger breaks semantic probes (05B) and corrupting the ledger breaks closure (05A arm 8) in every world family",
+      "gate": "narrative_ledger_causally_load_bearing",
+      "ok": true
+    },
+    {
+      "detail": "the full-state observer's TV distance exceeds the positive-control threshold in every 05C world family",
+      "gate": "positive_control_observer_detects_boundary",
+      "ok": true
+    },
+    {
+      "detail": "the single frozen PRIMARY bounded observer stays under the indistinguishability threshold in every 05C world family (sensitivity-analysis classes are diagnostic only and never gate this)",
+      "gate": "no_qualifying_distinction_for_primary_bounded_observer",
+      "ok": false
+    },
+    {
+      "detail": "at least one world family showed an undeclared total regression on the primary metric or no strict dominance over any eligible baseline (see per_world_family)",
+      "gate": "fidelity_matched_resource_advantage",
+      "ok": false
+    },
+    {
+      "detail": "every 05B world family's negative controls correctly fail at least one semantic probe",
+      "gate": "negative_and_fault_injection_controls_pass",
+      "ok": true
+    }
+  ],
+  "ineligible_gates": [],
+  "interpretation": "At least one integration gate did not pass (see failed_gates/ineligible_gates/invalid_gates). The complete Animus Omega conjecture is therefore not supported by this development run. This is not evidence that it is disproved: it means this bounded model and protocol did not jointly demonstrate every required property in the same run. Every component result above remains valid and preserved regardless of this integrated outcome.",
+  "invalid_gates": [],
+  "status": "not_supported"
+}

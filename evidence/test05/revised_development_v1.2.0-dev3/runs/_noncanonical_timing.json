@@ -1,0 +1,44 @@
+{
+  "adversarial": {
+    "environment": {
+      "platform": "Linux-6.18.44-fc-v24-x86_64-with-glibc2.39",
+      "python": "3.11.15"
+    },
+    "note": "Diagnostic only (protocol v2, update C's noncanonical diagnostic). Deliberately excluded from the canonical evidence manifest and from canonical_digest: wall-clock time is not reproducible run-to-run even with identical seeds.",
+    "wall_clock_seconds_by_arm": {
+      "always_expanded_lossless": 9.786299960978795e-05,
+      "complete_checkpointing": 0.00040330800038645975,
+      "general_purpose_lossless_compression": 0.0005571630008489592,
+      "general_purpose_lossy_compression_matched_fidelity": 0.00041097299981629476,
+      "lossy_execution_without_ledger": 0.0003651019997050753,
+      "no_loss_cyclic_execution": 9.160800073004793e-05,
+      "open_chain_execution": 0.000504534000356216,
+      "proposed_architecture_residual_plus_ledger": 0.0003266650001023663,
+      "scripted_cyclic_replay": 0.00045186799980001524,
+      "snapshot_plus_event_log": 0.0004119259992876323,
+      "state_machine_replication": 0.00031811500048206653
+    },
+    "world_id": "adversarial"
+  },
+  "friendly": {
+    "environment": {
+      "platform": "Linux-6.18.44-fc-v24-x86_64-with-glibc2.39",
+      "python": "3.11.15"
+    },
+    "note": "Diagnostic only (protocol v2, update C's noncanonical diagnostic). Deliberately excluded from the canonical evidence manifest and from canonical_digest: wall-clock time is not reproducible run-to-run even with identical seeds.",
+    "wall_clock_seconds_by_arm": {
+      "always_expanded_lossless": 9.863499872153625e-05,
+      "complete_checkpointing": 0.00046945299982326105,
+      "general_purpose_lossless_compression": 0.0005903090004721889,
+      "general_purpose_lossy_compression_matched_fidelity": 0.0005780900009995094,
+      "lossy_execution_without_ledger": 0.0002846259994839784,
+      "no_loss_cyclic_execution": 0.00012575300024764147,
+      "open_chain_execution": 0.00027814399982162286,
+      "proposed_architecture_residual_plus_ledger": 0.00033024399999703746,
+      "scripted_cyclic_replay": 0.0004429379987413995,
+      "snapshot_plus_event_log": 0.0004229749993100995,
+      "state_machine_replication": 0.0002541489993745927
+    },
+    "world_id": "friendly"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "causal_reorder": {
+    "description": "Reverse the order of the relevant ledger's entries."
+  },
+  "contradictory_ledger": {
+    "description": "Flip the first ledger entry's recorded effect to a value inconsistent with its (tick, action)."
+  },
+  "duplicate_event": {
+    "description": "Duplicate the first ledger entry at the end of the ledger."
+  },
+  "identity_substitution": {
+    "description": "Swap the balances of the generated substitution pair in the residual."
+  },
+  "missing_provenance": {
+    "description": "Remove the provenance field from the first obligation."
+  },
+  "no_ledger": {
+    "description": "Supply an empty ledger alongside the true residual."
+  },
+  "obligation_deletion": {
+    "description": "Remove the first obligation entirely from the residual."
+  },
+  "random_reconstruction": {
+    "description": "Replace residual balances and obligation owner/status with random values."
+  },
+  "stale_event": {
+    "description": "Replace the ledger with an empty (stale/earlier-point) ledger."
+  }
+}

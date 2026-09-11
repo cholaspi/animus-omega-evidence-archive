@@ -1,0 +1,26 @@
+{
+  "adversarial": [],
+  "description": "Friendly obligation world: 3 agents, a simple 2-obligation causal chain, faithful reconstruction, no adversarial conditions.",
+  "family_id": "friendly",
+  "loss_profile": "standard",
+  "observer_config": {
+    "history_length": 7,
+    "ledger_capacity": 64,
+    "num_agents": 3,
+    "num_obligations": 2,
+    "reconstruction_algorithm": "faithful_replay",
+    "total_resource": 3,
+    "world_id": "friendly-observer-horizon"
+  },
+  "observer_config_hash": "edfe1290219f90bb830c054f35b71c8c69b3ed84b6382305e6941fe0f40389f1",
+  "standard_config": {
+    "history_length": 4,
+    "ledger_capacity": 64,
+    "num_agents": 3,
+    "num_obligations": 2,
+    "reconstruction_algorithm": "faithful_replay",
+    "total_resource": 3,
+    "world_id": "friendly"
+  },
+  "standard_config_hash": "21f196338b136d8b1c60e7ecc1fc2c28c434b8e9b6d043e9bff6b007b5782f08"
+}
