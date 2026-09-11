@@ -1,15 +1,21 @@
 """Test 05E: Integrated Animus Omega Evaluation.
 
-Combines the Test 05A-D component results (already independently computed
-and recorded) under the strict gating rules from the protocol. This module
-performs no simulation of its own: it only reads the already-computed
-component result dictionaries and applies the gating logic, so the
-integrated conclusion is fully recomputable from those component results
-(and, transitively, from the raw evidence they were built from).
+Protocol v2, update A: the integrated result is a *gated dashboard*. Every
+component below is computed and reported independently of the others and
+independently of the final integrated status, using these result functions
+as the single source of truth for both the standalone dashboard entries
+(built by run.py) and the integrated gate table (built here) -- so a
+component's displayed status can never silently drift from what actually
+gates the integrated conclusion. An integrated failure never erases or
+hides a component's own result.
 
-Per protocol: "If any required component is unsupported, inconclusive,
-ineligible, or invalid, the complete conjecture is not supported by this
-run." This module never converts "not supported" into "disproved".
+Allowed statuses: supported, unsupported, inconclusive, ineligible, invalid.
+
+This module performs no simulation of its own: it only reads the already-
+computed 05A-05D component result dictionaries. Per protocol: "If any
+required component is unsupported, inconclusive, ineligible, or invalid,
+the complete conjecture is not supported by this run." This is never
+converted to "disproved."
 """
 
 from __future__ import annotations
@@ -21,6 +27,121 @@ def _gate(name: str, ok: bool, detail: str) -> dict:
     return {"gate": name, "ok": ok, "detail": detail}
 
 
+# ---------------------------------------------------------------------------
+# Shared component-result derivations (single source of truth for both the
+# dashboard entries in run.py and the gate table below).
+# ---------------------------------------------------------------------------
+
+def genuine_information_loss_result(residual_result: dict) -> dict:
+    """Split out from 05B's bundled status: whether the residual is a
+    demonstrably non-injective function of the admissible microstate space,
+    in every world family -- independent of whether the probes/controls
+    also pass."""
+    families = residual_result.get("per_world_family", {})
+    if not families:
+        return {"status": "invalid", "reason": "no world family evaluated", "per_world_family": {}}
+    per_family = {
+        fid: r.get("support_checks", {}).get("non_injective_loss_demonstrated", False)
+        for fid, r in families.items()
+    }
+    status = "supported" if all(per_family.values()) else "unsupported"
+    return {
+        "status": status,
+        "reason": (
+            "every world family's residual has at least one collision group (two distinct admissible "
+            "microstates mapping to the same residual)"
+            if status == "supported"
+            else "at least one world family's residual was injective (no genuine loss demonstrated)"
+        ),
+        "per_world_family": per_family,
+    }
+
+
+def semantic_continuity_result(residual_result: dict) -> dict:
+    """Split out from 05B's bundled status: whether the semantic probe
+    battery, positive controls, negative controls, and leakage audit all
+    pass -- independent of the genuine-loss (non-injectivity) finding."""
+    families = residual_result.get("per_world_family", {})
+    if not families:
+        return {"status": "invalid", "reason": "no world family evaluated", "per_world_family": {}}
+    keys = (
+        "main_residual_passes_all_probes", "positive_controls_pass",
+        "negative_controls_correctly_fail", "leakage_audit_clean",
+    )
+    per_family = {}
+    for fid, r in families.items():
+        checks = r.get("support_checks", {})
+        per_family[fid] = all(checks.get(k, False) for k in keys)
+    status = "supported" if all(per_family.values()) else "unsupported"
+    return {
+        "status": status,
+        "reason": (
+            "every world family's residual passes every semantic probe, every positive control passes, "
+            "every negative control correctly fails, and the leakage audit is clean"
+            if status == "supported"
+            else "at least one world family failed a semantic probe, a control, or the leakage audit"
+        ),
+        "per_world_family": per_family,
+    }
+
+
+def ledger_causality_result(boundary_result: dict, residual_result: dict) -> dict:
+    """Does the narrative ledger causally affect reconstruction/future
+    behavior? Evidenced by (a) 05B's negative controls that remove or
+    corrupt the ledger correctly failing probes, and (b) 05A's arm 8
+    (correct return value, incorrect ledger) correctly breaking closure."""
+    residual_families = residual_result.get("per_world_family", {})
+    boundary_families = boundary_result.get("per_world_family", {})
+    if not residual_families or not boundary_families:
+        return {"status": "invalid", "reason": "no world family evaluated", "per_family": {}}
+
+    per_family = {}
+    for fid, r in residual_families.items():
+        controls = r.get("controls", {})
+        no_ledger_fails = not controls.get("lossy_residual_without_ledger", {}).get("all_pass", True)
+        stale_ledger_fails = not controls.get("stale_ledger_entry", {}).get("all_pass", True)
+        contradictory_fails = not controls.get("contradictory_ledger_entry", {}).get("all_pass", True)
+        per_family[f"05B:{fid}"] = no_ledger_fails and stale_ledger_fails and contradictory_fails
+    for fid, r in boundary_families.items():
+        arm8 = next((a for a in r.get("arms", []) if a["arm_id"] == "08_correct_return_value_incorrect_ledger"), None)
+        per_family[f"05A:{fid}"] = (arm8 is not None) and (not arm8["closes"])
+
+    status = "supported" if per_family and all(per_family.values()) else "unsupported"
+    return {
+        "status": status,
+        "reason": (
+            "removing/staling/corrupting the ledger breaks semantic probes (05B) and corrupting the ledger "
+            "breaks closure (05A arm 8) in every world family"
+            if status == "supported"
+            else "at least one world family did not show the ledger causally affecting reconstruction/closure"
+        ),
+        "per_family": per_family,
+    }
+
+
+def resource_advantage_result(resource_result: dict, semantic_continuity_status: str) -> dict:
+    """Resource advantage is ELIGIBLE only if semantic fidelity (semantic
+    continuity) is itself supported; otherwise no resource comparison can
+    be trusted, regardless of what 05D's own internal computation found."""
+    if semantic_continuity_status != "supported":
+        return {
+            "status": "ineligible",
+            "reason": "semantic fidelity (semantic_continuity) is not supported, so no resource comparison is eligible",
+            "internal_status": resource_result.get("status"),
+            "per_world_family": resource_result.get("per_world_family", {}),
+        }
+    return {
+        "status": resource_result.get("status", "invalid"),
+        "reason": resource_result.get("reason", ""),
+        "internal_status": resource_result.get("status"),
+        "per_world_family": resource_result.get("per_world_family", {}),
+    }
+
+
+# ---------------------------------------------------------------------------
+# Integrated gate table
+# ---------------------------------------------------------------------------
+
 def evaluate(
     boundary_result: dict,
     residual_result: dict,
@@ -29,10 +150,6 @@ def evaluate(
 ) -> dict:
     gates: list[dict] = []
 
-    # Gate 1-4: structural gates about the executed boundary transition.
-    # These hold by construction whenever 05A actually ran (produced at
-    # least one per-family result), since world.py always executes an
-    # ending->beginning transition J with a pre-committed contract.
     boundary_families = boundary_result.get("per_world_family", {})
     ran_boundary = len(boundary_families) > 0
     gates.append(_gate(
@@ -43,7 +160,8 @@ def evaluate(
     gates.append(_gate(
         "independently_locked_beginning_contract",
         ran_boundary,
-        "locked_beginning_contract() is a pure function of WorldConfig only, computed before any history executes",
+        "FrozenContract is a pure function of WorldConfig only, computed and hashed before any history executes "
+        "(protocol v2, update E)",
     ))
     gates.append(_gate(
         "ending_derived_return_value_present",
@@ -53,11 +171,9 @@ def evaluate(
     gates.append(_gate(
         "executed_transition_ending_to_beginning",
         ran_boundary,
-        "execute_J() is called for every arm of every evaluated world family",
+        "execute_J() is called and consumes the frozen contract for every arm of every evaluated world family",
     ))
 
-    # Gate 5-6: closing/non-closing histories and causal sensitivity, read
-    # from 05A's per-family support checks.
     any_family_both_closing_and_nonclosing = any(
         r.get("support_checks", {}).get("at_least_one_natural_closing_history")
         and r.get("support_checks", {}).get("at_least_one_natural_non_closing_history")
@@ -71,111 +187,91 @@ def evaluate(
     any_family_relevant_sensitivity = any(
         r.get("support_checks", {}).get("relevant_intermediate_breaks_closure")
         and r.get("support_checks", {}).get("irrelevant_intermediate_preserves_closure")
+        and r.get("support_checks", {}).get("relevant_intermediate_modifies_causal_path")
+        and r.get("support_checks", {}).get("irrelevant_intermediate_does_not_modify_causal_path")
         for r in boundary_families.values()
     )
     gates.append(_gate(
-        "causal_sensitivity_to_endpoint_information",
+        "causal_sensitivity_and_specificity",
         any_family_relevant_sensitivity,
-        "at least one 05A world family shows relevant interventions breaking closure while irrelevant ones do not",
+        "at least one 05A world family shows relevant interventions breaking closure AND modifying the "
+        "declared causal path, while irrelevant ones do neither",
     ))
 
-    # Gate 7-8: genuine loss and preserved semantics, from 05B.
-    residual_families = residual_result.get("per_world_family", {})
-    any_non_injective = any(r.get("collision_analysis", {}).get("non_injective") for r in residual_families.values())
-    gates.append(_gate(
-        "genuine_information_loss",
-        any_non_injective,
-        "at least one 05B world family's residual is a non-injective function of the admissible microstate space",
-    ))
-    semantic_preserved = residual_result.get("status") == "supported"
-    gates.append(_gate(
-        "preserved_semantic_behavior_through_loss",
-        semantic_preserved,
-        f"05B overall status is {residual_result.get('status')!r}",
-    ))
+    loss = genuine_information_loss_result(residual_result)
+    gates.append(_gate("genuine_information_loss", loss["status"] == "supported", loss["reason"]))
 
-    # Gate 9: narrative ledger causally affects reconstruction/future
-    # behavior. Evidenced by (a) 05B's negative controls that remove or
-    # corrupt the ledger correctly failing probes, and (b) 05A's arm 8
-    # (correct return value, incorrect ledger) correctly breaking closure.
-    ledger_matters_05b = all(
-        not r.get("controls", {}).get("lossy_residual_without_ledger", {}).get("all_pass", True)
-        for r in residual_families.values()
-        if "lossy_residual_without_ledger" in r.get("controls", {})
-    ) and len(residual_families) > 0
-    ledger_matters_05a = all(
-        not next((a for a in r.get("arms", []) if a["arm_id"] == "08_correct_return_value_incorrect_ledger"), {"closes": True}).get("closes", True)
-        for r in boundary_families.values()
-        if r.get("arms")
-    )
-    gates.append(_gate(
-        "narrative_ledger_causally_load_bearing",
-        ledger_matters_05b and ledger_matters_05a,
-        "removing the ledger breaks semantic probes (05B) and corrupting the ledger breaks closure (05A arm 8)",
-    ))
+    semantic = semantic_continuity_result(residual_result)
+    gates.append(_gate("preserved_semantic_behavior_through_loss", semantic["status"] == "supported", semantic["reason"]))
 
-    # Gate 10-11: observer boundary detection, from 05C.
+    ledger_causality = ledger_causality_result(boundary_result, residual_result)
+    gates.append(_gate("narrative_ledger_causally_load_bearing", ledger_causality["status"] == "supported", ledger_causality["reason"]))
+
     observer_families = observer_result.get("per_world_family", {})
     positive_controls_ok = all(
-        any(o["observer_id"] == "full_state_positive_control" and o["conclusion"] == "positive_control_valid" for o in r.get("observers", []))
-        for r in observer_families.values() if "observers" in r
+        r.get("positive_control_result", {}).get("conclusion") == "positive_control_valid"
+        for r in observer_families.values() if "positive_control_result" in r
     ) and len(observer_families) > 0
     gates.append(_gate(
         "positive_control_observer_detects_boundary",
         positive_controls_ok,
         "the full-state observer's TV distance exceeds the positive-control threshold in every 05C world family",
     ))
-    bounded_indistinguishable = all(
+    primary_observer_ok = all(
         r.get("status") == "supported" for r in observer_families.values()
     ) and len(observer_families) > 0
     gates.append(_gate(
-        "no_qualifying_distinction_for_bounded_observer",
-        bounded_indistinguishable,
-        "every bounded observer class stays under the frozen indistinguishability threshold in every 05C world family",
+        "no_qualifying_distinction_for_primary_bounded_observer",
+        primary_observer_ok,
+        "the single frozen PRIMARY bounded observer stays under the indistinguishability threshold in every "
+        "05C world family (sensitivity-analysis classes are diagnostic only and never gate this)",
     ))
 
-    # Gate 12: resource advantage, from 05D -- but only eligible if 05B
-    # (semantic fidelity) is itself supported; otherwise the resource
-    # comparison is ineligible regardless of its own internal result.
-    resource_eligible = semantic_preserved
-    resource_ok = resource_eligible and resource_result.get("status") == "supported"
+    resource = resource_advantage_result(resource_result, semantic["status"])
     gates.append(_gate(
         "fidelity_matched_resource_advantage",
-        resource_ok,
-        (
-            "ineligible: semantic fidelity (05B) is not supported, so no resource comparison can be trusted"
-            if not resource_eligible
-            else f"05D overall status is {resource_result.get('status')!r}"
-        ),
+        resource["status"] == "supported",
+        resource["reason"],
     ))
 
-    # Gate 13: negative/fault-injection controls, from 05B.
     controls_ok = all(
-        r.get("support_checks", {}).get("negative_controls_correctly_fail") for r in residual_families.values()
-    ) and len(residual_families) > 0
+        r.get("support_checks", {}).get("negative_controls_correctly_fail")
+        for r in residual_result.get("per_world_family", {}).values()
+    ) and len(residual_result.get("per_world_family", {})) > 0
     gates.append(_gate(
         "negative_and_fault_injection_controls_pass",
         controls_ok,
         "every 05B world family's negative controls correctly fail at least one semantic probe",
     ))
 
-    failed_gates = [g["gate"] for g in gates if not g["ok"] and "ineligible" not in g["detail"]]
-    ineligible_gates = [g["gate"] for g in gates if not g["ok"] and "ineligible" in g["detail"]]
+    failed_gates = []
+    ineligible_gates = []
     invalid_gates = []
-    if any(r.get("status") == "invalid" for r in observer_families.values()):
-        invalid_gates.append("positive_control_observer_detects_boundary")
-    if residual_result.get("status") not in ("supported", "unsupported"):
-        invalid_gates.append("preserved_semantic_behavior_through_loss")
+    for g in gates:
+        if g["ok"]:
+            continue
+        if g["gate"] == "fidelity_matched_resource_advantage" and resource["status"] == "ineligible":
+            ineligible_gates.append(g["gate"])
+        elif g["gate"] == "positive_control_observer_detects_boundary":
+            invalid_gates.append(g["gate"])
+        else:
+            failed_gates.append(g["gate"])
 
-    all_ok = all(g["ok"] for g in gates) and not invalid_gates
+    all_ok = all(g["ok"] for g in gates)
     status = "supported" if all_ok else "not_supported"
 
     return {
         "status": status,
         "gates": gates,
-        "failed_gates": [g for g in failed_gates if g not in invalid_gates],
+        "failed_gates": failed_gates,
         "ineligible_gates": ineligible_gates,
         "invalid_gates": invalid_gates,
+        "component_summaries": {
+            "genuine_information_loss": loss,
+            "semantic_continuity": semantic,
+            "ledger_causality": ledger_causality,
+            "resource_advantage": resource,
+        },
         "interpretation": (
             "Every integration gate passed for this bounded, deterministic development protocol. This "
             "supports the specific implemented model only; it does not establish consciousness, subjective "
@@ -186,7 +282,8 @@ def evaluate(
                 "At least one integration gate did not pass (see failed_gates/ineligible_gates/invalid_gates). "
                 "The complete Animus Omega conjecture is therefore not supported by this development run. "
                 "This is not evidence that it is disproved: it means this bounded model and protocol did not "
-                "jointly demonstrate every required property in the same run."
+                "jointly demonstrate every required property in the same run. Every component result above "
+                "remains valid and preserved regardless of this integrated outcome."
             )
         ),
     }

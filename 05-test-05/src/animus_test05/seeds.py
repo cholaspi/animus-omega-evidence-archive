@@ -30,7 +30,13 @@ from typing import Sequence
 
 # Disjoint from Test 04's reserved bands (42000-42019, 43000-43019) and from
 # each other. These are declared, not derived, so they can be audited by eye.
-DEVELOPMENT_SEED_BANDS: dict[str, range] = {
+#
+# PROTOCOL_V1_DEVELOPMENT_SEED_BANDS were used only by the superseded
+# development pilot (see 05-test-05/superseded-development-pilot-2026-09-11/).
+# They are kept here, unchanged, for provenance/audit purposes, but the
+# revised (v2) protocol uses a disjoint band so no seed is reused across
+# protocol versions.
+PROTOCOL_V1_DEVELOPMENT_SEED_BANDS: dict[str, range] = {
     "05A": range(55000, 55020),
     "05B": range(55100, 55120),
     "05C": range(55200, 55220),
@@ -38,12 +44,25 @@ DEVELOPMENT_SEED_BANDS: dict[str, range] = {
     "05E": range(55400, 55420),
 }
 
+PROTOCOL_V2_DEVELOPMENT_SEED_BANDS: dict[str, range] = {
+    "05A": range(57000, 57020),
+    "05B": range(57100, 57120),
+    "05C": range(57200, 57220),
+    "05D": range(57300, 57320),
+    "05E": range(57400, 57420),
+}
+
+# Active band used by the current protocol version's entrypoint
+# (``run.py``). Kept as a separate name so a future protocol version can be
+# added without editing the v1/v2 bands above.
+DEVELOPMENT_SEED_BANDS: dict[str, range] = PROTOCOL_V2_DEVELOPMENT_SEED_BANDS
+
 RESERVED_CONFIRMATORY_SEED_BANDS: dict[str, range] = {
-    "05A": range(56000, 56020),
-    "05B": range(56100, 56120),
-    "05C": range(56200, 56220),
-    "05D": range(56300, 56320),
-    "05E": range(56400, 56420),
+    "05A": range(58000, 58020),
+    "05B": range(58100, 58120),
+    "05C": range(58200, 58220),
+    "05D": range(58300, 58320),
+    "05E": range(58400, 58420),
 }
 
 # Deliberately unsatisfiable until a human freezes a real confirmatory
@@ -65,8 +84,13 @@ def all_reserved_seeds() -> set[int]:
 
 
 def all_development_seeds() -> set[int]:
+    """All seeds ever registered as development seeds, across every
+    protocol version (v1 included), so historical/superseded evidence is
+    never misclassified as having used a reserved seed."""
     out: set[int] = set()
-    for band in DEVELOPMENT_SEED_BANDS.values():
+    for band in PROTOCOL_V1_DEVELOPMENT_SEED_BANDS.values():
+        out.update(band)
+    for band in PROTOCOL_V2_DEVELOPMENT_SEED_BANDS.values():
         out.update(band)
     return out
 

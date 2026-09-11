@@ -49,13 +49,67 @@ class TrackedReturnValue:
         return self._value is not None
 
 
-def locked_beginning_contract(config: W.WorldConfig) -> dict:
+class FrozenContract:
+    """An immutable, hash-verified beginning contract (protocol v2, update
+    E). Constructed once from ``WorldConfig`` only, before any history for
+    that construction executes -- a pure function of config, so it cannot
+    have been created after execution began or modified after observing an
+    ending. The boundary transition must ``consume()`` this exact object
+    (not merely receive its hash) to build the next beginning; a
+    transition that never calls ``consume()`` is detectable and, per the
+    contract-satisfaction check below, invalid."""
+
+    __slots__ = ("_data", "_hash", "_consumed")
+
+    def __init__(self, data: dict):
+        object.__setattr__(self, "_data", dict(data))
+        object.__setattr__(self, "_hash", hash_obj(data))
+        object.__setattr__(self, "_consumed", False)
+
+    def __setattr__(self, key, value):
+        raise TypeError("FrozenContract is immutable; it cannot be modified after creation")
+
+    def __delattr__(self, key):
+        raise TypeError("FrozenContract is immutable; it cannot be modified after creation")
+
+    @property
+    def content_hash(self) -> str:
+        return self._hash
+
+    @property
+    def consumed(self) -> bool:
+        return self._consumed
+
+    def verify(self, expected_hash: str) -> bool:
+        """Confirms this object's data still hashes to ``expected_hash``,
+        i.e. it was not modified since it was committed."""
+        return self._hash == expected_hash and hash_obj(self._data) == self._hash
+
+    def consume(self) -> dict:
+        """Called by the boundary transition. Marks this contract instance
+        as consumed and returns a plain-dict copy of its frozen data for
+        the transition to actually use (not just verify against)."""
+        object.__setattr__(self, "_consumed", True)
+        return dict(self._data)
+
+    def to_evidence(self) -> dict:
+        return {"data": dict(self._data), "content_hash": self._hash, "consumed": self._consumed}
+
+
+def locked_beginning_contract(config: W.WorldConfig) -> FrozenContract:
     """Committed before any history executes; a pure function of config
-    only. Never selected or revised after observing an ending."""
-    return {
-        "total_conserved_invariant": config.total_resource,
-        "min_resolutions": 1,
-    }
+    only. Never selected or revised after observing an ending. Returns a
+    fresh ``FrozenContract`` instance -- callers construct one at the point
+    they are about to attempt a boundary transition, which is always before
+    that transition's history has been executed (see ``find_reference_history``
+    and ``_run_arm``, which construct the contract before calling
+    ``execute_J``)."""
+    return FrozenContract(
+        {
+            "total_conserved_invariant": config.total_resource,
+            "min_resolutions": 1,
+        }
+    )
 
 
 def execute_J(
@@ -63,11 +117,16 @@ def execute_J(
     ledger: list[dict],
     return_value: Optional[dict],
     config: W.WorldConfig,
+    contract: FrozenContract,
     use_endpoint: bool = True,
 ) -> tuple[dict, TrackedReturnValue]:
     """The executed boundary transition. Builds the next beginning's public
-    fields from the three inputs. Returns (next_beginning, tracked_rv) so
-    callers can check whether the return value was actually read."""
+    fields from the four inputs, *consuming* the actual frozen contract
+    object (not merely checking its hash) so its data can flow into the
+    output -- proof that the transition used the real contract rather than
+    a label or a bare hash. Returns (next_beginning, tracked_rv) so callers
+    can check whether the return value was actually read."""
+    contract_data = contract.consume()
     tracked = TrackedReturnValue(return_value if use_endpoint else None)
     primary_holder = tracked.get("primary_holder") if use_endpoint else None
     resolved_count_hint = tracked.get("resolved_count") if use_endpoint else None
@@ -76,6 +135,10 @@ def execute_J(
         "primary_holder": primary_holder,
         "resolved_count_hint": resolved_count_hint,
         "ledger_root": hash_obj(ledger),
+        # Data taken from the *consumed* contract, not merely its hash:
+        # proves the transition actually used the frozen contract's
+        # content to build its output.
+        "declared_min_resolutions": contract_data["min_resolutions"],
     }
     return next_beginning, tracked
 
@@ -84,10 +147,15 @@ def _valid_agent_id(value: Any, config: W.WorldConfig) -> bool:
     return isinstance(value, str) and value in config.agent_ids()
 
 
-def contract_satisfied(next_beginning: dict, contract: dict, config: W.WorldConfig) -> tuple[bool, Optional[str]]:
+def contract_satisfied(next_beginning: dict, contract: FrozenContract, config: W.WorldConfig) -> tuple[bool, Optional[str]]:
     """Structural check only: does next_beginning satisfy the pre-committed
     contract, using only the values actually present in next_beginning (no
     access to the true ending)? Returns (ok, first_fail_reason)."""
+    if not contract.consumed:
+        return False, "contract_not_consumed"
+    data = contract._data  # read-only access; contract itself stays immutable
+    if next_beginning.get("declared_min_resolutions") != data["min_resolutions"]:
+        return False, "contract_data_not_propagated_to_output"
     if not _valid_agent_id(next_beginning.get("primary_holder"), config):
         return False, "primary_holder_missing_or_invalid"
     rc = next_beginning.get("resolved_count_hint")
@@ -95,9 +163,9 @@ def contract_satisfied(next_beginning: dict, contract: dict, config: W.WorldConf
         return False, "resolved_count_missing_or_invalid"
     if next_beginning.get("total") is None:
         return False, "total_missing"
-    if next_beginning["total"] + rc != contract["total_conserved_invariant"]:
+    if next_beginning["total"] + rc != data["total_conserved_invariant"]:
         return False, "total_conservation_violated"
-    if rc < contract["min_resolutions"]:
+    if rc < data["min_resolutions"]:
         return False, "min_resolutions_not_met"
     if not next_beginning.get("ledger_root"):
         return False, "ledger_root_missing"
@@ -141,6 +209,7 @@ class ArmResult:
     exact_closure_detail: Optional[dict]
     return_value_used: bool
     notes: str = ""
+    causal_path_diff: Optional[dict] = None
 
 
 def _base_natural_inputs(config: W.WorldConfig, history: tuple[str, ...]):
@@ -149,6 +218,53 @@ def _base_natural_inputs(config: W.WorldConfig, history: tuple[str, ...]):
     reconstructed = W.replay(config, true_ledger)
     true_rv = W.return_value_of(true_ending)
     return true_ending, true_ledger, reconstructed, true_rv
+
+
+def serialize_causal_path(config: W.WorldConfig, history: tuple[str, ...], tick_index: int) -> dict:
+    """Protocol v2, update H: serializes the claimed causal path for a
+    history, anchored at ``tick_index`` (the tick an intervention will
+    mutate): intermediate action -> later state -> ending state -> return
+    value -> reconstruction. This is computed *before* any intervention is
+    applied (it describes the baseline path), so the validator can diff it
+    against the same path computed for a mutated history and confirm a
+    "relevant" intervention actually changed executed data somewhere along
+    it, while an "irrelevant" one changed none of these stages."""
+    import copy as _copy
+
+    state = W.initial_state(config)
+    later_state_public = None
+    for i, action in enumerate(history):
+        state = W.step(state, action, config)
+        if i == tick_index:
+            later_state_public = W.public_fields(_copy.deepcopy(state))
+    ending_state = state
+    ledger = W.relevant_ledger(ending_state)
+    reconstruction = W.replay(config, ledger)
+    return {
+        "intermediate_action": {"tick": tick_index, "action": history[tick_index]},
+        "later_state": later_state_public,
+        "ending_state": W.public_fields(ending_state),
+        "return_value": W.return_value_of(ending_state),
+        "reconstruction": W.public_fields(reconstruction),
+    }
+
+
+def diff_causal_paths(baseline_path: dict, mutated_path: dict) -> dict:
+    """Reports, for every stage after the intermediate action itself,
+    whether the mutated history's causal path actually differs from the
+    baseline's -- the concrete evidence a validator uses to confirm a
+    relevant intervention modified executed data on the declared path (and
+    that an irrelevant one did not)."""
+    stages = ["later_state", "ending_state", "return_value", "reconstruction"]
+    diffs = {}
+    for stage in stages:
+        mismatch = W.first_mismatch(baseline_path[stage], mutated_path[stage])
+        diffs[stage] = {"differs": mismatch is not None, "first_mismatch": mismatch}
+    return {
+        "stages_checked": stages,
+        "any_stage_differs": any(d["differs"] for d in diffs.values()),
+        "per_stage": diffs,
+    }
 
 
 def _run_arm(
@@ -161,15 +277,17 @@ def _run_arm(
     config: W.WorldConfig,
     use_endpoint: bool = True,
     notes: str = "",
+    causal_path_diff: Optional[dict] = None,
 ) -> ArmResult:
-    contract = locked_beginning_contract(config)
-    next_beginning, tracked = execute_J(reconstructed_state, ledger, return_value, config, use_endpoint)
+    contract = locked_beginning_contract(config)  # committed here, before this arm's transition executes
+    next_beginning, tracked = execute_J(reconstructed_state, ledger, return_value, config, contract, use_endpoint)
     c_ok, c_fail = contract_satisfied(next_beginning, contract, config)
     e_ok, e_fail_field, e_detail = exact_closure(next_beginning, true_ending_state, config)
     rv_used = ("primary_holder" in tracked.accessed_fields) or ("resolved_count" in tracked.accessed_fields)
     return ArmResult(
         arm_id=arm_id,
         description=description,
+        causal_path_diff=causal_path_diff,
         closes=bool(e_ok),
         contract_satisfied=bool(c_ok),
         contract_fail_reason=c_fail,
@@ -182,7 +300,6 @@ def _run_arm(
 
 def find_reference_history(
     config: W.WorldConfig,
-    contract: dict,
 ) -> tuple[Optional[tuple[str, ...]], list[tuple[str, ...]], list[tuple[str, ...]]]:
     """Enumerate all admissible histories and classify natural closure.
     Returns (reference_history_or_None, closing_histories, non_closing_histories).
@@ -196,11 +313,15 @@ def find_reference_history(
     rich_candidate = None
     plain_candidate = None
     for history in W.enumerate_histories(config):
+        # A fresh contract instance is committed here, before this
+        # history's transition executes -- config-only, never revised
+        # after observing this history's ending.
+        contract = locked_beginning_contract(config)
         ending = W.run_history(config, history)
         ledger = W.relevant_ledger(ending)
         reconstructed = W.replay(config, ledger)
         rv = W.return_value_of(ending)
-        next_beginning, _ = execute_J(reconstructed, ledger, rv, config)
+        next_beginning, _ = execute_J(reconstructed, ledger, rv, config, contract)
         c_ok, _ = contract_satisfied(next_beginning, contract, config)
         e_ok, _, _ = exact_closure(next_beginning, ending, config)
         if c_ok and e_ok:
@@ -222,7 +343,6 @@ def run_intervention_arms(
     reference_history: tuple[str, ...],
     rng_seed: int,
 ) -> list[ArmResult]:
-    contract = locked_beginning_contract(config)
     true_ending, true_ledger, reconstructed, true_rv = _base_natural_inputs(config, reference_history)
     rng = random.Random(rng_seed)
     arms: list[ArmResult] = []
@@ -320,6 +440,14 @@ def run_intervention_arms(
         mutated_end, mutated_ledger, mutated_reconstructed, mutated_rv2 = _base_natural_inputs(
             config, mutated_history
         )
+        # Serialize the claimed causal path for both the baseline and the
+        # mutated history, anchored at the intervention tick, and diff them
+        # so the validator can confirm this "relevant" intervention actually
+        # changed executed data on the path (later_state/ending_state/
+        # return_value/reconstruction), not merely that we labeled it relevant.
+        baseline_path = serialize_causal_path(config, reference_history, pos)
+        mutated_path = serialize_causal_path(config, mutated_history, pos)
+        path_diff = diff_causal_paths(baseline_path, mutated_path)
         # Key test: keep the ORIGINAL true return value (as if the endpoint
         # information were never updated to reflect the mutated execution)
         # together with the mutated execution's own ledger/reconstruction,
@@ -335,6 +463,7 @@ def run_intervention_arms(
                 "reference history's true ending.",
                 mutated_reconstructed, mutated_ledger, true_rv, true_ending, config,
                 notes=f"mutated_history={mutated_history} own_true_rv={mutated_rv2}",
+                causal_path_diff=path_diff,
             )
         )
     else:
@@ -358,6 +487,9 @@ def run_intervention_arms(
         mutated_end, mutated_ledger, mutated_reconstructed, mutated_rv2 = _base_natural_inputs(
             config, mutated_history
         )
+        baseline_path = serialize_causal_path(config, reference_history, pos)
+        mutated_path = serialize_causal_path(config, mutated_history, pos)
+        path_diff = diff_causal_paths(baseline_path, mutated_path)
         arms.append(
             _run_arm(
                 "07_irrelevant_intermediate_mutation",
@@ -366,6 +498,7 @@ def run_intervention_arms(
                 "checked against the original reference history's true ending.",
                 mutated_reconstructed, mutated_ledger, true_rv, true_ending, config,
                 notes=f"mutated_history={mutated_history} own_true_rv={mutated_rv2}",
+                causal_path_diff=path_diff,
             )
         )
     else:
@@ -462,6 +595,8 @@ def run_intervention_arms(
     # default is deliberately an invalid sentinel (never a real agent id)
     # so detection does not depend on this world family's particular true
     # holder happening to differ from a hardcoded guess.
+    ignored_rv_contract = locked_beginning_contract(config)
+    contract_data = ignored_rv_contract.consume()  # the broken transition still consumes the real contract...
     tracked = TrackedReturnValue(true_rv)
     read_value = tracked.get("primary_holder")  # computed...
     IGNORED_SENTINEL = None
@@ -470,12 +605,13 @@ def run_intervention_arms(
         "primary_holder": IGNORED_SENTINEL,  # ...but ignored: never propagated
         "resolved_count_hint": true_rv["resolved_count"],
         "ledger_root": hash_obj(true_ledger),
+        "declared_min_resolutions": contract_data["min_resolutions"],  # ...isolating the RV-ignoring defect alone
     }
     ignored_flag = (
         "primary_holder" in tracked.accessed_fields
         and broken_next_beginning["primary_holder"] != read_value
     )
-    c_ok, c_fail = contract_satisfied(broken_next_beginning, contract, config)
+    c_ok, c_fail = contract_satisfied(broken_next_beginning, ignored_rv_contract, config)
     e_ok, e_field, e_detail = exact_closure(broken_next_beginning, true_ending, config)
     arms.append(
         ArmResult(
@@ -496,12 +632,22 @@ def run_intervention_arms(
 
 
 def evaluate_world_family(config: W.WorldConfig, rng_seed: int) -> dict:
-    contract = locked_beginning_contract(config)
-    reference, closing, non_closing = find_reference_history(config, contract)
+    # A dedicated contract instance, committed here for the evidence
+    # record, strictly before any history in this world family is
+    # enumerated or executed -- this is the "proof of pre-tick-zero
+    # commitment" the validator checks (ordering: this line precedes every
+    # call to find_reference_history/run_history below).
+    beginning_commitment = locked_beginning_contract(config)
+    commitment_evidence = {
+        **beginning_commitment.to_evidence(),
+        "note": "constructed from WorldConfig only, before any history in this world family was enumerated or executed",
+    }
+    reference, closing, non_closing = find_reference_history(config)
     result: dict[str, Any] = {
         "world_id": config.world_id,
+        "rng_seed": rng_seed,
         "config": config.to_dict(),
-        "contract": contract,
+        "beginning_commitment": commitment_evidence,
         "total_histories": len(closing) + len(non_closing),
         "closing_count": len(closing),
         "non_closing_count": len(non_closing),
@@ -534,6 +680,18 @@ def evaluate_world_family(config: W.WorldConfig, rng_seed: int) -> dict:
     irrelevant_preserved = irrelevant_arm.notes != "ineligible" and irrelevant_arm.closes
     ignored_detected = "ignored_return_value_detected=True" in ignored_arm.notes
 
+    # Protocol v2, update H: the validator-facing confirmation that a
+    # relevant intervention actually modified executed data on the declared
+    # causal path (sensitivity), and that an irrelevant one did not
+    # (specificity) -- read from the causal_path_diff computed alongside
+    # each arm, not merely inferred from the closure outcome.
+    relevant_path_modified = (
+        relevant_arm.causal_path_diff is not None and relevant_arm.causal_path_diff["any_stage_differs"]
+    )
+    irrelevant_path_unmodified = (
+        irrelevant_arm.causal_path_diff is not None and not irrelevant_arm.causal_path_diff["any_stage_differs"]
+    )
+
     result["support_checks"] = {
         "at_least_one_natural_closing_history": len(closing) >= 1,
         "at_least_one_natural_non_closing_history": len(non_closing) >= 1,
@@ -541,8 +699,10 @@ def evaluate_world_family(config: W.WorldConfig, rng_seed: int) -> dict:
         "all_disrupting_arms_break_closure": all_disruptions_broke,
         "relevant_intermediate_arm_applicable": relevant_arm.notes != "ineligible",
         "relevant_intermediate_breaks_closure": relevant_broke,
+        "relevant_intermediate_modifies_causal_path": relevant_path_modified,
         "irrelevant_intermediate_arm_applicable": irrelevant_arm.notes != "ineligible",
         "irrelevant_intermediate_preserves_closure": irrelevant_preserved,
+        "irrelevant_intermediate_does_not_modify_causal_path": irrelevant_path_unmodified,
         "ignored_return_value_detected_and_rejected": ignored_detected and not ignored_arm.closes,
     }
     checks = result["support_checks"]
@@ -557,6 +717,12 @@ def evaluate_world_family(config: W.WorldConfig, rng_seed: int) -> dict:
         result["status"] = "unsupported"
     elif not (checks["relevant_intermediate_arm_applicable"] and checks["irrelevant_intermediate_arm_applicable"]):
         result["status"] = "inconclusive"
+    elif not (checks["relevant_intermediate_modifies_causal_path"] and checks["irrelevant_intermediate_does_not_modify_causal_path"]):
+        result["status"] = "unsupported"
+        result["reason"] = (
+            "the causal-path diff did not confirm sensitivity+specificity: a relevant intervention must "
+            "modify executed data on the declared path, and an irrelevant one must not"
+        )
         result["reason"] = "relevant/irrelevant intermediate-action arms not both constructible for this world family"
     elif not checks["relevant_intermediate_breaks_closure"] or not checks["irrelevant_intermediate_preserves_closure"]:
         result["status"] = "unsupported"
@@ -587,3 +753,15 @@ def run_component(world_families, seed_base: int) -> dict:
         ),
         "per_world_family": per_family,
     }
+
+
+# Protocol v2, update F: register the boundary-transition core functions
+# for the arm-label-leakage audit. Note ``_run_arm`` and ``ArmResult`` are
+# deliberately NOT registered: they are report-layer helpers that attach
+# human-readable labels *after* the simulator core below has already
+# produced its result, never feeding labels into the simulation itself.
+from . import label_audit as _label_audit  # noqa: E402
+
+_label_audit.register("boundary.execute_J", execute_J)
+_label_audit.register("boundary.contract_satisfied", contract_satisfied)
+_label_audit.register("boundary.exact_closure", exact_closure)

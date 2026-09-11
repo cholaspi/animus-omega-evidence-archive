@@ -1,12 +1,17 @@
-"""Development world families for Test 05.
+"""Frozen development world families for Test 05, protocol v2.
 
-Per the run procedure, conclusions must not rest on repeated seeds of a
-single template. Each entry below is a *structurally different* world: a
-different number of agents, a different obligation-chain length, a different
-reconstruction algorithm, a different ledger capacity, or a different
-adversarial condition (residual collision pressure, identity substitution,
-causal reordering). World families are independent of arm labels: nothing
-here encodes an expected outcome.
+Revision note (protocol v2): the v1 draft used seven world families for
+05A/05B/05D plus two dedicated families for 05C. Per the revised protocol
+this was replaced with exactly **two** world families -- a friendly
+obligation world and an adversarial world -- so that "many arms/controls
+from one template" is never mistaken for "many independent world
+families." Each family carries two *configurations*: a ``standard_config``
+(used by 05A/05B/05D, short history for tractable exhaustive enumeration of
+every admissible history) and an ``observer_config`` (the same family's
+agent count and obligation structure, but a longer history so a
+phase-matched interior window exists for 05C -- still the same family, not
+a new one). Nothing here encodes an expected outcome, arm label, or closure
+status.
 """
 
 from __future__ import annotations
@@ -20,20 +25,28 @@ from .world import WorldConfig
 class WorldFamily:
     family_id: str
     description: str
-    config: WorldConfig
-    # Extra, family-specific knobs consumed by 05B/05C/05D, not by the core
-    # world mechanics in world.py.
-    loss_profile: str  # which microstate fields residual.py discards
-    adversarial: tuple[str, ...] = ()  # e.g. ("identity_substitution",)
+    standard_config: WorldConfig
+    observer_config: WorldConfig
+    loss_profile: str
+    adversarial: tuple[str, ...] = ()
+
+    # Backward-compatible alias: most 05A/05B/05D code just wants "the"
+    # config for this family (the short, fully-enumerable one).
+    @property
+    def config(self) -> WorldConfig:
+        return self.standard_config
 
 
 def all_world_families() -> list[WorldFamily]:
     return [
         WorldFamily(
-            family_id="triad-standard",
-            description="3 agents, 2-obligation chain, faithful reconstruction.",
-            config=WorldConfig(
-                world_id="triad-standard",
+            family_id="friendly",
+            description=(
+                "Friendly obligation world: 3 agents, a simple 2-obligation causal chain, faithful "
+                "reconstruction, no adversarial conditions."
+            ),
+            standard_config=WorldConfig(
+                world_id="friendly",
                 num_agents=3,
                 num_obligations=2,
                 history_length=4,
@@ -41,153 +54,54 @@ def all_world_families() -> list[WorldFamily]:
                 reconstruction_algorithm="faithful_replay",
                 ledger_capacity=64,
             ),
+            observer_config=WorldConfig(
+                world_id="friendly-observer-horizon",
+                num_agents=3,
+                num_obligations=2,
+                history_length=7,  # 2*num_agents + 1: guarantees a phase-matched interior window
+                total_resource=3,
+                reconstruction_algorithm="faithful_replay",
+                ledger_capacity=64,
+            ),
             loss_profile="standard",
         ),
         WorldFamily(
-            family_id="quad-chain",
-            description="4 agents, 3-obligation chain, faithful reconstruction.",
-            config=WorldConfig(
-                world_id="quad-chain",
-                num_agents=4,
+            family_id="adversarial",
+            description=(
+                "Adversarial world: 3 agents, a 3-obligation causal chain, and adversarial probes for "
+                "identity substitution and causal reordering layered on top of the same residual-collision, "
+                "obligation-deletion, contradiction, stale-event, and duplicate-event controls applied to "
+                "every world family (see residual.run_controls)."
+            ),
+            standard_config=WorldConfig(
+                world_id="adversarial",
+                num_agents=3,
                 num_obligations=3,
                 history_length=4,
-                total_resource=4,
-                reconstruction_algorithm="faithful_replay",
-                ledger_capacity=64,
-            ),
-            loss_profile="standard",
-        ),
-        WorldFamily(
-            family_id="triad-lossy-reconstruction",
-            description=(
-                "3 agents, 2-obligation chain, but reconstruction replays "
-                "with a lossy algorithm that drops blocked-event detail; "
-                "adversarial for reciprocal closure since some natural "
-                "histories will fail to reconstruct exactly."
-            ),
-            config=WorldConfig(
-                world_id="triad-lossy-reconstruction",
-                num_agents=3,
-                num_obligations=2,
-                history_length=4,
-                total_resource=3,
-                reconstruction_algorithm="lossy_replay",
-                ledger_capacity=64,
-            ),
-            loss_profile="aggressive",
-        ),
-        WorldFamily(
-            family_id="triad-short-ledger",
-            description=(
-                "3 agents, 2-obligation chain, 5-tick history, and a "
-                "ledger capacity (3) smaller than the relevant-event count "
-                "some histories produce, forcing ledger overflow handling."
-            ),
-            config=WorldConfig(
-                world_id="triad-short-ledger",
-                num_agents=3,
-                num_obligations=2,
-                history_length=5,
-                total_resource=3,
-                reconstruction_algorithm="faithful_replay",
-                ledger_capacity=3,
-            ),
-            loss_profile="standard",
-        ),
-        WorldFamily(
-            family_id="pentad-long-chain",
-            description="5 agents, 4-obligation chain, faithful reconstruction.",
-            config=WorldConfig(
-                world_id="pentad-long-chain",
-                num_agents=5,
-                num_obligations=4,
-                history_length=4,
-                total_resource=5,
-                reconstruction_algorithm="faithful_replay",
-                ledger_capacity=64,
-            ),
-            loss_profile="standard",
-        ),
-        WorldFamily(
-            family_id="triad-adversarial-identity",
-            description=(
-                "3 agents, 2-obligation chain; adversarial identity "
-                "substitution probes are added on top of the standard "
-                "semantic contract to test whether reconstruction can be "
-                "fooled by a relabeled agent with matching balances."
-            ),
-            config=WorldConfig(
-                world_id="triad-adversarial-identity",
-                num_agents=3,
-                num_obligations=2,
-                history_length=4,
                 total_resource=3,
                 reconstruction_algorithm="faithful_replay",
                 ledger_capacity=64,
             ),
-            loss_profile="standard",
-            adversarial=("identity_substitution",),
-        ),
-        WorldFamily(
-            family_id="quad-adversarial-reorder",
-            description=(
-                "4 agents, 3-obligation chain; adversarial causal-reorder "
-                "probes are added to test whether a reordered ledger (same "
-                "entries, different order) is wrongly accepted as "
-                "equivalent."
-            ),
-            config=WorldConfig(
-                world_id="quad-adversarial-reorder",
-                num_agents=4,
+            observer_config=WorldConfig(
+                world_id="adversarial-observer-horizon",
+                num_agents=3,
                 num_obligations=3,
-                history_length=4,
-                total_resource=4,
-                reconstruction_algorithm="faithful_replay",
-                ledger_capacity=64,
-            ),
-            loss_profile="standard",
-            adversarial=("causal_reorder",),
-        ),
-    ]
-
-
-def observer_world_families() -> list[WorldFamily]:
-    """Dedicated (smaller) world families for Test 05C. Observer boundary
-    detection needs a history long enough to contain a phase-matched
-    interior window well before the boundary window, which requires a
-    longer history than 05A/05B use; to keep exact enumeration tractable
-    (alphabet_size ** history_length grows fast) these use fewer agents
-    than the largest 05A/05B families."""
-    return [
-        WorldFamily(
-            family_id="observer-duo",
-            description="2 agents, 1 obligation, 5-tick history (exact enumeration, small).",
-            config=WorldConfig(
-                world_id="observer-duo",
-                num_agents=2,
-                num_obligations=1,
-                history_length=5,
-                total_resource=2,
-                reconstruction_algorithm="faithful_replay",
-                ledger_capacity=64,
-            ),
-            loss_profile="standard",
-        ),
-        WorldFamily(
-            family_id="observer-triad",
-            description="3 agents, 2 obligations, 7-tick history (exact enumeration).",
-            config=WorldConfig(
-                world_id="observer-triad",
-                num_agents=3,
-                num_obligations=2,
                 history_length=7,
                 total_resource=3,
                 reconstruction_algorithm="faithful_replay",
                 ledger_capacity=64,
             ),
             loss_profile="standard",
+            adversarial=("identity_substitution", "causal_reorder"),
         ),
     ]
+
+
+def observer_world_families() -> list[WorldFamily]:
+    """The same two families, exposed for 05C callers that historically
+    asked for a dedicated observer-family list. 05C uses each family's
+    ``observer_config`` rather than ``standard_config``."""
+    return all_world_families()
 
 
 def get_world_family(family_id: str) -> WorldFamily:

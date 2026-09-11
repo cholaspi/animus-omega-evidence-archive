@@ -327,3 +327,16 @@ def first_mismatch(a: dict, b: dict, path: str = "") -> tuple[str, Any, Any] | N
     if a != b:
         return (path, a, b)
     return None
+
+
+# Protocol v2, update F: register the core simulator functions for the
+# arm-label-leakage audit (see label_audit.py). Import at the bottom to
+# avoid any risk of a circular import affecting module load order.
+from . import label_audit as _label_audit  # noqa: E402
+
+_label_audit.register("world.step", step)
+_label_audit.register("world.replay", replay)
+_label_audit.register("world._apply_action_effect", _apply_action_effect)
+_label_audit.register("world.run_history", run_history)
+_label_audit.register("world.relevant_ledger", relevant_ledger)
+_label_audit.register("world.return_value_of", return_value_of)

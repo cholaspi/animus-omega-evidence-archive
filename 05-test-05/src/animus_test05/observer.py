@@ -22,6 +22,7 @@ from dataclasses import dataclass
 from typing import Any, Callable
 
 from . import world as W
+from .hashing import hash_obj
 
 WINDOW = 2
 
@@ -105,6 +106,49 @@ def _percept_local_obligation_history(states: list[dict], config: W.WorldConfig)
     return tuple(out)
 
 
+PRIMARY_OBSERVER_SPEC: dict = {
+    "observer_id": "primary_bounded_observer",
+    "radius": "radius-one (own state plus the single ring edge it directly participates in)",
+    "memory_ticks": WINDOW,
+    "information_access": ["own_identity", "own_balance", "direct_relationship_edge", "own_current_obligation_status"],
+    "excluded_information": [
+        "global_clock", "absolute_cycle_position", "boundary_marker",
+        "full_state", "unrestricted_full_ledger_access", "other_agents_state",
+    ],
+    "frozen_before_execution": True,
+}
+
+# Computed once at import time, before any world family is evaluated, so
+# this hash is the same for every run of this protocol version regardless
+# of which world families or seeds are used -- it depends only on the
+# frozen observer specification above.
+_PRIMARY_OBSERVER_SPEC_HASH = hash_obj(PRIMARY_OBSERVER_SPEC)
+
+
+def _percept_primary_bounded_observer(states: list[dict], config: W.WorldConfig) -> tuple:
+    """The single frozen primary bounded-observer claim (protocol v2,
+    update B): radius-one local state access, two ticks of memory, its own
+    identity, its direct (ring) relationship, and its current obligation
+    status. No global clock, no absolute cycle position, no boundary
+    marker, no full-state access, and no ledger access at all."""
+    aid = config.agent_ids()[0]
+    n = config.num_agents
+    target = config.agent_ids()[1 % n]
+    owned = [oid for oid, o in states[-1]["obligations"].items() if o["owner"] == aid]
+    owned_id = owned[0] if owned else None
+    out = []
+    for s in states:
+        out.append(
+            (
+                aid,  # own identity (constant, but genuinely read, never a boundary marker)
+                s["agents"][aid]["balance"],
+                s["relationships"].get(f"{aid}->{target}"),  # direct relationship edge only
+                s["obligations"][owned_id]["status"] if owned_id else None,
+            )
+        )
+    return tuple(out)
+
+
 def _percept_bounded_longer_memory(states: list[dict], config: W.WorldConfig) -> tuple:
     """Wider in space (sees every agent's balance) rather than time: still
     only the window ticks, but not restricted to a single agent."""
@@ -129,13 +173,23 @@ def _percept_full_state(states: list[dict], config: W.WorldConfig) -> tuple:
     return tuple(out)
 
 
-OBSERVER_LADDER: list[tuple[str, str, Callable[[list[dict], W.WorldConfig], tuple]]] = [
-    ("radius_one_local", "Radius-one local observer (own balance, last tick only).", _percept_radius_one_local),
-    ("local_short_memory", "Local observer with short memory (own balance across the window).", _percept_local_short_memory),
-    ("local_relationship_memory", "Local observer with relationship memory (own balance + was-actor).", _percept_local_relationship_memory),
-    ("local_obligation_history", "Local observer with obligation history (adds own obligation status).", _percept_local_obligation_history),
-    ("bounded_longer_memory", "Bounded observer with longer (wider) memory (all balances, window ticks).", _percept_bounded_longer_memory),
-    ("full_state_positive_control", "Full-state observer (positive control): tick + all balances + all obligation statuses.", _percept_full_state),
+ROLE_PRIMARY = "primary"
+ROLE_SENSITIVITY = "sensitivity_analysis"
+ROLE_POSITIVE_CONTROL = "positive_control"
+
+# Protocol v2, update B: exactly one observer class carries the
+# supported/unsupported bounded-observer claim (role=primary). Every other
+# bounded class is a sensitivity analysis only -- informative, but never an
+# alternate opportunity to obtain "supported" if the primary class fails.
+# The full-state observer remains a mandatory positive control.
+OBSERVER_LADDER: list[tuple[str, str, Callable[[list[dict], W.WorldConfig], tuple], str]] = [
+    ("primary_bounded_observer", "PRIMARY: radius-one, 2-tick memory, own identity/relationship/obligation only.", _percept_primary_bounded_observer, ROLE_PRIMARY),
+    ("radius_one_local", "Sensitivity analysis: own balance, last tick only (less information than primary).", _percept_radius_one_local, ROLE_SENSITIVITY),
+    ("local_short_memory", "Sensitivity analysis: own balance across the window, no relationship/obligation field.", _percept_local_short_memory, ROLE_SENSITIVITY),
+    ("local_relationship_memory", "Sensitivity analysis: own balance + was-actor interaction signal.", _percept_local_relationship_memory, ROLE_SENSITIVITY),
+    ("local_obligation_history", "Sensitivity analysis: own balance + was-actor + own obligation status.", _percept_local_obligation_history, ROLE_SENSITIVITY),
+    ("bounded_longer_memory", "Sensitivity analysis: wider in space (all agents' balances) rather than deeper in local detail.", _percept_bounded_longer_memory, ROLE_SENSITIVITY),
+    ("full_state_positive_control", "MANDATORY POSITIVE CONTROL: tick + all balances + all obligation statuses.", _percept_full_state, ROLE_POSITIVE_CONTROL),
 ]
 
 
@@ -204,6 +258,7 @@ def likelihood_ratio_summary(p_boundary: dict[tuple, float], p_interior: dict[tu
 class ObserverResult:
     observer_id: str
     description: str
+    role: str
     total_variation_distance: float
     bayes_optimal_accuracy: float
     mutual_information_bits: float
@@ -214,7 +269,11 @@ class ObserverResult:
 
 
 def evaluate_world_family(wf, seed: int | None = None) -> dict:
-    config = wf.config
+    # 05C always uses this family's *observer* configuration (same agent
+    # count / obligation structure, longer history) rather than the short
+    # standard_config used by 05A/05B/05D, so a phase-matched interior
+    # window exists.
+    config = wf.observer_config
     boundary_start, interior_start = boundary_and_interior_starts(config)
     if interior_start < 0:
         return {
@@ -226,14 +285,14 @@ def evaluate_world_family(wf, seed: int | None = None) -> dict:
         }
 
     results: list[ObserverResult] = []
-    for observer_id, desc, fn in OBSERVER_LADDER:
+    for observer_id, desc, fn, role in OBSERVER_LADDER:
         p_boundary, n_enum = exact_distribution(config, boundary_start, fn)
         p_interior, _ = exact_distribution(config, interior_start, fn)
         tv = total_variation_distance(p_boundary, p_interior)
         acc = bayes_optimal_accuracy(tv)
         mi = mutual_information(p_boundary, p_interior)
         lr = likelihood_ratio_summary(p_boundary, p_interior)
-        is_control = observer_id == "full_state_positive_control"
+        is_control = role == ROLE_POSITIVE_CONTROL
         if is_control:
             conclusion = "positive_control_valid" if tv > POSITIVE_CONTROL_TV_THRESHOLD else "positive_control_failed"
         else:
@@ -242,6 +301,7 @@ def evaluate_world_family(wf, seed: int | None = None) -> dict:
             ObserverResult(
                 observer_id=observer_id,
                 description=desc,
+                role=role,
                 total_variation_distance=round(tv, 6),
                 bayes_optimal_accuracy=round(acc, 6),
                 mutual_information_bits=round(mi, 6),
@@ -252,22 +312,29 @@ def evaluate_world_family(wf, seed: int | None = None) -> dict:
             )
         )
 
-    control = next(r for r in results if r.is_positive_control)
-    bounded = [r for r in results if not r.is_positive_control]
+    control = next(r for r in results if r.role == ROLE_POSITIVE_CONTROL)
+    primary = next(r for r in results if r.role == ROLE_PRIMARY)
+    sensitivity = [r for r in results if r.role == ROLE_SENSITIVITY]
 
+    # Protocol v2, update B: only the primary observer's result and the
+    # positive control determine status. Sensitivity-analysis classes are
+    # reported for context but are never an alternate path to "supported"
+    # and never independently downgrade it either -- they are diagnostic.
     if control.conclusion == "positive_control_failed":
         status = "invalid"
         reason = "full-state positive control failed to detect the boundary; the setup lacks sensitivity"
-    elif any(r.conclusion == "unsupported" for r in bounded):
+    elif primary.conclusion == "unsupported":
         status = "unsupported"
-        reason = "a qualifying distinction was detected for at least one bounded observer class"
+        reason = "the frozen primary bounded observer detected a qualifying distinction (TV >= threshold)"
     else:
         status = "supported"
-        reason = "no bounded observer class exceeded the frozen indistinguishability threshold"
+        reason = "the frozen primary bounded observer stayed under the indistinguishability threshold"
 
     return {
         "world_id": config.world_id,
         "config": config.to_dict(),
+        "primary_observer_spec": PRIMARY_OBSERVER_SPEC,
+        "primary_observer_spec_hash": _PRIMARY_OBSERVER_SPEC_HASH,
         "window": WINDOW,
         "boundary_start": boundary_start,
         "interior_start": interior_start,
@@ -275,6 +342,9 @@ def evaluate_world_family(wf, seed: int | None = None) -> dict:
         "indistinguishability_tv_threshold": INDISTINGUISHABILITY_TV_THRESHOLD,
         "positive_control_tv_threshold": POSITIVE_CONTROL_TV_THRESHOLD,
         "observers": [vars(r) for r in results],
+        "primary_result": vars(primary),
+        "positive_control_result": vars(control),
+        "sensitivity_analysis_results": [vars(r) for r in sensitivity],
         "status": status,
         "reason": reason,
     }

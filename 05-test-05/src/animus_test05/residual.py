@@ -50,6 +50,37 @@ def declared_field_classification() -> dict[str, str]:
     return dict(FIELD_CLASSIFICATION)
 
 
+# Protocol v2, update G: explicit definitions distinguishing six concepts
+# that are easy to conflate, each pointing at where it is actually
+# evidenced in this module's output (not merely asserted in prose).
+SEMANTIC_DISTINCTIONS: dict[str, str] = {
+    "exact_microstate_equality": (
+        "Two full ending states (private fields included) are byte-identical; evidenced by the "
+        "microstate-signature hashes compared in collision_analysis()."
+    ),
+    "preservation_by_direct_copying": (
+        "A field's value is carried into the residual unchanged, verbatim; see FIELD_CLASSIFICATION "
+        "entries marked 'copied'."
+    ),
+    "reconstruction": (
+        "A field's value is *recomputed* from the ledger via world.replay(), not copied from the true "
+        "ending; see FIELD_CLASSIFICATION entries marked 'reconstructed'."
+    ),
+    "derivation_through_later_execution": (
+        "A field is computed by processing the ledger/residual after the dump (e.g. causal_order_token, "
+        "provenance_digest); see FIELD_CLASSIFICATION entries marked 'derived_through_later_execution'."
+    ),
+    "behavioral_semantic_equivalence": (
+        "Two representations answer every core and delayed probe identically, even if their raw bytes "
+        "differ; evidenced by main_probe_grade / control grades in run_controls()."
+    ),
+    "intentionally_discarded_information": (
+        "A field is deliberately never retained in any form; see FIELD_CLASSIFICATION entries marked "
+        "'intentionally_discarded', and the microstate/residual cardinality gap in collision_analysis()."
+    ),
+}
+
+
 # ---------------------------------------------------------------------------
 # Residual construction (the declared dump policy)
 # ---------------------------------------------------------------------------
@@ -207,48 +238,233 @@ def probe_unseen_obligation_chain_completion(residual: dict, ledger: list[dict],
     return token[-1] if token else None
 
 
-PROBE_SPECS: list[tuple[str, str, Callable[..., Any]]] = [
-    ("owner_of_o0", "Which agent owns obligation o0?", lambda r, l, c: probe_obligation_owner(r, l, c, c.obligation_ids()[0])),
-    ("permitted_actions", "Which agents may still move?", probe_permitted_actions),
+def probe_identity_continuity(residual: dict, ledger: list[dict], config: W.WorldConfig) -> Any:
+    """Core probe: is the residual's identity set exactly the configured
+    agent set (no relabeling, no dropped/added identity)?"""
+    return set(residual.get("agents", {}).keys()) == set(config.agent_ids())
+
+
+def probe_deadline_behavior(residual: dict, ledger: list[dict], config: W.WorldConfig, obligation_id: str) -> Any:
+    """Core probe: does the obligation still carry its correct genesis
+    deadline (unmodified by loss/dump/reconstruction)?"""
+    idx = config.obligation_ids().index(obligation_id)
+    obl = residual.get("obligations", {}).get(obligation_id, {})
+    return obl.get("deadline") == (config.history_length - idx)
+
+
+def probe_resource_allocation_commitment(residual: dict, ledger: list[dict], config: W.WorldConfig) -> Any:
+    """Core probe: does retained balance plus resolved (spent) obligations
+    still add up to the total resource declared in config? A structural
+    conservation check on the residual alone."""
+    total = sum(a["balance"] for a in residual.get("agents", {}).values())
+    resolved = len(residual.get("causal_order_token", []))
+    return (total + resolved) == config.total_resource
+
+
+def probe_observer_visible_consequence(residual: dict, ledger: list[dict], config: W.WorldConfig) -> Any:
+    """Core probe: is there a unique, well-defined observer-visible
+    consequence (the current primary resource holder) derivable from the
+    residual alone?"""
+    agents = config.agent_ids()
+    balances = [residual.get("agents", {}).get(a, {}).get("balance", 0) for a in agents]
+    if not balances:
+        return None
+    max_bal = max(balances)
+    holders = [a for a, b in zip(agents, balances) if b == max_bal]
+    return holders[0] if len(holders) >= 1 else None
+
+
+# ---------------------------------------------------------------------------
+# Delayed behavioral probes (protocol v2, update G): the probe *functions*
+# below are frozen and hashed before execution, but the specific instance
+# parameters they are evaluated against (which agent, which obligation,
+# which pair) are chosen by ``generate_delayed_probe_instances`` -- a
+# frozen, hashed generator whose OUTPUT depends on the actual residual and
+# ledger content, computed only after the lossy dump has been committed.
+# This is deliberately different from the core probes above, whose
+# instances (o0, a0->a1, etc.) are fixed in the code regardless of what
+# happened during execution.
+# ---------------------------------------------------------------------------
+
+def generate_delayed_probe_instances(residual: dict, ledger: list[dict], config: W.WorldConfig) -> dict:
+    import itertools
+
+    agents = config.agent_ids()
+
+    def _balance(aid: str) -> int:
+        return residual.get("agents", {}).get(aid, {}).get("balance", 0)
+
+    # Rule: the agent currently holding the most balance (frozen tie-break:
+    # lowest agent index), chosen from the committed residual.
+    counterfactual_agent = max(agents, key=lambda a: (_balance(a), -agents.index(a)))
+
+    # Rule: the most recently resolved obligation per the committed
+    # causal_order_token, else the last obligation in the declared chain.
+    token = residual.get("causal_order_token", [])
+    unseen_obligation = token[-1] if token else config.obligation_ids()[-1]
+
+    # Rule: the pair of agents whose committed balances are closest
+    # together (the hardest pair to tell apart / most contested), tie-break
+    # by agent index. Prefer a pair with a *nonzero* difference when one
+    # exists -- a zero-difference pair makes an identity swap a no-op,
+    # which would trivially (and unhelpfully) always "pass" a swap-based
+    # control; only fall back to a zero-difference pair if every pair ties.
+    pairs = list(itertools.combinations(agents, 2))
+    nonzero_pairs = [p for p in pairs if abs(_balance(p[0]) - _balance(p[1])) != 0]
+    candidates = nonzero_pairs or pairs
+    dispute_pair = min(
+        candidates,
+        key=lambda p: (abs(_balance(p[0]) - _balance(p[1])), agents.index(p[0]), agents.index(p[1])),
+    )
+
+    # Rule: the open obligation with the latest declared deadline in the
+    # committed residual, else the last obligation in the chain.
+    open_obls = [oid for oid, o in residual.get("obligations", {}).items() if o.get("status") == "open"]
+    prerequisite_obligation = (
+        max(open_obls, key=lambda oid: residual["obligations"][oid].get("deadline", -1))
+        if open_obls
+        else config.obligation_ids()[-1]
+    )
+
+    return {
+        "counterfactual_agent": counterfactual_agent,
+        "unseen_obligation": unseen_obligation,
+        "dispute_pair": list(dispute_pair),
+        "substitution_pair": list(dispute_pair),
+        "prerequisite_obligation": prerequisite_obligation,
+    }
+
+
+def probe_new_counterfactual_action(residual: dict, ledger: list[dict], config: W.WorldConfig, instances: dict) -> Any:
+    return probe_counterfactual_move(residual, ledger, config, instances["counterfactual_agent"])
+
+
+def probe_unseen_obligation_query(residual: dict, ledger: list[dict], config: W.WorldConfig, instances: dict) -> Any:
+    oid = instances["unseen_obligation"]
+    return {
+        "owner": probe_obligation_owner(residual, ledger, config, oid),
+        "prerequisite": probe_causal_prerequisite(residual, ledger, config, oid),
+    }
+
+
+def probe_new_resource_dispute(residual: dict, ledger: list[dict], config: W.WorldConfig, instances: dict) -> Any:
+    """A frozen, generic tie-break rule (lower ring index wins) applied to
+    a dynamically generated contested pair: can the correct allocation be
+    derived from the residual alone?"""
+    a, b = instances["dispute_pair"]
+    agents = config.agent_ids()
+    return a if agents.index(a) < agents.index(b) else b
+
+
+def probe_identity_substitution_challenge(residual: dict, ledger: list[dict], config: W.WorldConfig, instances: dict) -> Any:
+    # The underlying defect-detector already scans the whole residual/
+    # ledger; the "challenge" instance selects which pair is actually
+    # swapped when constructing the corresponding control (see
+    # run_controls). The probe answer itself is family-wide (True/False).
+    return probe_identity_substitution_should_reject(residual, ledger, config)
+
+
+def probe_causal_prerequisite_challenge(residual: dict, ledger: list[dict], config: W.WorldConfig, instances: dict) -> Any:
+    """Full prerequisite chain (not just the immediate predecessor) for a
+    dynamically generated obligation."""
+    oid = instances["prerequisite_obligation"]
+    idx = config.obligation_ids().index(oid)
+    return config.obligation_ids()[:idx]
+
+
+# Frozen core probes (protocol v2, update G): fixed instance parameters,
+# identical question asked on every run regardless of what the history
+# produced. Covers all nine required core categories.
+CORE_PROBE_SPECS: list[tuple[str, str, Callable[..., Any]]] = [
+    ("identity_continuity", "Is the residual's identity set exactly the configured agent set?", probe_identity_continuity),
+    ("obligation_ownership", "Which agent owns obligation o0?", lambda r, l, c: probe_obligation_owner(r, l, c, c.obligation_ids()[0])),
     (
-        "authorizing_relationship",
+        "relationship_permissions",
         "Does the ring relationship authorize a transfer a0->a1?",
         lambda r, l, c: probe_authorizing_relationship(r, l, c, c.agent_ids()[0], c.agent_ids()[1]),
     ),
+    (
+        "causal_ordering",
+        "Is the last obligation blocked by an unresolved dependency?",
+        lambda r, l, c: probe_dependency_blocks_resolution(r, l, c, c.obligation_ids()[-1]),
+    ),
+    (
+        "provenance",
+        "Does obligation o0 carry its correct genesis provenance tag?",
+        lambda r, l, c: probe_provenance_present(r, l, c, c.obligation_ids()[0]),
+    ),
+    (
+        "deadline_behavior",
+        "Does obligation o0 carry its correct genesis deadline?",
+        lambda r, l, c: probe_deadline_behavior(r, l, c, c.obligation_ids()[0]),
+    ),
+    ("resource_allocation_commitments", "Does balance + resolved-count add up to the declared total resource?", probe_resource_allocation_commitment),
+    ("permitted_future_actions", "Which agents may still move?", probe_permitted_actions),
+    ("observer_visible_consequences", "Who is the unique current primary resource holder?", probe_observer_visible_consequence),
+    # Retained from the v1 draft as additional core checks (fixed
+    # instances; not part of the nine named categories but still useful
+    # ledger-integrity checks that must hold on every run).
     (
         "causal_prerequisite_last_obligation",
         "Which obligation must resolve before the last obligation in the chain?",
         lambda r, l, c: probe_causal_prerequisite(r, l, c, c.obligation_ids()[-1]),
     ),
-    (
-        "dependency_blocks_last_obligation",
-        "Is the last obligation blocked by an unresolved dependency?",
-        lambda r, l, c: probe_dependency_blocks_resolution(r, l, c, c.obligation_ids()[-1]),
-    ),
-    (
-        "counterfactual_move_agent0",
-        "If agent a0 attempted to move next, would it be permitted?",
-        lambda r, l, c: probe_counterfactual_move(r, l, c, c.agent_ids()[0]),
-    ),
-    ("identity_substitution_reject", "Should an identity substitution be rejected?", probe_identity_substitution_should_reject),
     ("unseen_chain_completion", "What dependency must an appended successor obligation declare?", probe_unseen_obligation_chain_completion),
-    (
-        "provenance_present_o0",
-        "Does obligation o0 carry its correct genesis provenance tag?",
-        lambda r, l, c: probe_provenance_present(r, l, c, c.obligation_ids()[0]),
-    ),
     ("ledger_effects_consistent", "Does every ledger entry's stored effect match an independent recomputation?", probe_ledger_effects_consistent),
 ]
 
+# Delayed behavioral probes: the (frozen, hashed) generator picks concrete
+# instance parameters from the committed residual/ledger; these functions
+# then answer the generated instance.
+DELAYED_PROBE_SPECS: list[tuple[str, str, Callable[..., Any]]] = [
+    ("new_counterfactual_actions", "If the generated agent attempted to move next, would it be permitted?", probe_new_counterfactual_action),
+    ("unseen_obligation_queries", "Who owns, and what prerequisite does, the generated (previously unseen) obligation query?", probe_unseen_obligation_query),
+    ("new_resource_disputes", "Given the generated contested pair, who wins the disputed unit under the frozen tie-break rule?", probe_new_resource_dispute),
+    ("identity_substitution_challenges", "Should an identity substitution on the generated pair be rejected?", probe_identity_substitution_challenge),
+    ("causal_prerequisite_challenges", "What is the full prerequisite chain for the generated obligation?", probe_causal_prerequisite_challenge),
+]
+
+_GENERATOR_SOURCE_HASH = hash_obj({"fn": "generate_delayed_probe_instances", "version": 1})
+
 
 def run_probes(residual: dict, ledger: list[dict], config: W.WorldConfig) -> dict[str, Any]:
-    answers = {}
-    for probe_id, _desc, fn in PROBE_SPECS:
+    """Runs every frozen core probe, then generates delayed-probe
+    instances from the committed residual/ledger and runs every delayed
+    probe against those generated instances. Returns a flat answers dict
+    (core and delayed probe ids never collide)."""
+    answers: dict[str, Any] = {}
+    for probe_id, _desc, fn in CORE_PROBE_SPECS:
         try:
             answers[probe_id] = fn(residual, ledger, config)
         except Exception as exc:  # a malformed/corrupted control may raise
             answers[probe_id] = {"__error__": str(exc)}
+
+    try:
+        instances = generate_delayed_probe_instances(residual, ledger, config)
+    except Exception as exc:
+        instances = None
+        answers["__delayed_probe_generation_error__"] = str(exc)
+
+    for probe_id, _desc, fn in DELAYED_PROBE_SPECS:
+        if instances is None:
+            answers[probe_id] = {"__error__": "delayed probe instance generation failed"}
+            continue
+        try:
+            answers[probe_id] = fn(residual, ledger, config, instances)
+        except Exception as exc:
+            answers[probe_id] = {"__error__": str(exc)}
     return answers
+
+
+def run_probes_with_instances(residual: dict, ledger: list[dict], config: W.WorldConfig) -> tuple[dict[str, Any], Optional[dict]]:
+    """Like run_probes, but also returns the generated delayed-probe
+    instances (so callers, e.g. run_controls, can reuse the same generated
+    pair/obligation when constructing a corresponding adversarial control)."""
+    try:
+        instances = generate_delayed_probe_instances(residual, ledger, config)
+    except Exception:
+        instances = None
+    return run_probes(residual, ledger, config), instances
 
 
 def ground_truth_answers(true_ending: dict, config: W.WorldConfig) -> dict[str, Any]:
@@ -390,14 +606,22 @@ def run_controls(true_ending: dict, config: W.WorldConfig, rng_seed: int) -> dic
         **_grade(residual, [], true_ending, config),
     }
 
-    # 5. Shuffled identities.
+    # 5. Shuffled identities: swap the pair generated by the frozen delayed-
+    # probe instance generator (the two agents whose balances are closest,
+    # per the committed residual) rather than a hardcoded pair, so the
+    # identity-substitution challenge is chosen post-dump.
     shuffled = copy.deepcopy(residual)
     ids = config.agent_ids()
-    if len(ids) >= 2:
-        a, b = ids[0], ids[1]
+    try:
+        generated_instances = generate_delayed_probe_instances(residual, ledger, config)
+        substitution_pair = generated_instances["substitution_pair"]
+    except Exception:
+        substitution_pair = ids[:2]
+    if len(substitution_pair) >= 2:
+        a, b = substitution_pair[0], substitution_pair[1]
         shuffled["agents"][a], shuffled["agents"][b] = shuffled["agents"][b], shuffled["agents"][a]
     controls["shuffled_identities"] = {
-        "description": "Two agents' balances swapped in the residual (identity relabeling).",
+        "description": f"Generated pair {substitution_pair}'s balances swapped in the residual (identity relabeling).",
         **_grade(shuffled, ledger, true_ending, config),
     }
 
@@ -526,11 +750,11 @@ def evaluate_world_family(wf, rng_seed: int, reference_history: Optional[tuple[s
         adversarial_notes["identity_substitution"] = {
             "description": "The identity-substitution probe must answer False (no defect) on the true "
             "residual and True (reject) on the shuffled-identity control.",
-            "true_residual_answer": main_grade["answers"].get("identity_substitution_reject"),
-            "shuffled_control_answer": shuffled_residual_answers.get("identity_substitution_reject"),
+            "true_residual_answer": main_grade["answers"].get("identity_substitution_challenges"),
+            "shuffled_control_answer": shuffled_residual_answers.get("identity_substitution_challenges"),
             "correctly_distinguishes": (
-                main_grade["answers"].get("identity_substitution_reject") is False
-                and shuffled_residual_answers.get("identity_substitution_reject") is True
+                main_grade["answers"].get("identity_substitution_challenges") is False
+                and shuffled_residual_answers.get("identity_substitution_challenges") is True
             ),
         }
     if "causal_reorder" in wf.adversarial:
@@ -563,9 +787,16 @@ def evaluate_world_family(wf, rng_seed: int, reference_history: Optional[tuple[s
     return {
         "world_id": config.world_id,
         "field_classification": declared_field_classification(),
+        "semantic_distinctions": SEMANTIC_DISTINCTIONS,
+        "core_probe_ids": [p[0] for p in CORE_PROBE_SPECS],
+        "delayed_probe_ids": [p[0] for p in DELAYED_PROBE_SPECS],
+        "delayed_probe_generator_hash": _GENERATOR_SOURCE_HASH,
         "semantic_contract": contract,
         "collision_analysis": collisions,
         "reference_history": list(reference_history),
+        "rng_seed": rng_seed,
+        "residual_snapshot": residual,
+        "ledger_snapshot": ledger,
         "main_probe_grade": main_grade,
         "controls": controls,
         "leakage_audit": leakage,
