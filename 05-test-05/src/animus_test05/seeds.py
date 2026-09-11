@@ -81,6 +81,50 @@ TUNING_SEEDS_USED: set[int] = (
 DEVELOPMENT_SEED_BANDS: dict[str, range] = PROTOCOL_V2_DEVELOPMENT_SEED_BANDS
 
 
+PROTOCOL_V4_DEVELOPMENT_SEEDS: dict[str, list[int]] = {
+    "friendly": [17001, 17002, 17003],
+    "adversarial": [18001, 18002, 18003],
+}
+
+
+def all_v4_development_seeds() -> set[int]:
+    out: set[int] = set()
+    for seed_list in PROTOCOL_V4_DEVELOPMENT_SEEDS.values():
+        out.update(seed_list)
+    return out
+
+
+def check_v4_seed_eligibility() -> dict:
+    """Same eligibility rules as ``check_v3_seed_eligibility``, extended so
+    a v1.3.0-dev4 seed must also not have been used by v1.2.0-dev3
+    (13001-13003 / 14001-14003) or the tuning seeds. Returns a structured
+    report for the preflight record."""
+    pilot_seeds: set[int] = set()
+    for band in PROTOCOL_V1_DEVELOPMENT_SEED_BANDS.values():
+        pilot_seeds.update(band)
+    reserved = all_reserved_seeds()
+    earlier_bands: set[int] = set()
+    for band in PROTOCOL_V2_DEVELOPMENT_SEED_BANDS.values():
+        earlier_bands.update(band)
+    v3_seeds = all_v3_development_seeds()
+
+    per_seed = {}
+    all_ok = True
+    for family, seed_list in PROTOCOL_V4_DEVELOPMENT_SEEDS.items():
+        for seed in seed_list:
+            checks = {
+                "not_used_by_pilot": seed not in pilot_seeds,
+                "not_reserved_confirmatory": seed not in reserved,
+                "not_a_tuning_seed": seed not in TUNING_SEEDS_USED,
+                "not_in_earlier_protocol_band": seed not in earlier_bands,
+                "not_used_by_v1.2.0-dev3": seed not in v3_seeds,
+            }
+            ok = all(checks.values())
+            all_ok = all_ok and ok
+            per_seed[str(seed)] = {"family": family, "checks": checks, "eligible": ok}
+    return {"eligible": all_ok, "per_seed": per_seed}
+
+
 def all_v3_development_seeds() -> set[int]:
     out: set[int] = set()
     for seed_list in PROTOCOL_V3_DEVELOPMENT_SEEDS.values():
@@ -153,6 +197,8 @@ def all_development_seeds() -> set[int]:
     for band in PROTOCOL_V2_DEVELOPMENT_SEED_BANDS.values():
         out.update(band)
     for seed_list in PROTOCOL_V3_DEVELOPMENT_SEEDS.values():
+        out.update(seed_list)
+    for seed_list in PROTOCOL_V4_DEVELOPMENT_SEEDS.values():
         out.update(seed_list)
     return out
 

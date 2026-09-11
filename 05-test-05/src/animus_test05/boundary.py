@@ -23,10 +23,35 @@ import random
 from dataclasses import dataclass, field
 from typing import Any, Optional
 
+from . import observer as O
+from . import residual as R
+from . import resource as RS
 from . import world as W
 from .hashing import hash_obj
 
 AGENT_ID_RE_PREFIX = "a"
+
+# Protocol v1.3.0-dev4, correction 1: static descriptions of the schema
+# fields required by section 8's "minimum contract contents" that are not
+# themselves computed by another module. These are literal descriptions of
+# this bounded model's fixed structure, not values that vary per run, so
+# they are declared once here rather than recomputed per contract.
+RELATIONSHIP_SCHEMA_DESC = "ring: relationships[f'{a_i}->{a_(i+1 mod n)}'] == 1 for every agent i, no other edges"
+OBLIGATION_SCHEMA_DESC = "obligations[oid] = {owner, target, resource, deadline, status, provenance}"
+CAUSAL_ORDER_RULES_DESC = (
+    "obligation i (i>0) causally depends on obligation i-1; resolvable only if its dependency's "
+    "status is 'closed' (see world._apply_action_effect's 'resolve' branch)"
+)
+# The frozen shape of what execute_J actually outputs as the next beginning
+# (see execute_J below) -- this IS the "locked beginning payload schema".
+BEGINNING_PAYLOAD_SCHEMA = [
+    "total", "primary_holder", "resolved_count_hint", "ledger_root",
+    "declared_min_resolutions", "world_family_id", "protocol_version",
+]
+DUMP_OPERATOR_ID = "residual.build_residual"
+RESIDUAL_SCHEMA = ["agents", "obligations", "relationships", "causal_order_token", "provenance_digest"]
+LEDGER_SCHEMA = ["tick", "action", "actor", "effect", "target", "obligation"]
+DECLARED_CAUSAL_PATH = ["intermediate_action", "later_state", "ending_state", "return_value", "reconstruction"]
 
 
 class TrackedReturnValue:
@@ -96,16 +121,51 @@ class FrozenContract:
         return {"data": dict(self._data), "content_hash": self._hash, "consumed": self._consumed}
 
 
-def locked_beginning_contract(config: W.WorldConfig) -> FrozenContract:
-    """Committed before any history executes; a pure function of config
-    only. Never selected or revised after observing an ending. Returns a
-    fresh ``FrozenContract`` instance -- callers construct one at the point
-    they are about to attempt a boundary transition, which is always before
-    that transition's history has been executed (see ``find_reference_history``
-    and ``_run_arm``, which construct the contract before calling
-    ``execute_J``)."""
+def locked_beginning_contract(config: W.WorldConfig, protocol_version: str) -> FrozenContract:
+    """Committed before any history executes; a pure function of
+    (config, protocol_version) only -- every other field below is either a
+    literal structural constant of this bounded model or a hash of another
+    module's own frozen, pre-execution content (never of anything computed
+    from a particular history's outcome). Never selected or revised after
+    observing an ending. Returns a fresh ``FrozenContract`` instance --
+    callers construct one at the point they are about to attempt a boundary
+    transition, which is always before that transition's history has been
+    executed (see ``find_reference_history`` and ``_run_arm``, which
+    construct the contract before calling ``execute_J``).
+
+    Protocol v1.3.0-dev4, correction 1: carries all 17 fields listed in
+    section 8's "minimum contract contents" (v1.2.0-dev3's operational
+    contract carried only 2 of them: total_conserved_invariant and
+    min_resolutions, documented as a declared scope limitation in
+    companion_specs.beginning_contract_schema -- this closes that gap)."""
+    identity_table_commitment = hash_obj({"agent_ids": config.agent_ids()})
     return FrozenContract(
         {
+            # The 17 section-8 minimum fields:
+            "protocol_version": protocol_version,
+            "world_family_id": config.world_id,
+            "physics_configuration_hash": config.config_hash(),
+            "identity_table_commitment": identity_table_commitment,
+            "relationship_schema": RELATIONSHIP_SCHEMA_DESC,
+            "obligation_schema": OBLIGATION_SCHEMA_DESC,
+            "causal_order_rules": CAUSAL_ORDER_RULES_DESC,
+            "locked_beginning_payload_schema": list(BEGINNING_PAYLOAD_SCHEMA),
+            "dump_operator": DUMP_OPERATOR_ID,
+            "residual_schema": list(RESIDUAL_SCHEMA),
+            "ledger_schema": list(LEDGER_SCHEMA),
+            "observer_specification_hash": O._PRIMARY_OBSERVER_SPEC_HASH,
+            "resource_objective_id": RS.RESOURCE_OBJECTIVE_ID,
+            "declared_causal_path": list(DECLARED_CAUSAL_PATH),
+            "intentionally_discarded_fields": [
+                k for k, v in R.FIELD_CLASSIFICATION.items() if v == "intentionally_discarded"
+            ],
+            "irrelevant_fields": [
+                k for k, v in R.FIELD_CLASSIFICATION.items() if v == "intentionally_discarded"
+            ],  # in this model, action-irrelevant private fields coincide with the discarded set
+            "frozen_semantic_probe_ids": list(R.REQUIRED_CORE_PROBE_IDS),
+            "delayed_probe_generator_hash": R._GENERATOR_SOURCE_HASH,
+            # Operational fields (v1.2.0-dev3, kept unchanged): what
+            # contract_satisfied() actually checks next_beginning against.
             "total_conserved_invariant": config.total_resource,
             "min_resolutions": 1,
         }
@@ -137,8 +197,14 @@ def execute_J(
         "ledger_root": hash_obj(ledger),
         # Data taken from the *consumed* contract, not merely its hash:
         # proves the transition actually used the frozen contract's
-        # content to build its output.
+        # content to build its output. Protocol v1.3.0-dev4, correction 2:
+        # echoes two more contract fields (beyond min_resolutions) into the
+        # output, so contract_satisfied() below can independently verify J
+        # actually read the fuller 17-field contract, not just the 2
+        # operational fields v1.2.0-dev3 propagated.
         "declared_min_resolutions": contract_data["min_resolutions"],
+        "world_family_id": contract_data["world_family_id"],
+        "protocol_version": contract_data["protocol_version"],
     }
     return next_beginning, tracked
 
@@ -156,6 +222,10 @@ def contract_satisfied(next_beginning: dict, contract: FrozenContract, config: W
     data = contract._data  # read-only access; contract itself stays immutable
     if next_beginning.get("declared_min_resolutions") != data["min_resolutions"]:
         return False, "contract_data_not_propagated_to_output"
+    if next_beginning.get("world_family_id") != data.get("world_family_id"):
+        return False, "contract_world_family_id_not_propagated_to_output"
+    if next_beginning.get("protocol_version") != data.get("protocol_version"):
+        return False, "contract_protocol_version_not_propagated_to_output"
     if not _valid_agent_id(next_beginning.get("primary_holder"), config):
         return False, "primary_holder_missing_or_invalid"
     rc = next_beginning.get("resolved_count_hint")
@@ -275,11 +345,12 @@ def _run_arm(
     return_value: Optional[dict],
     true_ending_state: dict,
     config: W.WorldConfig,
+    protocol_version: str,
     use_endpoint: bool = True,
     notes: str = "",
     causal_path_diff: Optional[dict] = None,
 ) -> ArmResult:
-    contract = locked_beginning_contract(config)  # committed here, before this arm's transition executes
+    contract = locked_beginning_contract(config, protocol_version)  # committed here, before this arm's transition executes
     next_beginning, tracked = execute_J(reconstructed_state, ledger, return_value, config, contract, use_endpoint)
     c_ok, c_fail = contract_satisfied(next_beginning, contract, config)
     e_ok, e_fail_field, e_detail = exact_closure(next_beginning, true_ending_state, config)
@@ -300,6 +371,7 @@ def _run_arm(
 
 def find_reference_history(
     config: W.WorldConfig,
+    protocol_version: str,
 ) -> tuple[Optional[tuple[str, ...]], list[tuple[str, ...]], list[tuple[str, ...]]]:
     """Enumerate all admissible histories and classify natural closure.
     Returns (reference_history_or_None, closing_histories, non_closing_histories).
@@ -316,7 +388,7 @@ def find_reference_history(
         # A fresh contract instance is committed here, before this
         # history's transition executes -- config-only, never revised
         # after observing this history's ending.
-        contract = locked_beginning_contract(config)
+        contract = locked_beginning_contract(config, protocol_version)
         ending = W.run_history(config, history)
         ledger = W.relevant_ledger(ending)
         reconstructed = W.replay(config, ledger)
@@ -342,6 +414,7 @@ def run_intervention_arms(
     config: W.WorldConfig,
     reference_history: tuple[str, ...],
     rng_seed: int,
+    protocol_version: str,
 ) -> list[ArmResult]:
     true_ending, true_ledger, reconstructed, true_rv = _base_natural_inputs(config, reference_history)
     rng = random.Random(rng_seed)
@@ -352,7 +425,7 @@ def run_intervention_arms(
         _run_arm(
             "01_correct_return_value",
             "Feed the true return value derived from this history's own ending.",
-            reconstructed, true_ledger, true_rv, true_ending, config,
+            reconstructed, true_ledger, true_rv, true_ending, config, protocol_version,
         )
     )
 
@@ -361,7 +434,7 @@ def run_intervention_arms(
         _run_arm(
             "02_missing_return_value",
             "Return value is None.",
-            reconstructed, true_ledger, None, true_ending, config,
+            reconstructed, true_ledger, None, true_ending, config, protocol_version,
         )
     )
 
@@ -381,7 +454,7 @@ def run_intervention_arms(
         _run_arm(
             "03_random_return_value",
             "Return value's primary_holder field replaced with a random different agent id.",
-            reconstructed, true_ledger, random_rv, true_ending, config,
+            reconstructed, true_ledger, random_rv, true_ending, config, protocol_version,
             notes=f"true_holder={true_rv['primary_holder']} random_holder={random_holder}",
         )
     )
@@ -403,7 +476,7 @@ def run_intervention_arms(
         _run_arm(
             "04_return_value_from_different_history",
             "Return value taken from a different admissible history's true ending.",
-            reconstructed, true_ledger, swap_rv, true_ending, config,
+            reconstructed, true_ledger, swap_rv, true_ending, config, protocol_version,
             notes=f"donor_history={swap_history}",
         )
     )
@@ -426,7 +499,7 @@ def run_intervention_arms(
         _run_arm(
             "05_endpoint_mutation",
             "Return value recomputed from a one-unit endpoint mutation of the true ending.",
-            reconstructed, true_ledger, mutated_rv, true_ending, config,
+            reconstructed, true_ledger, mutated_rv, true_ending, config, protocol_version,
         )
     )
 
@@ -461,7 +534,7 @@ def run_intervention_arms(
                 f"Action at tick {pos} changed {cur!r}->{replacement!r}; original return value held stale "
                 "against the mutated execution's ledger/reconstruction, checked against the original "
                 "reference history's true ending.",
-                mutated_reconstructed, mutated_ledger, true_rv, true_ending, config,
+                mutated_reconstructed, mutated_ledger, true_rv, true_ending, config, protocol_version,
                 notes=f"mutated_history={mutated_history} own_true_rv={mutated_rv2}",
                 causal_path_diff=path_diff,
             )
@@ -496,7 +569,7 @@ def run_intervention_arms(
                 f"Action at tick {pos} changed {cur!r}->{replacement!r} (irrelevant-class swap); "
                 "original return value re-used against the mutated execution's ledger/reconstruction, "
                 "checked against the original reference history's true ending.",
-                mutated_reconstructed, mutated_ledger, true_rv, true_ending, config,
+                mutated_reconstructed, mutated_ledger, true_rv, true_ending, config, protocol_version,
                 notes=f"mutated_history={mutated_history} own_true_rv={mutated_rv2}",
                 causal_path_diff=path_diff,
             )
@@ -523,7 +596,7 @@ def run_intervention_arms(
         _run_arm(
             "08_correct_return_value_incorrect_ledger",
             "Ledger's first entry corrupted; return value and reconstruction left correct.",
-            reconstructed, corrupted_ledger, true_rv, true_ending, config,
+            reconstructed, corrupted_ledger, true_rv, true_ending, config, protocol_version,
         )
     )
 
@@ -536,7 +609,7 @@ def run_intervention_arms(
         _run_arm(
             "09_correct_ledger_incorrect_reconstruction",
             f"Reconstructed balance for {any_agent} corrupted (+5); ledger and return value left correct.",
-            corrupted_reconstructed, true_ledger, true_rv, true_ending, config,
+            corrupted_reconstructed, true_ledger, true_rv, true_ending, config, protocol_version,
         )
     )
 
@@ -547,7 +620,7 @@ def run_intervention_arms(
         _run_arm(
             "10_no_endpoint_information",
             "J executed via the no-endpoint code path (return_value parameter never supplied).",
-            reconstructed, true_ledger, None, true_ending, config,
+            reconstructed, true_ledger, None, true_ending, config, protocol_version,
             use_endpoint=False,
         )
     )
@@ -572,7 +645,7 @@ def run_intervention_arms(
         "resolved_count_hint": 0,
         "ledger_root": hash_obj([]),
     }
-    contract2 = locked_beginning_contract(config)
+    contract2 = locked_beginning_contract(config, protocol_version)
     c_ok, c_fail = contract_satisfied(copied_next_beginning, contract2, config)
     e_ok, e_field, e_detail = exact_closure(copied_next_beginning, true_ending, config)
     arms.append(
@@ -595,7 +668,7 @@ def run_intervention_arms(
     # default is deliberately an invalid sentinel (never a real agent id)
     # so detection does not depend on this world family's particular true
     # holder happening to differ from a hardcoded guess.
-    ignored_rv_contract = locked_beginning_contract(config)
+    ignored_rv_contract = locked_beginning_contract(config, protocol_version)
     contract_data = ignored_rv_contract.consume()  # the broken transition still consumes the real contract...
     tracked = TrackedReturnValue(true_rv)
     read_value = tracked.get("primary_holder")  # computed...
@@ -606,6 +679,8 @@ def run_intervention_arms(
         "resolved_count_hint": true_rv["resolved_count"],
         "ledger_root": hash_obj(true_ledger),
         "declared_min_resolutions": contract_data["min_resolutions"],  # ...isolating the RV-ignoring defect alone
+        "world_family_id": contract_data["world_family_id"],
+        "protocol_version": contract_data["protocol_version"],
     }
     ignored_flag = (
         "primary_holder" in tracked.accessed_fields
@@ -631,18 +706,18 @@ def run_intervention_arms(
     return arms
 
 
-def evaluate_world_family(config: W.WorldConfig, rng_seed: int) -> dict:
+def evaluate_world_family(config: W.WorldConfig, rng_seed: int, protocol_version: str) -> dict:
     # A dedicated contract instance, committed here for the evidence
     # record, strictly before any history in this world family is
     # enumerated or executed -- this is the "proof of pre-tick-zero
     # commitment" the validator checks (ordering: this line precedes every
     # call to find_reference_history/run_history below).
-    beginning_commitment = locked_beginning_contract(config)
+    beginning_commitment = locked_beginning_contract(config, protocol_version)
     commitment_evidence = {
         **beginning_commitment.to_evidence(),
         "note": "constructed from WorldConfig only, before any history in this world family was enumerated or executed",
     }
-    reference, closing, non_closing = find_reference_history(config)
+    reference, closing, non_closing = find_reference_history(config, protocol_version)
     result: dict[str, Any] = {
         "world_id": config.world_id,
         "rng_seed": rng_seed,
@@ -661,7 +736,7 @@ def evaluate_world_family(config: W.WorldConfig, rng_seed: int) -> dict:
         result["arms"] = []
         return result
 
-    arms = run_intervention_arms(config, reference, rng_seed)
+    arms = run_intervention_arms(config, reference, rng_seed, protocol_version)
     result["arms"] = [vars(a) for a in arms]
 
     relevant_arm = next(a for a in arms if a.arm_id == "06_relevant_intermediate_mutation")
@@ -731,10 +806,10 @@ def evaluate_world_family(config: W.WorldConfig, rng_seed: int) -> dict:
     return result
 
 
-def run_component(world_families, seed_base: int) -> dict:
+def run_component(world_families, seed_base: int, protocol_version: str) -> dict:
     per_family = {}
     for i, wf in enumerate(world_families):
-        per_family[wf.family_id] = evaluate_world_family(wf.config, seed_base + i)
+        per_family[wf.family_id] = evaluate_world_family(wf.config, seed_base + i, protocol_version)
     statuses = [r["status"] for r in per_family.values()]
     if any(s == "supported" for s in statuses):
         overall = "supported" if all(s in ("supported", "inconclusive") for s in statuses) else "supported"

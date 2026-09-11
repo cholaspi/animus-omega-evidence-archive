@@ -30,11 +30,11 @@ class TestSourceAndProtocolHashing(unittest.TestCase):
         self.assertEqual(h1, h2)
 
     def test_protocol_version_matches_requested_scheme(self):
-        self.assertEqual(run_module.PROTOCOL_VERSION, "1.2.0-dev3")
+        self.assertEqual(run_module.PROTOCOL_VERSION, "1.3.0-dev4")
 
     def test_output_path_is_under_repo_root_evidence_test05(self):
-        out = run_module._repo_root() / "evidence" / "test05" / "revised_development_v1.2.0-dev3"
-        self.assertTrue(str(out).endswith("evidence/test05/revised_development_v1.2.0-dev3"))
+        out = run_module._repo_root() / "evidence" / "test05" / "revised_development_v1.3.0-dev4"
+        self.assertTrue(str(out).endswith("evidence/test05/revised_development_v1.3.0-dev4"))
         self.assertFalse(str(out).startswith(str(run_module._project_root())))
 
 

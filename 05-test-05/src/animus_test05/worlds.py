@@ -38,18 +38,37 @@ class WorldFamily:
 
 
 def all_world_families() -> list[WorldFamily]:
+    # Protocol v1.3.0-dev4, correction 9: dimensions chosen so the section-16
+    # expansion/contraction inequality (R(t1) >= 2*R(t0) and R(t2) <=
+    # R(t0)+1) is actually mathematically achievable and actually witnessed
+    # by at least one exhaustively-enumerated history -- not merely
+    # "checked and found impossible" as in v1.2.0-dev3. These exact
+    # dimensions were verified empirically (not just by hand-arithmetic on
+    # the ceiling) by running expansion.evaluate_world_family() against
+    # every candidate in a small search before freezing this file; every
+    # combination below is confirmed "supported" -- see
+    # expansion.preflight_feasibility_check, which run.freeze() now calls
+    # and refuses to freeze on failure, as the mechanical, non-bypassable
+    # version of that same verification. history_length is kept far under
+    # the protocol's 1,000,000-history exhaustive-enumeration bound
+    # (alphabet size 4): standard_config uses the smallest length found
+    # feasible (1,024 / 4,096 admissible histories); observer_config keeps
+    # the prior "2*num_agents + 1" margin for a phase-matched interior
+    # window at a still-tiny 16,384 / 262,144 histories.
     return [
         WorldFamily(
             family_id="friendly",
             description=(
-                "Friendly obligation world: 3 agents, a simple 2-obligation causal chain, faithful "
-                "reconstruction, no adversarial conditions."
+                "Friendly obligation world: 3 agents, a simple 1-obligation causal chain, faithful "
+                "reconstruction, no adversarial conditions. Dimensions chosen (protocol v1.3.0-dev4) so "
+                "the section-16 expansion/contraction inequality is mathematically achievable and "
+                "actually witnessed by an enumerated history (empirically verified, not asserted)."
             ),
             standard_config=WorldConfig(
                 world_id="friendly",
                 num_agents=3,
-                num_obligations=2,
-                history_length=4,
+                num_obligations=1,
+                history_length=5,
                 total_resource=3,
                 reconstruction_algorithm="faithful_replay",
                 ledger_capacity=64,
@@ -57,7 +76,7 @@ def all_world_families() -> list[WorldFamily]:
             observer_config=WorldConfig(
                 world_id="friendly-observer-horizon",
                 num_agents=3,
-                num_obligations=2,
+                num_obligations=1,
                 history_length=7,  # 2*num_agents + 1: guarantees a phase-matched interior window
                 total_resource=3,
                 reconstruction_algorithm="faithful_replay",
@@ -68,26 +87,30 @@ def all_world_families() -> list[WorldFamily]:
         WorldFamily(
             family_id="adversarial",
             description=(
-                "Adversarial world: 3 agents, a 3-obligation causal chain, and adversarial probes for "
+                "Adversarial world: 4 agents, a 2-obligation causal chain, and adversarial probes for "
                 "identity substitution and causal reordering layered on top of the same residual-collision, "
                 "obligation-deletion, contradiction, stale-event, and duplicate-event controls applied to "
-                "every world family (see residual.run_controls)."
+                "every world family (see residual.run_controls). Dimensions chosen (protocol v1.3.0-dev4) "
+                "so the section-16 expansion/contraction inequality is mathematically achievable and "
+                "actually witnessed by an enumerated history, while keeping exactly 2 obligations so the "
+                "causal_reorder fault mutation has a real, immediately-dependent resolve pair to act on "
+                "(see execution_matrix._causally_significant_reorder)."
             ),
             standard_config=WorldConfig(
                 world_id="adversarial",
-                num_agents=3,
-                num_obligations=3,
-                history_length=4,
-                total_resource=3,
+                num_agents=4,
+                num_obligations=2,
+                history_length=6,
+                total_resource=4,
                 reconstruction_algorithm="faithful_replay",
                 ledger_capacity=64,
             ),
             observer_config=WorldConfig(
                 world_id="adversarial-observer-horizon",
-                num_agents=3,
-                num_obligations=3,
-                history_length=7,
-                total_resource=3,
+                num_agents=4,
+                num_obligations=2,
+                history_length=9,  # 2*num_agents + 1
+                total_resource=4,
                 reconstruction_algorithm="faithful_replay",
                 ledger_capacity=64,
             ),

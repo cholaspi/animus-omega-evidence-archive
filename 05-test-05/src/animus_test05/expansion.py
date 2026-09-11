@@ -118,6 +118,42 @@ def evaluate_world_family(config: W.WorldConfig) -> dict:
     }
 
 
+def preflight_feasibility_check(world_families) -> dict:
+    """Protocol v1.3.0-dev4, correction 10: a mechanical, non-bypassable
+    preflight gate for the section-16 expansion/contraction requirement.
+    Actually runs the same exhaustive search evaluate_world_family() uses
+    (not just the ceiling arithmetic) against every family's configured
+    dimensions, before any seed executes or any evidence is frozen. If the
+    configured maximum represented-world size cannot satisfy the required
+    inequality -- either because it is mathematically impossible (the
+    ceiling never reaches 2*R(t0)) or because it is merely never witnessed
+    by an actual enumerated history within the configured history_length --
+    this returns feasible: False so the caller (run.freeze()) can refuse to
+    freeze rather than silently seal a protocol version that repeats
+    v1.2.0-dev3's failure mode."""
+    per_family = {}
+    for wf in world_families:
+        result = evaluate_world_family(wf.config)
+        per_family[wf.family_id] = {
+            "status": result["status"],
+            "theoretical_max_r": result["theoretical_max_r"],
+            "witnessed_by_history": result["example"] is not None,
+        }
+    feasible = all(r["status"] == "supported" for r in per_family.values()) and bool(per_family)
+    return {
+        "feasible": feasible,
+        "per_world_family": per_family,
+        "reason": (
+            "every world family's configured dimensions admit at least one exhaustively-enumerated "
+            "history satisfying R(t1) >= 2*R(t0) and R(t2) <= R(t0)+1"
+            if feasible
+            else "at least one world family's configured dimensions cannot satisfy the expansion/contraction "
+            "inequality (see per_world_family for which, and whether it is mathematically impossible or "
+            "merely unwitnessed by the configured history_length)"
+        ),
+    }
+
+
 def run_component(world_families) -> dict:
     per_family = {}
     for wf in world_families:

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Entrypoint: executes the Test 05 development protocol (currently
-v1.2.0-dev3) and writes canonical evidence to
-evidence/test05/revised_development_v1.2.0-dev3/ at the repository root.
+v1.3.0-dev4) and writes canonical evidence to
+evidence/test05/revised_development_v1.3.0-dev4/ at the repository root.
 
 Never executes a reserved confirmatory seed -- see src/animus_test05/seeds.py.
 """

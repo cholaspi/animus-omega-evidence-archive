@@ -43,14 +43,14 @@ class TestExecuteJConsumesContract(unittest.TestCase):
         self.rv = W.return_value_of(self.ending)
 
     def test_execute_j_consumes_the_contract(self):
-        contract = B.locked_beginning_contract(self.cfg)
+        contract = B.locked_beginning_contract(self.cfg, "test-protocol-version")
         self.assertFalse(contract.consumed)
         next_beginning, tracked = B.execute_J(self.reconstructed, self.ledger, self.rv, self.cfg, contract)
         self.assertTrue(contract.consumed)
         self.assertEqual(next_beginning["declared_min_resolutions"], contract._data["min_resolutions"])
 
     def test_contract_satisfied_rejects_unconsumed_contract(self):
-        contract = B.locked_beginning_contract(self.cfg)
+        contract = B.locked_beginning_contract(self.cfg, "test-protocol-version")
         next_beginning = {
             "total": self.cfg.total_resource, "primary_holder": self.cfg.agent_ids()[0],
             "resolved_count_hint": 0, "ledger_root": "x", "declared_min_resolutions": 1,
@@ -60,7 +60,7 @@ class TestExecuteJConsumesContract(unittest.TestCase):
         self.assertEqual(reason, "contract_not_consumed")
 
     def test_natural_closing_history_satisfies_contract_and_exact_closure(self):
-        contract = B.locked_beginning_contract(self.cfg)
+        contract = B.locked_beginning_contract(self.cfg, "test-protocol-version")
         next_beginning, _tracked = B.execute_J(self.reconstructed, self.ledger, self.rv, self.cfg, contract)
         c_ok, _ = B.contract_satisfied(next_beginning, contract, self.cfg)
         e_ok, _, _ = B.exact_closure(next_beginning, self.ending, self.cfg)
@@ -90,10 +90,10 @@ class TestInterventionArms(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.cfg = tiny_config()
-        contract = B.locked_beginning_contract(cls.cfg)
-        cls.reference, cls.closing, cls.non_closing = B.find_reference_history(cls.cfg)
+        contract = B.locked_beginning_contract(cls.cfg, "test-protocol-version")
+        cls.reference, cls.closing, cls.non_closing = B.find_reference_history(cls.cfg, "test-protocol-version")
         assert cls.reference is not None, "test world must have a natural closing reference history"
-        cls.arms = {a.arm_id: a for a in B.run_intervention_arms(cls.cfg, cls.reference, rng_seed=1)}
+        cls.arms = {a.arm_id: a for a in B.run_intervention_arms(cls.cfg, cls.reference, rng_seed=1, protocol_version="test-protocol-version")}
 
     def test_at_least_one_closing_and_one_non_closing_history_exist(self):
         self.assertGreaterEqual(len(self.closing), 1)

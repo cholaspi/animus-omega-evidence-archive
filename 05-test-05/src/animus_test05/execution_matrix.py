@@ -85,30 +85,91 @@ assert len(MUTATION_IDS) == 9, "protocol requires exactly 9 named fault mutation
 
 def _causally_significant_reorder(ledger_obj: list[dict], config: W.WorldConfig) -> tuple[list[dict], bool]:
     """Finds two "resolve" ledger entries where the later one's obligation
-    causally depends on the earlier one's, and swaps only their positions --
-    putting the dependent resolution before its prerequisite, a genuine
-    causal-order violation, rather than a blanket reversal that may be
-    semantically inert (e.g. reversing two independent "move" entries).
-    Returns (new_ledger, applicable): ``applicable`` is False when no such
-    dependent pair exists in this particular ledger, so the caller can
-    report the mutation as not_applicable for that execution instead of
-    asserting a prediction it cannot actually test."""
+    causally depends *directly* on the earlier one's (immediate predecessor
+    in the dependency chain, not merely an earlier position in the overall
+    obligation ordering), and swaps only their positions -- putting the
+    dependent resolution before its prerequisite, a genuine causal-order
+    violation, rather than a blanket reversal that may be semantically
+    inert (e.g. reversing two independent "move" entries).
+
+    Protocol v1.3.0-dev4, corrections 11-12: v1.2.0-dev3's version of this
+    function accepted ANY pair with obligation_order.index(oi) <
+    obligation_order.index(oj), not only an immediately-dependent pair.
+    Mechanical investigation of the 2 (of 30) adversarial executions whose
+    observed outcome did not match its frozen prediction under v1.2.0-dev3
+    found the root cause here: with a 3-obligation chain (o0<-o1<-o2), the
+    old code could pick the non-adjacent pair (o0, o2) instead of an
+    adjacent one. Swapping o0 and o2's positions does not violate o2's
+    *actual* gating dependency (o1, whose own resolve entry is untouched
+    and stays correctly ordered), so replay_with_recomputed_effects()
+    recomputes the identical "resolved" effect for both moved entries and
+    every probe still passes -- an inert reorder, not a real causal-order
+    violation, even though a pair with "an earlier index" was found. This
+    was an implementation defect in the swap-pair selection, not a genuine
+    counterexample to the fault-control prediction, so it is fixed here
+    rather than weakening the frozen prediction (do not relax
+    expect_all_pass for causal_reorder merely to obtain a match).
+
+    Returns (new_ledger, applicable): ``applicable`` is False when no
+    immediately-dependent resolve pair exists in this particular ledger
+    (e.g. a 1-obligation family, or a ledger where the dependency's own
+    resolve never occurred), so the caller can report the mutation as
+    not_applicable for that execution instead of asserting a prediction it
+    cannot actually test."""
     obligation_order = config.obligation_ids()
     resolve_positions = [i for i, e in enumerate(ledger_obj) if e.get("action") == "resolve"]
-    for a in range(len(resolve_positions)):
-        for b in range(a + 1, len(resolve_positions)):
-            i, j = resolve_positions[a], resolve_positions[b]
+    for i in resolve_positions:
+        for j in resolve_positions:
+            if i == j:
+                continue
             oi, oj = ledger_obj[i].get("obligation"), ledger_obj[j].get("obligation")
             if oi is None or oj is None:
                 continue
-            if obligation_order.index(oi) < obligation_order.index(oj):
-                # oj's resolve currently comes after oi's (the correct causal
-                # order, since the chain is sequential); swap them so oj's
-                # resolve is recorded before its prerequisite oi's resolve.
+            oj_idx = obligation_order.index(oj)
+            if oj_idx == 0:
+                continue
+            immediate_dependency = obligation_order[oj_idx - 1]
+            if oi != immediate_dependency:
+                continue
+            # oi is oj's direct prerequisite, and oi's resolve currently
+            # precedes oj's (the correct causal order): swap their
+            # positions so oj's resolve is recorded before the one entry
+            # its own gating check actually reads.
+            if i < j:
                 new_ledger = list(ledger_obj)
                 new_ledger[i], new_ledger[j] = new_ledger[j], new_ledger[i]
                 return new_ledger, True
     return list(reversed(ledger_obj)), False
+
+
+def _duplicate_a_resolve_entry(ledger_obj: list[dict]) -> tuple[list[dict], bool]:
+    """Duplicates the FIRST "resolve" entry (appending a copy at the end),
+    not unconditionally ``ledger_obj[0]``. Protocol v1.3.0-dev4, corrections
+    11-12: mechanical investigation of an unpredicted duplicate_event pass
+    (found empirically against the corrected world dimensions) showed
+    v1.2.0-dev3's unconditional ``ledger_obj[0]`` duplication is not
+    guaranteed detectable -- if entry 0 is a "move" whose preconditions
+    (mover balance, ring permission) happen to still hold when it is
+    reprocessed at the end of the ledger,
+    world.replay_with_recomputed_effects() recomputes the identical
+    "transferred" effect both times and probe_ledger_effects_consistent
+    never flips, so an inert duplicate can slip through. Duplicating a
+    "resolve" entry instead is unconditionally detectable: reprocessing an
+    already-closed obligation's resolve always recomputes "already_closed",
+    which can never equal the original stored "resolved" effect. Returns
+    (new_ledger, applicable); applicable is False only when the ledger
+    contains no resolve entry at all, in which case the caller falls back
+    to duplicating entry 0 (as before) and reports the mutation as not
+    applicable rather than asserting an untestable prediction."""
+    resolve_idx = next((i for i, e in enumerate(ledger_obj) if e.get("action") == "resolve" and e.get("effect") == "resolved"), None)
+    if resolve_idx is None:
+        new_ledger = list(ledger_obj)
+        if new_ledger:
+            new_ledger.append(dict(new_ledger[0]))
+        return new_ledger, False
+    new_ledger = list(ledger_obj)
+    new_ledger.append(dict(new_ledger[resolve_idx]))
+    return new_ledger, True
 
 
 def _apply_mutation(mutation_id: str, residual_obj: dict, ledger_obj: list[dict], config: W.WorldConfig, rng: random.Random) -> tuple[dict, list[dict], bool]:
@@ -138,8 +199,7 @@ def _apply_mutation(mutation_id: str, residual_obj: dict, ledger_obj: list[dict]
     elif mutation_id == "stale_event":
         ledg = []
     elif mutation_id == "duplicate_event":
-        if ledg:
-            ledg.append(dict(ledg[0]))
+        ledg, applicable = _duplicate_a_resolve_entry(ledg)
     elif mutation_id == "causal_reorder":
         ledg, applicable = _causally_significant_reorder(ledg, config)
     elif mutation_id == "no_ledger":

@@ -48,6 +48,13 @@ from .hashing import canonical_json, hash_obj
 
 STATE_MACHINE_REPLICAS = 3
 
+# Shared identifier for the frozen resource objective (protocol section on
+# resource comparison). Referenced by companion_specs.resource_objective()
+# and by boundary.py's beginning-contract "resource_objective_id" field
+# (protocol v1.3.0-dev4, section 8) so both places name the same frozen
+# objective rather than each hardcoding their own literal.
+RESOURCE_OBJECTIVE_ID = "peak_canonical_bytes_v1"
+
 RESOURCE_CATEGORIES = (
     "authoritative_state_bytes", "residual_bytes", "ledger_bytes", "event_log_bytes",
     "observer_buffer_bytes", "checkpoint_bytes", "reconstruction_buffer_bytes",

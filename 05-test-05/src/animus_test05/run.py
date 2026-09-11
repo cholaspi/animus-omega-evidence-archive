@@ -32,7 +32,7 @@ from . import (
     label_audit, observer, residual, resource, seeds, world, worlds,
 )
 
-PROTOCOL_VERSION = "1.2.0-dev3"
+PROTOCOL_VERSION = "1.3.0-dev4"
 
 
 def _package_root() -> Path:
@@ -48,7 +48,7 @@ def _repo_root() -> Path:
 
 
 def _output_dir() -> Path:
-    return _repo_root() / "evidence" / "test05" / "revised_development_v1.2.0-dev3"
+    return _repo_root() / "evidence" / "test05" / f"revised_development_v{PROTOCOL_VERSION}"
 
 
 def compute_source_hash() -> dict:
@@ -75,6 +75,17 @@ def freeze(output_dir: Path) -> dict:
         raise RuntimeError("runs/ already contains evidence; freeze() must run before any execution")
     if results_dir.exists() and any(results_dir.iterdir()):
         raise RuntimeError("results/ already contains a result; freeze() must run before any execution")
+
+    # Protocol v1.3.0-dev4, correction 10: a mechanical, non-bypassable
+    # preflight gate. Refuses to freeze if any world family's configured
+    # dimensions cannot satisfy the section-16 expansion/contraction
+    # inequality, rather than sealing a protocol version that repeats
+    # v1.2.0-dev3's failure mode.
+    feasibility = expansion.preflight_feasibility_check(worlds.all_world_families())
+    if not feasibility["feasible"]:
+        raise RuntimeError(
+            f"refusing to freeze: expansion/contraction feasibility check failed: {feasibility}"
+        )
 
     for sub in ("protocol", "config", "worlds"):
         (output_dir / sub).mkdir(parents=True, exist_ok=True)
@@ -146,6 +157,7 @@ def freeze_checklist(output_dir: Path) -> dict:
             "fault_predictions.json", "mutation_definitions.json",
             "semantic_probe_specification.json", "byte_accounting_specification.json",
             "resource_objective.json", "seed_list.json",
+            "gate_registry.json", "expansion_feasibility_proof.json",
         }
         found_basenames = {Path(e["path"]).name for e in manifest["files"]}
         has_protocol_doc = any(name.lower().startswith("test_05_protocol") for name in found_basenames)
@@ -153,8 +165,11 @@ def freeze_checklist(output_dir: Path) -> dict:
             has_protocol_doc and expected_json_files.issubset(found_basenames)
         )
 
-    eligibility = seeds.check_v3_seed_eligibility()
+    eligibility = seeds.check_v4_seed_eligibility()
     items["seed_list_fixed_and_checked"] = eligibility["eligible"]
+
+    feasibility = expansion.preflight_feasibility_check(worlds.all_world_families())
+    items["expansion_feasibility_confirmed"] = feasibility["feasible"]
 
     label_result = label_audit.audit_no_label_leakage()
     items["simulator_receives_no_report_labels"] = label_result["clean"]
@@ -217,10 +232,10 @@ def execute(output_dir: Path) -> dict:
         (output_dir / "runs" / sub).mkdir(parents=True, exist_ok=True)
 
     families = worlds.all_world_families()
-    dev_seeds = seeds.PROTOCOL_V3_DEVELOPMENT_SEEDS
-    all_seeds = sorted(seeds.all_v3_development_seeds())
+    dev_seeds = seeds.PROTOCOL_V4_DEVELOPMENT_SEEDS
+    all_seeds = sorted(seeds.all_v4_development_seeds())
     seeds.require_development_seeds(all_seeds)
-    eligibility = seeds.check_v3_seed_eligibility()
+    eligibility = seeds.check_v4_seed_eligibility()
     if not eligibility["eligible"]:
         raise seeds.ReservedSeedError(f"seed eligibility check failed: {eligibility}")
 
@@ -228,7 +243,7 @@ def execute(output_dir: Path) -> dict:
     boundary_seed_base = min(dev_seeds["friendly"])
     residual_seed_base = min(dev_seeds["friendly"])
     resource_seed_base = min(dev_seeds["friendly"])
-    boundary_result = boundary.run_component(families, boundary_seed_base)
+    boundary_result = boundary.run_component(families, boundary_seed_base, PROTOCOL_VERSION)
     residual_result = residual.run_component(families, residual_seed_base)
     observer_result = observer.run_component(worlds.observer_world_families())
 
@@ -242,10 +257,17 @@ def execute(output_dir: Path) -> dict:
     expansion_result = expansion.run_component(families)
     execution_matrix_result = execution_matrix.run_component(families, dev_seeds)
 
-    integrated_gates = integrated.evaluate(boundary_result, residual_result, observer_result, resource_result)
+    integrated_gates = integrated.evaluate(
+        boundary_result, residual_result, observer_result, resource_result,
+        expansion_result, execution_matrix_result,
+    )
     loss_result = integrated_gates["component_summaries"]["genuine_information_loss"]
-    semantic_result = integrated_gates["component_summaries"]["semantic_continuity"]
+    semantic_core_result = integrated_gates["component_summaries"]["semantic_continuity_core"]
+    semantic_delayed_result = integrated_gates["component_summaries"]["semantic_continuity_delayed"]
+    leakage_gate_result = integrated_gates["component_summaries"]["clean_leakage_audit"]
     ledger_causality = integrated_gates["component_summaries"]["ledger_causality"]
+    fault_control_gate_result = integrated_gates["component_summaries"]["fault_control_validity"]
+    expansion_gate_result = integrated_gates["component_summaries"]["expansion_and_contraction"]
     resource_dashboard = integrated_gates["component_summaries"]["resource_advantage"]
 
     label_audit_result = label_audit.audit_no_label_leakage()
@@ -311,7 +333,9 @@ def execute(output_dir: Path) -> dict:
             fid: {
                 "reciprocal_closure": boundary_result["per_world_family"][fid]["status"],
                 "loss": "supported" if loss_result["per_world_family"].get(fid) else "unsupported",
-                "semantic": "supported" if semantic_result["per_world_family"].get(fid) else "unsupported",
+                "semantic_core": "supported" if semantic_core_result["per_world_family"].get(fid) else "unsupported",
+                "semantic_delayed": "supported" if semantic_delayed_result["per_world_family"].get(fid) else "unsupported",
+                "leakage": "supported" if leakage_gate_result["per_world_family"].get(fid) else "unsupported",
                 "observer": observer_result["per_world_family"][fid]["status"],
                 "resource": resource_result["per_world_family"][fid]["status"],
                 "expansion_contraction": expansion_result["per_world_family"][fid]["status"],
@@ -321,7 +345,11 @@ def execute(output_dir: Path) -> dict:
         },
         "reciprocal_closure_result": {"status": boundary_result["status"], "reason": boundary_result.get("reason", ""), "metrics": _boundary_metrics(boundary_result)},
         "loss_result": loss_result,
-        "semantic_result": semantic_result,
+        "semantic_continuity_core_result": semantic_core_result,
+        "semantic_continuity_delayed_result": semantic_delayed_result,
+        "clean_leakage_audit_result": leakage_gate_result,
+        "expansion_and_contraction_gate_result": expansion_gate_result,
+        "fault_control_validity_gate_result": fault_control_gate_result,
         "leakage_result": {
             fid: residual_result["per_world_family"][fid]["leakage_audit"] for fid in residual_result["per_world_family"]
         },
@@ -362,23 +390,37 @@ def execute(output_dir: Path) -> dict:
             "intentionally 'pending': run validate_test05_development.py to derive it independently."
         ),
         "limitations": [
-            "The operational FrozenContract carries two fields (total_conserved_invariant, "
-            "min_resolutions); the fuller section-8 schema is documented in "
-            "protocol/beginning_contract_schema.json but not yet threaded through J's runtime input.",
             "The 'primary observer with eight ticks of memory' sensitivity rung is reported inconclusive: "
             "exact enumeration at that window size is combinatorially infeasible (see its evidence entry "
-            "for the exact arithmetic).",
-            "R(t) is defined as (agents holding nonzero balance) + (obligations still open); this world "
-            "model's resource/obligation ceiling makes 2x expansion mathematically impossible at the "
-            "current world sizes, which the expansion/contraction result documents with exact arithmetic "
-            "rather than leaving as an unexplained search failure.",
-            "The causal_reorder fault mutation did not match its general prediction for 2 of 6 total "
-            "executions (both world families); see fault_control_result for the concrete counterexamples.",
+            "for the exact arithmetic). Unchanged from v1.2.0-dev3 (correction 13: the primary observer "
+            "definition and thresholds are kept as-is; this rung was never the primary claim).",
+            "Section 8's 'minimum contract contents' names 18 distinct fields, not 17 as v1.2.0-dev3's "
+            "development report shorthand miscounted; all 18 are now implemented (see "
+            "protocol/beginning_contract_schema.json's note_on_naming).",
         ],
     }
 
+    # Protocol v1.3.0-dev4, corrections 16-17: two-stage digest.
+    # Stage 1 -- "evidence_digest" (this field is still named
+    # "canonical_digest" for continuity with v1.2.0-dev3 evidence; see
+    # validator.EVIDENCE_DIGEST_FIELD) -- covers exactly everything in
+    # ``result`` above: the frozen protocol version/hash, config_hash,
+    # source_hash, companion_file_hashes, every per-family component
+    # result (boundary/residual/observer/resource/expansion/
+    # execution_matrix), the precomputed (never-asserted) integrated gate
+    # table, counts, and the evidence_manifest's own file hashes.
+    # Stage 2 -- "assessment_digest" -- can only be computed once the
+    # independent validator has derived the integrated determination and
+    # written its own validation report, so it is computed and written by
+    # validator.py, not here (see validator._write_assessment_digest). It
+    # covers: this evidence_digest, results/integrated_determination.json,
+    # validator/validation_report.json, and the final evidence_manifest
+    # (including the two files above). It stays null in this file; the
+    # validator writes the real value to a separate digest_manifest.json,
+    # never mutating this frozen result.
     canonical_digest = hashing.hash_obj(result)
     result["canonical_digest"] = canonical_digest
+    result["assessment_digest"] = None  # filled in only by validator.py, after independent validation
     result["created_at"] = datetime.datetime.now(datetime.timezone.utc).isoformat()
 
     hashing.write_json(output_dir / "results" / "test05_development_result.json", result)
