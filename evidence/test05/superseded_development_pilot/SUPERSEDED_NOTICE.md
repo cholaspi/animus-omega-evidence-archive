@@ -36,6 +36,33 @@ criteria that existed when it ran.
 - `canonical_digest`: `c0cdd03258c587ce2196f086eeb291903a93bdc6863e863837a5b2a05ac46158`
 
 This pilot is not deleted, not overwritten, and not reinterpreted under the
-revised (v2) protocol. It remains available for comparison. The revised
-protocol and its own, separately generated evidence live alongside this
-directory under a new dated evidence directory and a new protocol version.
+revised protocol. It remains available for comparison. The revised protocol
+(v1.2.0-dev3) and its own, separately generated evidence live under
+`evidence/test05/revised_development_v1.2.0-dev3/`.
+
+## Provenance record (added when this notice was reviewed for sealing)
+
+**Exact source recoverable at:** git commit `fbcd06067695c98a817e0fadff4b1c56eeb632fb`
+("Add Test 05 development source (protocol v1 draft, pre-revision)"). This
+commit is the source-only checkpoint created immediately after the pilot ran
+in scratch space and before any protocol-revision edit touched the source
+tree; no source file changed between the pilot's execution and that commit.
+
+**Verification performed:** the pilot's own `source_hash` field (below) was
+independently recomputed from the `.py` files as they exist in commit
+`fbcd060`, relative to that commit's `05-test-05/` root (matching
+`run.compute_source_hash()`'s convention), and the recomputed hash matches
+exactly.
+
+| Field | Value |
+|---|---|
+| Source commit | `fbcd06067695c98a817e0fadff4b1c56eeb632fb` |
+| `source_hash` (recorded and independently reverified) | `0d95e08024fab159f28ae06277f2ca93c736eed728351eadf0a906c86b0cea42` |
+| `canonical_digest` (this pilot's evidence digest) | `c0cdd03258c587ce2196f086eeb291903a93bdc6863e863837a5b2a05ac46158` |
+| `protocol_hash` | `d7373f2847a50846814bca5edf327b33dfa7362b866e5eab11e103c8323a9408` |
+| `config_hash` | `d7bf74f86444b10f377cd09ceb4da9f3ad53585b1c7ec100ada3e79bf3740d13` |
+| Sealed evidence path (this move preserved via `git mv`, history intact) | `evidence/test05/superseded_development_pilot/` (previously `05-test-05/superseded-development-pilot-2026-09-11/`) |
+
+No source, protocol, config, threshold, or evidence value was altered by
+this relocation or by this provenance review -- only this notice's own text
+and the directory path changed.
