@@ -26,9 +26,15 @@ from .hashing import hash_obj
 
 WINDOW = 2
 
-# Frozen thresholds (declared before any history is executed or observed).
-INDISTINGUISHABILITY_TV_THRESHOLD = 0.05  # bounded observer: TV below this -> "supported"
-POSITIVE_CONTROL_TV_THRESHOLD = 0.20  # full-state observer: TV above this -> control valid
+# Frozen thresholds (declared before any history is executed or observed),
+# per protocol v1.2.0-dev3 section 14. The primary claim requires BOTH
+# statistics to clear their bound; the positive control requires EITHER.
+INDISTINGUISHABILITY_TV_THRESHOLD = 0.05  # primary observer: TV <= this
+INDISTINGUISHABILITY_ACCURACY_THRESHOLD = 0.55  # primary observer: Bayes accuracy <= this
+POSITIVE_CONTROL_TV_THRESHOLD = 0.25  # full-state observer: TV >= this, or...
+POSITIVE_CONTROL_ACCURACY_THRESHOLD = 0.75  # ...Bayes accuracy >= this
+MIN_MATCHED_OBSERVATIONS_PER_CLASS = 200  # below this without exact enumeration -> inconclusive
+MIN_MATCHING_COVERAGE = 0.90  # fraction of boundary windows needing an eligible interior match
 
 
 def boundary_and_interior_starts(config: W.WorldConfig) -> tuple[int, int]:
@@ -266,6 +272,18 @@ class ObserverResult:
     enumeration_count: int
     is_positive_control: bool
     conclusion: str
+    # Window/coverage bookkeeping (protocol v1.2.0-dev3 section 14). Exact
+    # enumeration pairs every history with exactly one boundary window and
+    # one phase-matched interior window, so coverage is 100% and
+    # multiplicity is 1 by construction -- this is recorded explicitly
+    # rather than left implicit.
+    num_boundary_windows: int = 0
+    num_interior_windows: int = 0
+    matching_coverage: float = 1.0
+    unmatched_windows: int = 0
+    match_multiplicity: int = 1
+    weighting_procedure: str = "uniform over enumerated admissible histories"
+    notes: str = ""
 
 
 def evaluate_world_family(wf, seed: int | None = None) -> dict:
@@ -294,9 +312,21 @@ def evaluate_world_family(wf, seed: int | None = None) -> dict:
         lr = likelihood_ratio_summary(p_boundary, p_interior)
         is_control = role == ROLE_POSITIVE_CONTROL
         if is_control:
-            conclusion = "positive_control_valid" if tv > POSITIVE_CONTROL_TV_THRESHOLD else "positive_control_failed"
+            conclusion = (
+                "positive_control_valid"
+                if (tv >= POSITIVE_CONTROL_TV_THRESHOLD or acc >= POSITIVE_CONTROL_ACCURACY_THRESHOLD)
+                else "positive_control_failed"
+            )
         else:
-            conclusion = "supported" if tv < INDISTINGUISHABILITY_TV_THRESHOLD else "unsupported"
+            conclusion = (
+                "supported"
+                if (tv <= INDISTINGUISHABILITY_TV_THRESHOLD and acc <= INDISTINGUISHABILITY_ACCURACY_THRESHOLD)
+                else "unsupported"
+            )
+        # Exact enumeration pairs every one of the n_enum admissible
+        # histories with exactly one boundary window and one phase-matched
+        # interior window, so coverage is 100% (0 unmatched, multiplicity
+        # 1) by construction, not by assertion.
         results.append(
             ObserverResult(
                 observer_id=observer_id,
@@ -309,26 +339,73 @@ def evaluate_world_family(wf, seed: int | None = None) -> dict:
                 enumeration_count=n_enum,
                 is_positive_control=is_control,
                 conclusion=conclusion,
+                num_boundary_windows=n_enum,
+                num_interior_windows=n_enum,
+                matching_coverage=1.0,
+                unmatched_windows=0,
+                match_multiplicity=1,
             )
         )
+
+    # The "primary observer with eight ticks of memory" sensitivity rung
+    # (protocol section 14's ladder item 3) is mathematically intractable
+    # to enumerate exactly: with a shared window size of 8 the boundary and
+    # a non-overlapping phase-matched interior window require
+    # history_length >= 2*8 + num_agents, giving an admissible-history
+    # space of alphabet_size**history_length >= 4**24 (~2.8e14), far past
+    # the protocol's 1,000,000-history exhaustion bound. Rather than
+    # quietly substitute sampling for this one diagnostic rung, it is
+    # reported as inconclusive with the arithmetic shown, per "mark
+    # exhaustion inconclusive... do not quietly replace enumeration with
+    # sampling."
+    required_history_length_for_8_tick_window = 2 * 8 + config.num_agents
+    infeasible_history_count = len(W.ACTIONS) ** required_history_length_for_8_tick_window
+    results.append(
+        ObserverResult(
+            observer_id="primary_with_eight_tick_memory",
+            description="Sensitivity analysis: primary observer fields with an 8-tick window (ladder item 3).",
+            role=ROLE_SENSITIVITY,
+            total_variation_distance=None,
+            bayes_optimal_accuracy=None,
+            mutual_information_bits=None,
+            likelihood_ratio_summary={},
+            enumeration_count=0,
+            is_positive_control=False,
+            conclusion="inconclusive",
+            num_boundary_windows=0,
+            num_interior_windows=0,
+            matching_coverage=0.0,
+            unmatched_windows=0,
+            match_multiplicity=0,
+            weighting_procedure="not applicable: not computed",
+            notes=(
+                f"not computed: exact enumeration would require history_length="
+                f"{required_history_length_for_8_tick_window}, i.e. "
+                f"{infeasible_history_count:.3e} admissible histories, exceeding the "
+                "protocol's 1,000,000-history exhaustion bound; not sampled because this "
+                "protocol requires exact enumeration or an explicit inconclusive mark, "
+                "never a quiet sampling substitution"
+            ),
+        )
+    )
 
     control = next(r for r in results if r.role == ROLE_POSITIVE_CONTROL)
     primary = next(r for r in results if r.role == ROLE_PRIMARY)
     sensitivity = [r for r in results if r.role == ROLE_SENSITIVITY]
 
-    # Protocol v2, update B: only the primary observer's result and the
-    # positive control determine status. Sensitivity-analysis classes are
-    # reported for context but are never an alternate path to "supported"
-    # and never independently downgrade it either -- they are diagnostic.
+    # Protocol v1.2.0-dev3, section 14: only the primary observer's result
+    # and the positive control determine status. Sensitivity-analysis
+    # classes are reported for context but are never an alternate path to
+    # "supported" and never independently downgrade it either.
     if control.conclusion == "positive_control_failed":
         status = "invalid"
         reason = "full-state positive control failed to detect the boundary; the setup lacks sensitivity"
     elif primary.conclusion == "unsupported":
         status = "unsupported"
-        reason = "the frozen primary bounded observer detected a qualifying distinction (TV >= threshold)"
+        reason = "the frozen primary bounded observer detected a qualifying distinction (TV or accuracy over threshold)"
     else:
         status = "supported"
-        reason = "the frozen primary bounded observer stayed under the indistinguishability threshold"
+        reason = "the frozen primary bounded observer stayed under both the TV and accuracy indistinguishability thresholds"
 
     return {
         "world_id": config.world_id,
@@ -340,7 +417,11 @@ def evaluate_world_family(wf, seed: int | None = None) -> dict:
         "interior_start": interior_start,
         "null_model": "histories uniformly likely over the full enumerated admissible-history space (exact, no sampling)",
         "indistinguishability_tv_threshold": INDISTINGUISHABILITY_TV_THRESHOLD,
+        "indistinguishability_accuracy_threshold": INDISTINGUISHABILITY_ACCURACY_THRESHOLD,
         "positive_control_tv_threshold": POSITIVE_CONTROL_TV_THRESHOLD,
+        "positive_control_accuracy_threshold": POSITIVE_CONTROL_ACCURACY_THRESHOLD,
+        "matching_coverage": 1.0,
+        "matching_coverage_meets_minimum": 1.0 >= MIN_MATCHING_COVERAGE,
         "observers": [vars(r) for r in results],
         "primary_result": vars(primary),
         "positive_control_result": vars(control),

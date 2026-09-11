@@ -326,12 +326,28 @@ def generate_delayed_probe_instances(residual: dict, ledger: list[dict], config:
         else config.obligation_ids()[-1]
     )
 
+    # Rule: the open obligation with the *earliest* declared deadline (most
+    # urgent), else the first obligation in the chain.
+    urgent_obligation = (
+        min(open_obls, key=lambda oid: residual["obligations"][oid].get("deadline", 10**9))
+        if open_obls
+        else config.obligation_ids()[0]
+    )
+
+    # Rule: the ring edge belonging to the current counterfactual_agent
+    # (its direct outgoing relationship), for a relationship-authorization
+    # challenge distinct from the fixed a0->a1 core probe.
+    idx = agents.index(counterfactual_agent)
+    authorization_pair = [counterfactual_agent, agents[(idx + 1) % len(agents)]]
+
     return {
         "counterfactual_agent": counterfactual_agent,
         "unseen_obligation": unseen_obligation,
         "dispute_pair": list(dispute_pair),
         "substitution_pair": list(dispute_pair),
         "prerequisite_obligation": prerequisite_obligation,
+        "urgent_obligation": urgent_obligation,
+        "authorization_pair": authorization_pair,
     }
 
 
@@ -370,6 +386,30 @@ def probe_causal_prerequisite_challenge(residual: dict, ledger: list[dict], conf
     oid = instances["prerequisite_obligation"]
     idx = config.obligation_ids().index(oid)
     return config.obligation_ids()[:idx]
+
+
+def probe_deadline_urgency_query(residual: dict, ledger: list[dict], config: W.WorldConfig, instances: dict) -> Any:
+    """Which open obligation is most urgent (earliest deadline) and what is
+    that deadline, for a target chosen from the committed residual?"""
+    oid = instances["urgent_obligation"]
+    obl = residual.get("obligations", {}).get(oid, {})
+    return {"obligation": oid, "deadline": obl.get("deadline")}
+
+
+def probe_relationship_authorization_challenge(residual: dict, ledger: list[dict], config: W.WorldConfig, instances: dict) -> Any:
+    """Does the ring relationship authorize a transfer along a dynamically
+    generated pair (the current counterfactual agent's own outgoing edge)?"""
+    a, b = instances["authorization_pair"]
+    return probe_authorizing_relationship(residual, ledger, config, a, b)
+
+
+def probe_resolved_chain_completeness_query(residual: dict, ledger: list[dict], config: W.WorldConfig, instances: dict) -> Any:
+    """Has the *entire* prerequisite chain for a generated obligation
+    already been resolved, making it legally resolvable right now?"""
+    oid = instances["prerequisite_obligation"]
+    idx = config.obligation_ids().index(oid)
+    chain = config.obligation_ids()[:idx]
+    return all(residual.get("obligations", {}).get(dep, {}).get("status") == "closed" for dep in chain)
 
 
 # Frozen core probes (protocol v2, update G): fixed instance parameters,
@@ -413,6 +453,20 @@ CORE_PROBE_SPECS: list[tuple[str, str, Callable[..., Any]]] = [
     ("ledger_effects_consistent", "Does every ledger entry's stored effect match an independent recomputation?", probe_ledger_effects_consistent),
 ]
 
+# Protocol v1.2.0-dev3, section 11: the exact nine required core probe
+# categories the "9 of 9" pass requirement is scored against. Kept
+# separate from the three additional integrity checks above (retained from
+# the v1 draft; still run and reported, but not part of the formal 9-of-9
+# count, so "9 of 9" is never conflated with "12 of 12").
+REQUIRED_CORE_PROBE_IDS: tuple[str, ...] = (
+    "identity_continuity", "obligation_ownership", "relationship_permissions",
+    "causal_ordering", "provenance", "deadline_behavior",
+    "resource_allocation_commitments", "permitted_future_actions",
+    "observer_visible_consequences",
+)
+assert len(REQUIRED_CORE_PROBE_IDS) == 9, "protocol v1.2.0-dev3 requires exactly 9 named core probes"
+assert set(REQUIRED_CORE_PROBE_IDS).issubset({p[0] for p in CORE_PROBE_SPECS})
+
 # Delayed behavioral probes: the (frozen, hashed) generator picks concrete
 # instance parameters from the committed residual/ledger; these functions
 # then answer the generated instance.
@@ -422,9 +476,16 @@ DELAYED_PROBE_SPECS: list[tuple[str, str, Callable[..., Any]]] = [
     ("new_resource_disputes", "Given the generated contested pair, who wins the disputed unit under the frozen tie-break rule?", probe_new_resource_dispute),
     ("identity_substitution_challenges", "Should an identity substitution on the generated pair be rejected?", probe_identity_substitution_challenge),
     ("causal_prerequisite_challenges", "What is the full prerequisite chain for the generated obligation?", probe_causal_prerequisite_challenge),
+    ("deadline_urgency_queries", "Which generated obligation is most urgent, and what is its deadline?", probe_deadline_urgency_query),
+    ("relationship_authorization_challenges", "Does the ring relationship authorize the generated pair's transfer?", probe_relationship_authorization_challenge),
+    ("resolved_chain_completeness_queries", "Has the generated obligation's entire prerequisite chain already resolved?", probe_resolved_chain_completeness_query),
 ]
 
-_GENERATOR_SOURCE_HASH = hash_obj({"fn": "generate_delayed_probe_instances", "version": 1})
+# Protocol v1.2.0-dev3, section 11: exactly eight delayed probes must be
+# legally generated per unfaulted execution.
+assert len(DELAYED_PROBE_SPECS) == 8, "protocol v1.2.0-dev3 requires exactly 8 delayed probes"
+
+_GENERATOR_SOURCE_HASH = hash_obj({"fn": "generate_delayed_probe_instances", "version": 2})
 
 
 def run_probes(residual: dict, ledger: list[dict], config: W.WorldConfig) -> dict[str, Any]:
@@ -555,6 +616,29 @@ def collision_analysis(config: W.WorldConfig) -> dict:
 # Required controls
 # ---------------------------------------------------------------------------
 
+def _score_by_group(grades: dict[str, bool]) -> dict:
+    delayed_ids = {p[0] for p in DELAYED_PROBE_SPECS}
+    required_core = {pid: grades[pid] for pid in REQUIRED_CORE_PROBE_IDS if pid in grades}
+    delayed = {pid: grades[pid] for pid in delayed_ids if pid in grades}
+    additional_core = {
+        pid: v for pid, v in grades.items() if pid not in REQUIRED_CORE_PROBE_IDS and pid not in delayed_ids
+    }
+    return {
+        "required_core": {
+            "pass_count": sum(required_core.values()), "total": len(required_core),
+            "all_pass": len(required_core) == 9 and all(required_core.values()),
+        },
+        "delayed": {
+            "pass_count": sum(delayed.values()), "total": len(delayed),
+            "all_pass": len(delayed) == 8 and all(delayed.values()),
+        },
+        "additional_core_checks": {
+            "pass_count": sum(additional_core.values()), "total": len(additional_core),
+            "all_pass": all(additional_core.values()) if additional_core else True,
+        },
+    }
+
+
 def _grade(residual, ledger, true_ending, config) -> dict:
     gt = ground_truth_answers(true_ending, config)
     answers = run_probes(residual, ledger, config)
@@ -566,6 +650,7 @@ def _grade(residual, ledger, true_ending, config) -> dict:
         "pass_count": sum(1 for v in grades.values() if v),
         "total": len(grades),
         "all_pass": all(grades.values()),
+        "scoring": _score_by_group(grades),
     }
 
 

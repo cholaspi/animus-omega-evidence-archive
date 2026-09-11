@@ -434,11 +434,12 @@ def compute_pareto_comparison(arms: dict[str, ArmMeasurement]) -> dict:
             "focal_fewer_ops": focal_m.total_operation_count < m.total_operation_count,
         }
     dominates_count = sum(1 for c in comparisons.values() if c["focal_smaller_peak_bytes"])
-    # An "undeclared regression" on the PRIMARY metric: focal has MORE peak
-    # bytes than a baseline that carries no non-comparability caveat.
+    # Protocol v1.2.0-dev3, section 15: supported only if peak canonical
+    # bytes are STRICTLY lower than EVERY eligible baseline -- no
+    # exceptions for a baseline's own non-comparability notes. Byte-ticks
+    # cannot rescue a loss on the frozen primary metric.
     regression_arms = [aid for aid, c in comparisons.items() if not c["focal_smaller_peak_bytes"]]
-    undeclared_regressions = [aid for aid in regression_arms if not arms[aid].notes]
-    status = "supported" if (dominates_count >= 1 and not undeclared_regressions) else "unsupported"
+    status = "supported" if (len(comparisons) > 0 and not regression_arms) else "unsupported"
     return {
         "status": status,
         "primary_metric": "peak_canonical_bytes",
@@ -450,14 +451,12 @@ def compute_pareto_comparison(arms: dict[str, ArmMeasurement]) -> dict:
         "comparisons_vs_focal": comparisons,
         "dominates_count": dominates_count,
         "regression_arms_on_primary_metric": regression_arms,
-        "undeclared_regression_arms": undeclared_regressions,
         "reason": (
-            f"the proposed architecture strictly dominates {dominates_count} eligible baseline(s) on the "
-            "frozen primary objective (peak canonical bytes), and every baseline it loses to on that "
-            "objective carries a declared non-comparability caveat"
+            f"the proposed architecture strictly beats every one of the {len(comparisons)} other eligible "
+            "baseline(s) on the frozen primary objective (peak canonical bytes)"
             if status == "supported"
-            else "either no baseline was strictly dominated on peak canonical bytes, or an undeclared "
-            "regression on that primary metric exists (see undeclared_regression_arms)"
+            else f"loses on peak canonical bytes to at least one eligible baseline "
+            f"(see regression_arms_on_primary_metric: {regression_arms})"
         ),
     }
 

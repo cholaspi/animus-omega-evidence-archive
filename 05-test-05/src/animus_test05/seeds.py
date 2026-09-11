@@ -52,10 +52,70 @@ PROTOCOL_V2_DEVELOPMENT_SEED_BANDS: dict[str, range] = {
     "05E": range(57400, 57420),
 }
 
+# Protocol v1.2.0-dev3 (the exact governing document): seeds are keyed by
+# world family, not by sub-test -- the same seed drives every component
+# (05A-05D) for that family, plus (for the adversarial family) the full
+# fault-execution matrix. These are the ONLY seeds ``run.py`` uses for
+# v1.2.0-dev3.
+PROTOCOL_V3_DEVELOPMENT_SEEDS: dict[str, list[int]] = {
+    "friendly": [13001, 13002, 13003],
+    "adversarial": [14001, 14002, 14003],
+}
+
+# Seeds actually touched by exploratory/tuning work while building this
+# implementation (unit-test fixtures, ad hoc smoke checks, and the
+# superseded v1/v2 draft bands above) -- recorded so "not a tuning seed"
+# can be checked mechanically rather than asserted. None of these overlap
+# 13001-13003 / 14001-14003.
+TUNING_SEEDS_USED: set[int] = (
+    {1, 55000, 55100, 55300}
+    | set(PROTOCOL_V1_DEVELOPMENT_SEED_BANDS["05A"])
+    | set(PROTOCOL_V2_DEVELOPMENT_SEED_BANDS["05A"])
+    | set(PROTOCOL_V2_DEVELOPMENT_SEED_BANDS["05B"])
+    | set(PROTOCOL_V2_DEVELOPMENT_SEED_BANDS["05D"])
+)
+
 # Active band used by the current protocol version's entrypoint
 # (``run.py``). Kept as a separate name so a future protocol version can be
-# added without editing the v1/v2 bands above.
+# added without editing the bands above.
 DEVELOPMENT_SEED_BANDS: dict[str, range] = PROTOCOL_V2_DEVELOPMENT_SEED_BANDS
+
+
+def all_v3_development_seeds() -> set[int]:
+    out: set[int] = set()
+    for seed_list in PROTOCOL_V3_DEVELOPMENT_SEEDS.values():
+        out.update(seed_list)
+    return out
+
+
+def check_v3_seed_eligibility() -> dict:
+    """Verifies, for every v1.2.0-dev3 seed, that it: was not used by the
+    pilot; is not a reserved confirmatory seed; is not a recorded tuning
+    seed; and is not already claimed by an earlier protocol version's
+    development band. Returns a structured, evidence-grade report rather
+    than raising, so it can be embedded directly in the preflight record."""
+    pilot_seeds: set[int] = set()
+    for band in PROTOCOL_V1_DEVELOPMENT_SEED_BANDS.values():
+        pilot_seeds.update(band)
+    reserved = all_reserved_seeds()
+    earlier_bands: set[int] = set()
+    for band in PROTOCOL_V2_DEVELOPMENT_SEED_BANDS.values():
+        earlier_bands.update(band)
+
+    per_seed = {}
+    all_ok = True
+    for family, seed_list in PROTOCOL_V3_DEVELOPMENT_SEEDS.items():
+        for seed in seed_list:
+            checks = {
+                "not_used_by_pilot": seed not in pilot_seeds,
+                "not_reserved_confirmatory": seed not in reserved,
+                "not_a_tuning_seed": seed not in TUNING_SEEDS_USED,
+                "not_in_earlier_protocol_band": seed not in earlier_bands,
+            }
+            ok = all(checks.values())
+            all_ok = all_ok and ok
+            per_seed[str(seed)] = {"family": family, "checks": checks, "eligible": ok}
+    return {"eligible": all_ok, "per_seed": per_seed}
 
 RESERVED_CONFIRMATORY_SEED_BANDS: dict[str, range] = {
     "05A": range(58000, 58020),
@@ -92,6 +152,8 @@ def all_development_seeds() -> set[int]:
         out.update(band)
     for band in PROTOCOL_V2_DEVELOPMENT_SEED_BANDS.values():
         out.update(band)
+    for seed_list in PROTOCOL_V3_DEVELOPMENT_SEEDS.values():
+        out.update(seed_list)
     return out
 
 

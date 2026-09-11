@@ -1,194 +1,1002 @@
-# Test 05 development protocol, v1.2.0-dev3
+# Animus Omega Test 05
+## Revised Development Protocol v1.2.0-dev3
 
-**Status:** development protocol, version `1.2.0-dev3`. Supersedes the
-acceptance criteria of `TEST_05_PROTOCOL.md` (the original pilot protocol)
-for all future runs. The pilot's own run (`superseded_development_pilot`,
-sealed at `evidence/test05/superseded_development_pilot/`) is not
-reinterpreted under this revision; it remains evaluated only against the
-criteria that existed when it ran. This document is frozen for hashing
-purposes (`protocol_hash` in every v1.2.0-dev3 result) as of the commit
-recorded in that result's `source_hash`. "Frozen" means fixed for this
-development run, not confirmatory: no reserved seed may be executed under
-this document, and once the freeze commit is made, no source, protocol,
-configuration, threshold, or probe may change before that run executes.
+Status: DEVELOPMENT ONLY
+Confirmation: FORBIDDEN
+Interpretation: Bounded software experiment on implemented worlds only
 
-This revision was requested before protocol v1's pilot conclusions were
-accepted, specifically to close gaps identified in that pilot's own design:
-observer-ladder cherry-picking risk, resource-metric ambiguity, world-family
-proliferation, a contract that could in principle be represented by only its
-hash, no explicit runtime audit against arm-label leakage into the
-simulator, and semantic probes whose instance parameters were all fixed in
-advance rather than partly generated from the actual dump.
+This protocol does not test consciousness, subjective experience, love, meditation, physical cosmology, or whether our universe is a simulation.
 
-## A. Gated dashboard
+A supported result applies only to the implemented finite models and this exact frozen protocol.
 
-`component_results` now reports seven entries instead of five:
-`reciprocal_closure`, `genuine_information_loss`, `semantic_continuity`,
-`observer_boundary`, `ledger_causality`, `resource_advantage`,
-`integrated_result`. `genuine_information_loss` and `semantic_continuity`
-were previously bundled into one 05B status; they are now independently
-derived (see `integrated.genuine_information_loss_result` and
-`integrated.semantic_continuity_result`) so a genuine-loss finding is never
-obscured by an unrelated probe failure or vice versa. `resource_advantage`
-is downgraded to `ineligible` whenever `semantic_continuity` is not
-`supported`, regardless of what 05D's own internal computation found
-(`integrated.resource_advantage_result`) -- these are the *same* functions
-the integrated gate table calls, so the dashboard and the gate table can
-never silently disagree. An integrated failure never erases or hides a
-component's own result: every component above is written to evidence and
-reported regardless of `integrated_result.status`.
+"Not supported" does not mean "disproved."
+"Ready for review" does not mean "confirmed," "accepted," or "published."
 
-## B. One primary observer
+==================================================
+1. ASSIGNMENT
+==================================================
 
-`observer.py` freezes exactly one bounded-observer claim,
-`primary_bounded_observer`: radius-one (own state plus the single ring edge
-it participates in), two ticks of memory, its own identity, its direct
-relationship, and its current obligation status. It explicitly excludes a
-global clock, absolute cycle position, boundary marker, full-state access,
-and ledger access. `observer.PRIMARY_OBSERVER_SPEC` is hashed at import
-time (`observer._PRIMARY_OBSERVER_SPEC_HASH`), before any world family is
-evaluated. Every other rung of the v1 ladder (`radius_one_local`,
-`local_short_memory`, `local_relationship_memory`, `local_obligation_history`,
-`bounded_longer_memory`) is retained but demoted to
-`role=sensitivity_analysis`: reported for context, never an alternate path
-to "supported." The full-state observer remains a mandatory
-`role=positive_control`; if it fails to detect the boundary the whole 05C
-result for that world family is `invalid`. All exact-distribution
-machinery (window, phase-matched interior start, TV distance, Bayes-optimal
-accuracy, mutual information, likelihood-ratio summary, both frozen
-thresholds) is unchanged from v1 and remains exact (full enumeration, no
-sampling).
+Inspect the existing Test 05 repository, preserve the earlier pilot, implement this revised protocol, run it using development seeds only, independently validate the evidence, and produce a development report.
 
-## C. Frozen resource objective
+Do not:
 
-`resource.py`'s primary objective is now **peak canonical bytes at matched
-semantic fidelity**, and it alone determines
-`resource_advantage`/`pareto.status`. Total byte-ticks is reported as a
-secondary objective and deterministic operation count as a diagnostic, but
-neither can flip a "supported"/"unsupported" conclusion the primary
-objective disagrees with (v1 required dominance on both peak bytes and
-byte-ticks together, which risked looking like the metric was chosen after
-seeing which one was favorable). Wall-clock duration is measured per arm
-but now returned as a *separate* `noncanonical_timing` structure
-(`resource.evaluate_world_family` returns `(canonical, noncanonical_timing)`
-as a tuple) that is written to disk for transparency but deliberately
-excluded from the evidence manifest and therefore from `canonical_digest`,
-since it is not reproducible run-to-run even with identical seeds. Every
-arm now reports an explicit `resource_breakdown` across ten declared
-categories (authoritative state, residual, ledger, event log, observer
-buffers, checkpoints, reconstruction buffers, indexes, lookup tables,
-retained preprocessing) -- categories an arm does not use are reported as
-zero, never omitted.
+- Use reserved confirmatory seeds
+- Modify frozen evidence from earlier tests
+- Overwrite the Test 05 pilot
+- Hardcode expected outcomes
+- Branch simulation behavior on arm names or IDs
+- Change thresholds after execution begins
+- Weaken acceptance criteria after seeing results
+- Run confirmation automatically
+- Claim that the complete Animus Omega conjecture is confirmed or disproved
 
-## D. Two world families
+A failed development result is acceptable and must be preserved.
 
-`worlds.py` now declares exactly two families -- `friendly` (3 agents, a
-2-obligation chain, no adversarial conditions) and `adversarial` (3 agents,
-a 3-obligation chain, with identity-substitution and causal-reordering
-probes layered on top of the residual-collision/obligation-deletion/
-contradiction/stale-event/duplicate-event controls that already apply to
-every family) -- replacing v1's seven. Each family carries two
-*configurations*: `standard_config` (used by 05A/05B/05D) and
-`observer_config` (same agent count and obligation structure, longer
-history, used only by 05C so a phase-matched interior window exists). This
-is 2 world families and 4 configurations, not "2 world families" doing
-double duty as "4 independent" ones, and not "many arms from one template"
-miscounted as several families.
+==================================================
+2. PRIOR PILOT
+==================================================
 
-## E. Strengthened beginning commitment
+Before changing or running anything:
 
-`boundary.FrozenContract` is an immutable object (data + content hash +
-a `consumed` flag) constructed once per attempted transition, strictly
-before that transition's history executes. `execute_J` now takes the
-actual `FrozenContract` object (not a bare hash) and calls `.consume()` on
-it, folding a value from its data (`declared_min_resolutions`) into the
-constructed next-beginning -- proof the transition used the real contract,
-not merely its hash. `contract_satisfied` first checks `contract.consumed`
-(a transition that bypassed `execute_J` entirely, as arms 11/12 do by
-design, fails here first) and then checks that the propagated
-`declared_min_resolutions` matches the contract's own data. Every world
-family's evidence includes a `beginning_commitment` record (the contract's
-data, its hash, and a note that it was constructed before any history in
-that family was enumerated or executed).
+1. Determine whether the previous Test 05 execution is active, completed, failed, or aborted.
+2. If active, either:
+   - allow it to finish unchanged, or
+   - stop it safely and label it `aborted_pilot`.
+3. Preserve its source, configuration, evidence, logs, and result.
+4. Seal it read-only as:
+   `superseded_development_pilot`
+5. Record this reason exactly:
+   `protocol improvements were specified before accepting its conclusions.`
+6. Record:
+   - pilot protocol version
+   - pilot result path
+   - pilot status
+   - pilot source hash
+   - pilot configuration hash
+   - pilot evidence digest
+7. Do not rescore the pilot using this revised protocol.
 
-## F. No arm labels in simulator inputs
+The revised run must have a separate directory, protocol version, configuration hash, result, and evidence digest.
 
-`label_audit.py` provides a runtime audit,
-`audit_no_label_leakage()`, that inspects the actual parameter names (via
-`inspect.signature`) of every registered simulator-core function
-(`world.step`, `world.replay`, `world._apply_action_effect`,
-`world.run_history`, `world.relevant_ledger`, `world.return_value_of`,
-`boundary.execute_J`, `boundary.contract_satisfied`,
-`boundary.exact_closure`) against a list of forbidden substrings (arm id/
-name/label/index, expected, should_close, fault flags, integrated-support
-expectations, closure status). None of these functions take such a
-parameter; arm ids and human-readable descriptions are attached only by the
-report-layer helper `_run_arm`, strictly after the simulator core above has
-already produced its result.
+==================================================
+3. RESEARCH QUESTIONS
+==================================================
 
-## G. Core vs. delayed semantic probes
+Test 05 has separate component questions.
 
-`residual.py` splits the eight v1 probes (plus two new ones,
-`identity_continuity` and one merged into `resource_allocation_commitments`)
-into nine **frozen core probes** (identity continuity, obligation
-ownership, relationship permissions, causal ordering, provenance, deadline
-behavior, resource-allocation commitments, permitted future actions,
-observer-visible consequences) with fixed instance parameters, and five
-**delayed behavioral probes** (new counterfactual actions, previously
-unseen obligation queries, new resource disputes, identity-substitution
-challenges, causal-prerequisite challenges) whose concrete instance
-parameters -- which agent, which obligation, which pair -- are chosen by
-`generate_delayed_probe_instances`, a frozen, hashed generator function
-whose *output* depends on the actual committed residual/ledger content
-(e.g. "the agent currently holding the most balance," "the pair of agents
-whose balances are closest"), computed only after the lossy dump exists.
-The `shuffled_identities` control now swaps the generator's dynamically
-chosen pair rather than a hardcoded pair. The leakage audit, and the six
-distinctions (`residual.SEMANTIC_DISTINCTIONS`: exact microstate equality,
-preservation by direct copying, reconstruction, derivation through later
-execution, behavioral semantic equivalence, intentionally discarded
-information) are unchanged in substance but now explicitly recorded in
-evidence rather than left to prose.
+05A: Reciprocal closure
 
-## H. Sensitivity and specificity for causal closure interventions
+Does information derived from the ending causally and necessarily participate in constructing the next beginning?
 
-`boundary.serialize_causal_path` records, for a given history and
-intervention tick, the full declared causal path (intermediate action ->
-later state -> ending state -> return value -> reconstruction).
-`boundary.diff_causal_paths` compares this path for a baseline history
-against a mutated one and reports, per stage, whether it actually differs.
-Arms 6 (relevant intermediate mutation) and 7 (irrelevant intermediate
-mutation) now each carry a `causal_path_diff`, and `evaluate_world_family`
-requires (as part of `support_checks`) that the relevant arm's path
-actually differs somewhere downstream (sensitivity) and the irrelevant
-arm's path does not differ anywhere (specificity) -- not merely that
-closure broke or held, but that the underlying executed data moved or
-didn't.
+05B-loss: Genuine information loss
 
-## I. Independent validator
+Is the dump operation non-injective over the frozen finite microstate domain?
 
-`validator.py` (new) independently recomputes every conclusion from raw
-evidence files rather than trusting any cached `status` field, and rejects:
-missing evidence, modified hashes, forbidden (reserved) seeds, a beginning
-contract whose commitment cannot be shown to precede execution, a contract
-that was never consumed by the transition it is attached to, an ignored
-return value, label-driven branching in the simulator core (via
-`label_audit`), a "fake" intervention whose causal-path diff shows no
-executed data actually changed, residual/ledger answer leakage, incorrect
-microstate/collision counts, invalid observer statistics, a failed
-positive control, a fidelity-ineligible arm admitted into the resource
-comparison, an omitted resource-breakdown category, and integrated support
-claimed despite a failed prerequisite gate. `tests/test_validator_corruption.py`
-deliberately corrupts a copy of real evidence for each rejection condition
-and asserts the validator actually rejects it.
+05B-sem: Semantic continuity
 
-## Seeds
+After genuine loss, do frozen semantic obligations remain satisfied?
 
-`seeds.PROTOCOL_V2_DEVELOPMENT_SEED_BANDS` (named `V2` in code, meaning
-"the revision after the pilot protocol" -- this is the same revision this
-document calls `1.2.0-dev3`; 55000s are the pilot's, kept for provenance;
-this revision uses 57000s: 05A 57000-57019, 05B 57100-57119, 05C
-57200-57219, 05D 57300-57319, 05E 57400-57419) are disjoint from the
-pilot's bands and from the reserved confirmatory bands (58000s), so no seed
-is reused across protocol versions and no confirmatory seed is reachable from a
-development entrypoint.
+05B-leak: Leakage audit
+
+Does the candidate preserve meaning through legitimate causal state, rather than cached answers, labels, or access to discarded information?
+
+05C: Observer boundary
+
+Can a frozen bounded observer distinguish boundary observations from phase-matched interior observations?
+
+05C-pos: Observer positive control
+
+Can a full-state observer detect the boundary?
+
+05-ledger: Ledger causality
+
+Does the narrative ledger causally affect reconstruction or permitted future behavior?
+
+05-faults: Fault controls
+
+Do declared data mutations produce their preregistered failures?
+
+05D: Resource advantage
+
+At matched semantic fidelity, does the candidate use less peak canonical memory than every eligible baseline?
+
+05E: Integrated result
+
+Does the same candidate system satisfy every required component?
+
+==================================================
+4. ALLOWED RESULT STATUSES
+==================================================
+
+Component statuses:
+
+- supported
+- unsupported
+- inconclusive
+- ineligible
+- invalid
+- not_applicable
+
+Integrated statuses:
+
+- supported
+- not_supported
+- inconclusive
+- invalid
+
+Report every component independently.
+
+The integrated result may be `supported` only if every required gate is supported. Component successes remain visible when the integrated result is not supported.
+
+==================================================
+5. DEVELOPMENT SEEDS
+==================================================
+
+Use only:
+
+Friendly family:
+
+- 13001
+- 13002
+- 13003
+
+Adversarial family:
+
+- 14001
+- 14002
+- 14003
+
+Before execution, verify that these seeds:
+
+- were not used by the pilot
+- are not reserved confirmatory seeds
+- are not tuning seeds
+- are not prohibited by an existing seed registry
+
+If any seed is unavailable, stop before tick zero and request a revised seed assignment. Do not substitute a seed silently.
+
+Seeds and execution IDs are different.
+
+For each adversarial seed, run:
+
+- unfaulted baseline
+- identity substitution
+- obligation deletion
+- contradictory ledger
+- missing provenance
+- stale event
+- duplicate event
+- causal reorder
+- no-ledger control
+- random reconstruction control
+
+Each execution must record:
+
+- seed
+- execution ID
+- mutation ID
+- before hash
+- after hash
+- mutated fields
+- predicted failure
+- observed failure
+
+If a reserved seed is requested, refuse execution and write a reserved-seed rejection record.
+
+==================================================
+6. WORLD FAMILIES
+==================================================
+
+Use exactly two world families for this development run.
+
+### Family 1: Friendly obligation world
+
+Required characteristics:
+
+- Three agents
+- Four or more represented cells
+- Explicit identities
+- Explicit relationships
+- Acyclic obligation ownership
+- Explicit causal prerequisites
+- Expansion stage
+- Contraction stage
+- Many-to-one dump
+- Exhaustively enumerable histories and microstates
+
+### Family 2: Adversarial collision world
+
+Use the same general size class so exact analysis remains feasible.
+
+Required characteristics:
+
+- Residual collisions
+- Identity-substitution opportunities
+- Obligation-deletion opportunities
+- Contradictory ledger entries
+- Missing provenance
+- Stale events
+- Duplicate events
+- Causal reorderings
+- Unfaulted baseline in addition to fault executions
+
+Do not describe separate arms or seeds from one template as independent world families.
+
+Prefer exact enumeration. If an action-history space exceeds one million histories, mark exhaustion inconclusive or reduce the model before protocol freeze. Do not quietly replace enumeration with sampling.
+
+==================================================
+7. PROTOCOL FREEZE
+==================================================
+
+Before tick zero, create, serialize, and hash:
+
+- this protocol
+- observer specification
+- physics configuration
+- beginning-contract schema
+- beginning contract for each family
+- causal-path specification
+- field-classification manifest
+- delayed-probe generator source
+- fault predictions
+- mutation definitions
+- semantic probe specification
+- canonical byte-accounting specification
+- resource objective
+- seed list
+- baseline definitions
+
+Use canonical JSON:
+
+- sorted keys
+- UTF-8
+- deterministic numeric representation
+- one trailing newline
+
+The evidence directory must contain only protocol and configuration material before tick zero.
+
+No simulation result may be used to alter a frozen file.
+
+==================================================
+8. BEGINNING CONTRACT
+==================================================
+
+Before tick zero:
+
+1. Build the beginning contract.
+2. Serialize it to canonical bytes.
+3. Write its SHA-256 digest.
+4. Record `committed_at_tick = -1`.
+5. Make it immutable during execution.
+6. Pass the actual contract object into the boundary transition.
+7. Use the hash only to verify commitment and immutability.
+
+Minimum contract contents:
+
+- protocol version
+- world-family ID
+- physics-configuration hash
+- identity-table commitment
+- relationship schema
+- obligation schema
+- causal-order rules
+- locked beginning payload schema
+- dump operator
+- residual schema
+- ledger schema
+- observer-specification hash
+- resource-objective ID
+- declared causal path
+- intentionally discarded fields
+- irrelevant fields
+- frozen semantic-probe IDs
+- delayed-probe generator hash
+
+Required transition:
+
+S_next = J(
+    reconstructed_state,
+    ledger,
+    return_value_from_ending,
+    beginning_contract
+)
+
+The validator must reject:
+
+- contract creation after tick zero
+- contract modification after execution begins
+- a transition that does not read contract fields
+- a return value that is computed but ignored
+- direct copying of the original beginning
+- hidden lookup of the original beginning
+- reconstruction using discarded source state
+
+Distinguish:
+
+- exact microstate equality
+- satisfaction of the beginning contract
+- semantic equivalence
+- illegal direct copying
+
+==================================================
+9. SIMULATOR ISOLATION
+==================================================
+
+The simulator may receive only:
+
+- world state
+- action history
+- ledger
+- beginning contract
+- physics configuration
+- return value or null
+
+It must not receive:
+
+- report-layer arm name
+- expected result
+- `should_close`
+- `fault_control`
+- expected status
+- integrated-support expectation
+- integer ID that encodes expected behavior
+
+Interventions must operate on actual data:
+
+1. Construct baseline input.
+2. Apply a declared mutation.
+3. Record the mutation path and before/after hashes.
+4. Execute the simulator using only the resulting data.
+5. Attach human-readable names later in the report layer.
+
+Add a source and runtime audit for label-driven behavior.
+
+==================================================
+10. TEST 05A: RECIPROCAL CLOSURE
+==================================================
+
+Freeze this causal pathway:
+
+intermediate action
+→ later state
+→ ending state
+→ ending-derived return value
+→ reconstruction or merge
+→ J
+→ next beginning
+
+Enumerate all admissible histories where feasible.
+
+Required baseline and necessity interventions:
+
+1. Correct return value
+2. Missing return value
+3. Deterministically randomized return value
+4. Incompatible return from another history
+5. One-symbol mutation of a contract-relevant endpoint component
+6. Causally relevant intermediate-action mutation
+7. Corrupted ledger
+8. Corrupted reconstruction
+9. Bypassed return transition
+10. Beginning construction without endpoint information
+11. Open-chain control without J
+
+Required specificity interventions:
+
+1. Irrelevant intermediate mutation
+2. Intentionally discarded irrelevant-detail mutation
+
+Apply irrelevant-detail mutations before the dump and run the complete pathway. Do not apply them only after the information has become inaccessible.
+
+### Deterministic random return
+
+Generate replacement bytes from a SHA-256 counter stream derived from:
+
+- protocol hash
+- family ID
+- seed
+- history hash
+- mutation ID
+- counter
+
+### Swapped return
+
+The donor return must differ on at least one contract-relevant field. Record the field before execution.
+
+If no incompatible donor exists, mark this intervention `not_applicable`. Do not count a semantically equivalent swap as a failed necessity intervention.
+
+### 05A support requirements
+
+Report each family separately.
+
+A family supports reciprocal closure only if:
+
+1. At least one natural history satisfies the locked beginning contract after J.
+2. At least one admissible history does not.
+3. Missing, random, incompatible swapped, and endpoint-mutated returns break contract satisfaction.
+4. A causally relevant intermediate intervention breaks contract satisfaction.
+5. Irrelevant interventions preserve contract satisfaction and frozen semantics.
+6. The beginning contract existed before tick zero.
+7. J consumed the contract.
+8. J consumed endpoint-derived information.
+9. Direct-copy and ignored-return detectors did not fire.
+10. Required histories were exhaustively enumerated.
+
+Overall 05A is supported only if both families are supported.
+
+Report the first mismatching field and transition for every failed intervention.
+
+==================================================
+11. TEST 05B: LOSS AND SEMANTIC CONTINUITY
+==================================================
+
+Before execution, classify every state field as exactly one of:
+
+- copied
+- reconstructed
+- derived later
+- intentionally discarded
+
+Copied information must not be described as reconstructed.
+
+### Genuine loss
+
+For each family, calculate exactly:
+
+- number of admissible microstates
+- number of distinct residuals
+- cardinality reduction
+- collision groups
+- maximum preimage size
+- discarded fields
+
+Genuine loss is supported only if:
+
+- the dump is non-injective
+- at least two admissible microstates share a residual
+- at least one field is intentionally discarded
+- all counts recompute from raw evidence
+
+### Frozen core semantic probes
+
+Use all nine:
+
+1. Identity continuity
+2. Obligation ownership
+3. Relationship permissions
+4. Causal ordering
+5. Provenance
+6. Deadline behavior
+7. Resource allocation
+8. Permitted future actions
+9. Observer-visible consequences
+
+The unfaulted candidate must pass 9 of 9 in each family. Do not average across probes or families.
+
+Fault executions must fail or be rejected in the direction specified in the frozen fault-prediction file.
+
+### Delayed behavioral probes
+
+Freeze and hash the generator before tick zero. Instantiate probes only after the lossy dump has been committed.
+
+Generate eight legal probes per unfaulted execution, including:
+
+- counterfactual action
+- unseen obligation query
+- resource dispute
+- identity-substitution challenge
+- causal-prerequisite challenge
+
+The candidate must pass 8 of 8.
+
+If eight legal probes cannot be generated, mark the semantic experiment invalid.
+
+The generator may inspect the committed pre-dump evidence to construct valid questions and expected answers, but those answers must not be passed to reconstruction or stored in the residual or ledger.
+
+==================================================
+12. LEAKAGE AUDIT
+==================================================
+
+Legitimate identity, relationship, obligation, provenance, and causal information may be retained. Correct answers may be derived from that information through the generic reconstruction and world-execution process.
+
+That is semantic continuity, not leakage.
+
+Prohibited leakage includes:
+
+- literal probe answers
+- probe-ID-to-answer tables
+- expected outcomes
+- closure status
+- report-layer arm names
+- boundary markers
+- original microstate IDs used as lookup keys
+- future action labels
+- data created specifically after seeing probe instances
+- hidden access to discarded state
+- hidden access to the original complete checkpoint
+- a probe-specific decoder unavailable to ordinary world execution
+
+The validator must distinguish:
+
+- direct answer storage
+- probe-specific encoding
+- legitimate retained causal information
+- generic reconstruction
+- later behavioral derivation
+
+Semantic continuity is invalid if success depends on prohibited leakage.
+
+Do not invalidate a representation merely because legitimate retained information allows correct semantic inference.
+
+==================================================
+13. LEDGER CAUSALITY AND FAULT CONTROLS
+==================================================
+
+Ledger causality is supported only if:
+
+1. At least one valid ledger difference changes reconstruction or a permitted future action.
+2. Removing the ledger causes at least one frozen semantic failure.
+3. The valid-ledger candidate passes the corresponding semantic probe.
+4. The ledger is consumed by reconstruction or J.
+5. Ledger effects arise from content, not a "ledger present" flag.
+
+Fault-control validity is separate.
+
+Every required fault must produce its frozen predicted rejection or semantic failure:
+
+- identity substitution
+- obligation deletion
+- contradictory ledger
+- missing provenance
+- stale event
+- duplicate event
+- causal reorder
+- no ledger
+- random reconstruction
+
+Report unexpected passes and unexpected failure modes.
+
+==================================================
+14. TEST 05C: OBSERVER BOUNDARY
+==================================================
+
+### Primary bounded observer
+
+The primary observer has:
+
+- radius-one local-state access
+- memory of the previous two ticks
+- access to its own identity
+- access to direct relationships
+- access to current obligations
+
+It does not have:
+
+- global clock
+- absolute cycle position
+- explicit boundary marker
+- full-state access
+- unrestricted ledger access
+- beginning-contract hash
+- return-value bytes
+- J internals
+
+This is the only observer used for the primary indistinguishability claim.
+
+Other observer classes are sensitivity analyses.
+
+### Exact statistics
+
+Where tractable, calculate:
+
+P(observation | boundary)
+
+and:
+
+P(observation | phase-matched interior)
+
+Report:
+
+- total variation distance
+- Bayes-optimal classification accuracy
+- mutual information when the exact joint distribution is available
+- number of boundary windows
+- number of interior windows
+- matching coverage
+- unmatched windows
+- match multiplicity
+- weighting procedure
+- distributions before and after matching
+
+### Phase matching
+
+Match interior observations by:
+
+- local occupancy class
+- obligation-count bucket
+- any additional frozen matching variables in the observer specification
+
+At least 90% of boundary windows must have an eligible phase-matched interior match in each family.
+
+If coverage is below 90%, mark 05C inconclusive.
+
+Do not silently discard unmatched boundary observations.
+
+### Primary support threshold
+
+For each family:
+
+- supported if TV ≤ 0.05 and Bayes-optimal accuracy ≤ 0.55
+- unsupported if TV > 0.05 or accuracy > 0.55
+- inconclusive if exact enumeration is unavailable and there are fewer than 200 independent matched observations per class
+- invalid if the positive control fails
+
+Overall 05C is supported only if both families support it.
+
+### Sensitivity ladder
+
+Report without using these observers to replace the primary claim:
+
+1. Radius one without memory
+2. Primary observer
+3. Primary observer with eight ticks of memory
+4. Primary observer with obligation history
+5. Bounded longer-memory observer
+6. Full-state observer
+
+### Positive control
+
+The full-state observer must achieve:
+
+- TV ≥ 0.25, or
+- Bayes-optimal accuracy ≥ 0.75
+
+Otherwise, mark 05C invalid.
+
+==================================================
+15. TEST 05D: RESOURCE COMPARISON
+==================================================
+
+Only semantically eligible arms may enter the resource comparison.
+
+### Frozen objectives
+
+Primary:
+
+- peak canonical bytes
+
+Secondary:
+
+- total canonical byte-ticks
+
+Diagnostic:
+
+- deterministic operation count
+
+Noncanonical diagnostic:
+
+- repeated wall-clock duration
+
+Wall-clock timing must not enter the canonical digest.
+
+### Required baselines
+
+1. Complete checkpoint
+2. Snapshots plus event logs
+3. Always-expanded lossless execution
+4. Open-chain execution
+5. General-purpose lossless compression
+6. General-purpose lossy compression at matched semantic fidelity
+7. Lossy execution without the narrative ledger
+8. No-loss cyclic execution
+9. Scripted cyclic replay
+10. State-machine replication, if implemented
+
+A baseline that does not satisfy the same semantic contract is ineligible, not defeated.
+
+### Byte accounting
+
+Count all live and retained memory:
+
+- authoritative state
+- residual
+- ledger
+- event log
+- observer buffers
+- checkpoints
+- temporary reconstruction buffers
+- indexes
+- lookup tables
+- retained preprocessing
+- compression metadata
+- dictionaries
+- model parameters used only by one arm
+
+Prohibit:
+
+- uncounted preprocessing
+- reconstruction oracle
+- hidden original-state lookup
+- easier tasks for the candidate
+- omitted temporary buffers
+- excluded ledger or observer memory
+
+### Resource support rule
+
+The candidate is supported only if:
+
+1. It passes 9 of 9 core semantic probes.
+2. It passes 8 of 8 delayed probes.
+3. Every compared baseline is evaluated on the same histories and semantic contract.
+4. Its peak canonical bytes are strictly lower than every eligible baseline in both families.
+
+If semantic continuity fails, resource advantage is ineligible.
+
+If the candidate does not beat every eligible baseline, report the complete Pareto table and mark resource advantage unsupported.
+
+Byte-ticks cannot rescue a failure on the frozen primary metric.
+
+==================================================
+16. EXPANSION AND CONTRACTION
+==================================================
+
+Define represented-world size:
+
+R(t) = live entities + live represented-region cells
+
+Expansion and contraction are supported only if, for the candidate in both families, ticks exist such that:
+
+t0 < t1 < t2
+
+R(t1) ≥ 2 × R(t0)
+
+and:
+
+R(t2) ≤ R(t0) + 1
+
+Report R(t) for every tick.
+
+==================================================
+17. INTEGRATED RESULT
+==================================================
+
+The same candidate system must demonstrate:
+
+1. Required expansion and contraction
+2. Beginning contract committed before tick zero
+3. Ending-derived return value
+4. Executed J transition
+5. At least one closing history
+6. At least one non-closing history
+7. Causal endpoint sensitivity
+8. Genuine information loss
+9. Semantic continuity on all core probes
+10. Semantic continuity on all delayed probes
+11. Clean leakage audit
+12. Ledger causality
+13. Valid fault controls
+14. Primary observer indistinguishability
+15. Full-state observer boundary detection
+16. Fidelity-matched resource advantage
+
+Integrated result rules:
+
+- Missing canonical evidence: invalid
+- Prohibited leakage: semantic result invalid
+- Failed positive control: observer result invalid
+- Missing frozen observer threshold: observer result inconclusive
+- Semantic failure: resource result ineligible
+- Ignored return value: reciprocal closure unsupported
+- Any unsupported required gate: integrated result not supported
+- Any inconclusive required gate: integrated result inconclusive unless another required gate is already unsupported
+- Any invalid required gate: integrated result invalid
+- Every required gate supported: integrated result supported
+
+Do not use "disproved" as a result status.
+
+==================================================
+18. INDEPENDENT VALIDATOR
+==================================================
+
+Create a separate validator process that recomputes conclusions from raw evidence.
+
+It must not trust summary statuses.
+
+The validator must reject:
+
+- missing evidence
+- hash mismatch
+- forbidden seed
+- reserved confirmatory seed
+- post-hoc contract
+- modified contract
+- ignored return value
+- direct-copy beginning
+- label-driven simulator behavior
+- unchanged fake intervention
+- incompatible mutation metadata
+- incorrect history counts
+- incorrect microstate counts
+- incorrect collision groups
+- probe-answer leakage
+- hidden original-state lookup
+- incorrect semantic scores
+- incorrect observer distributions
+- inadequate matching coverage
+- failed positive control reported as valid
+- ineligible resource arm included as eligible
+- omitted required memory category
+- incorrect peak-byte total
+- integrated support with a failed prerequisite
+
+Create at least one corruption fixture for every rejection class.
+
+The validator must return a nonzero exit code for corrupted evidence and zero only for structurally valid evidence. A zero exit code does not mean the conjecture was supported.
+
+==================================================
+19. RESULT FORMAT
+==================================================
+
+The canonical result must include:
+
+- test ID
+- protocol version
+- development status
+- run class
+- exact pilot superseded
+- development seeds
+- confirmation that reserved seeds were not used
+- world-family results
+- reciprocal-closure result
+- loss result
+- semantic result
+- leakage result
+- observer result
+- positive-control result
+- observer sensitivity results
+- ledger-causality result
+- fault-control result
+- fidelity eligibility
+- resource result
+- expansion/contraction result
+- integrated result
+- failed gates
+- inconclusive gates
+- ineligible gates
+- invalid gates
+- source hash
+- protocol hash
+- configuration hash
+- companion-file hashes
+- canonical evidence digest
+- evidence manifest
+- interpretation
+- limitations
+
+The integrated status must begin as `pending` or remain absent until the validator derives it.
+
+Do not initialize it as supported or not supported.
+
+==================================================
+20. REQUIRED DIRECTORY STRUCTURE
+==================================================
+
+Use a structure equivalent to:
+
+evidence/test05/
+  superseded_development_pilot/
+  revised_development_v1.2.0-dev3/
+    protocol/
+    config/
+    worlds/
+    runs/
+    results/
+    hashes/
+    validator/
+    report/
+
+Never overwrite a sealed directory.
+
+==================================================
+21. EXECUTION ORDER
+==================================================
+
+1. Inspect the repository.
+2. Record the true pilot status.
+3. Preserve and seal the pilot.
+4. Implement missing protocol components.
+5. Create every frozen companion file.
+6. Run unit tests before protocol freeze.
+7. Run validator corruption tests before protocol freeze.
+8. Correct implementation defects found before the freeze.
+9. Produce the final protocol and configuration hashes.
+10. Verify that the evidence directory contains no run evidence.
+11. Verify that the simulator accepts no report labels.
+12. Verify that reserved seeds remain untouched.
+13. Freeze the protocol.
+14. Execute seeds 13001-13003 and 14001-14003.
+15. Do not modify frozen code, protocol, configuration, thresholds, or probes during execution.
+16. If execution fails, preserve the failure.
+17. Run the independent validator.
+18. Produce the component dashboard.
+19. Produce the Markdown development report.
+20. Stop without running confirmation.
+
+If a defect is discovered after tick zero:
+
+- preserve the affected run
+- mark it invalid or aborted
+- do not patch it in place
+- create a new protocol version before rerunning
+
+==================================================
+22. FINAL HANDOFF REPORT
+==================================================
+
+At completion, report:
+
+- repository and branch
+- base commit
+- files created or changed
+- pilot status and evidence digest
+- revised protocol version
+- frozen companion files
+- protocol and configuration hashes
+- development seeds used
+- confirmation that reserved seeds were untouched
+- world families evaluated
+- execution matrix
+- automated test results
+- corruption-test results
+- reciprocal-closure result by family
+- loss result by family
+- semantic-continuity result by family
+- delayed-probe result
+- leakage-audit result
+- observer result by family
+- observer matching coverage
+- positive-control result
+- ledger-causality result
+- fault-control result
+- fidelity eligibility
+- resource comparison
+- Pareto table
+- expansion/contraction result
+- integrated dashboard
+- independent-validator result
+- canonical evidence path
+- canonical digest
+- limitations
+- whether the result is ready for human review
+
+Do not call the result accepted, confirmed, or published.
+
+==================================================
+23. FREEZE CHECKLIST
+==================================================
+
+Do not execute tick zero until all are true:
+
+[ ] Pilot preserved and identified by exact digest
+[ ] Revised protocol stored and hashed
+[ ] Observer specification stored and hashed
+[ ] Physics configuration stored and hashed
+[ ] Beginning-contract schema stored and hashed
+[ ] Beginning contracts committed
+[ ] Causal-path specification stored and hashed
+[ ] Field-classification manifest stored and hashed
+[ ] Delayed-probe generator stored and hashed
+[ ] Fault predictions stored and hashed
+[ ] Mutation definitions stored and hashed
+[ ] Semantic probes stored and hashed
+[ ] Byte-accounting specification stored and hashed
+[ ] Resource objective fixed to peak canonical bytes
+[ ] Seed list fixed
+[ ] Seeds checked against pilot and reserved registries
+[ ] Simulator receives no report labels or expected outcomes
+[ ] Unit tests pass
+[ ] Validator corruption tests pass
+[ ] Revised evidence directory contains no execution evidence
+[ ] Confirmation path remains disabled
+
+When every item passes, run the revised development experiment once, validate it, preserve it, report it, and stop.

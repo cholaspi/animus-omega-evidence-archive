@@ -69,13 +69,16 @@ class TestCoreAndDelayedProbes(unittest.TestCase):
         }
         self.assertTrue(required.issubset(core_ids))
 
-    def test_five_delayed_categories_present(self):
+    def test_eight_delayed_categories_present(self):
         delayed_ids = {p[0] for p in R.DELAYED_PROBE_SPECS}
         required = {
             "new_counterfactual_actions", "unseen_obligation_queries", "new_resource_disputes",
             "identity_substitution_challenges", "causal_prerequisite_challenges",
+            "deadline_urgency_queries", "relationship_authorization_challenges",
+            "resolved_chain_completeness_queries",
         }
         self.assertEqual(delayed_ids, required)
+        self.assertEqual(len(delayed_ids), 8)
 
     def test_delayed_generator_output_depends_on_residual_content(self):
         cfg = tiny_config()
