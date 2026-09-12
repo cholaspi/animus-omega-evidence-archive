@@ -1,6 +1,7 @@
 # Could the Animus Omega Cycle Change How Simulated Worlds Handle Alternate Histories?
 
-**By Cholee Hackett**  
+**By Cholee Hackett**
+
 **Published:** September 12, 2026
 
 Game worlds are becoming more persistent, more autonomous, and more difficult to keep coherent.
@@ -151,7 +152,7 @@ That history’s ending can then produce a return package containing conditions 
 - world-generation constraints;
 - a seed derived from the completed history.
 
-The next beginning must use information actually derived from the executed ending. Forward execution from that beginning must still be capable of producing the ending from which the return was derived.
+The next beginning must use information actually derived from the executed ending. It must satisfy the beginning contract under the declared reconstruction rule. Forward execution must then produce an ending that satisfies the declared ending contract—whether that contract requires exact replay or a predefined semantic match. The reconciliation projection cannot be changed after outcomes are inspected to make closure pass.
 
 That final requirement connects branch reconvergence to the reciprocal-boundary Animus-cycle contract.
 
@@ -204,6 +205,29 @@ That could support:
 - worlds that fail to close because an unresolved obligation remains.
 
 The merge process would no longer be hidden infrastructure. It could become part of the story.
+
+### A gameplay scene: The Last Translation
+
+Imagine a first-contact game set inside a failing orbital habitat.
+
+At the beginning, the player receives a short transmission from an unknown civilization. The translation system can identify its grammar but not its meaning. One phrase appears to describe an event that has not happened. The game does not treat this as an unrestricted message from the future. It is an incomplete return condition whose meaning can be established only by the history the player is about to create.
+
+The simulation opens four represented branches. In different branches, the player:
+
+- evacuates the habitat;
+- attempts to repair it;
+- shares its remaining power with the visitors;
+- refuses contact and protects the human population.
+
+Each branch teaches the translation system something different. Some differences are incidental and may be discarded. Others are protected: who survived, whether contact was voluntary, which promises were made, and whether either civilization caused preventable harm.
+
+During contraction, two branches produce the same apparent translation: **“We remember your answer.”** They still cannot merge. In one branch, the visitors remember cooperation; in the other, they remember a coerced surrender. The words agree, but the protected relationship and causal history do not.
+
+The remaining compatible histories reconcile into one authoritative account. At the ending, the player finally understands that the opening transmission was not a prediction. It was the first half of a communication protocol completed by the final exchange. The ending produces the validated translation key and return package used at the next beginning.
+
+On a second cycle, the player sees the opening phrase with its inherited meaning. The beginning now carries consequences derived from the previous ending, while playing forward can still satisfy the declared ending contract. The emotional effect is that the ending changes how the beginning is understood, but every retained fact, rejected merge, and inherited condition remains auditable.
+
+This scene uses language and reordered understanding to make cyclic structure emotionally visible. It does not require physical backwards causation, precognition, or information arriving from an unconstrained future.
 
 ## Where might it fit?
 
