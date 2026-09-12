@@ -223,7 +223,7 @@ Each branch teaches the translation system something different. Some differences
 
 During contraction, two branches produce the same apparent translation: **“We remember your answer.”** They still cannot merge. In one branch, the visitors remember cooperation; in the other, they remember a coerced surrender. The words agree, but the protected relationship and causal history do not.
 
-The remaining compatible histories reconcile into one authoritative account. At the ending, the player finally understands that the opening transmission was not a prediction. It was the first half of a communication protocol completed by the final exchange. The ending produces the validated translation key and return package used at the next beginning.
+The remaining compatible histories reconcile into one authoritative account. At the ending, the player finally understands that the opening transmission was not a prediction. It was the first half of a communication protocol completed by the final exchange. The ending produces the validated translation key and return package used at the next beginning. The key is stored with its inputs, version, and derivation record so the next cycle can verify where its inherited meaning came from.
 
 On a second cycle, the player sees the opening phrase with its inherited meaning. The beginning now carries consequences derived from the previous ending, while playing forward can still satisfy the declared ending contract. The emotional effect is that the ending changes how the beginning is understood, but every retained fact, rejected merge, and inherited condition remains auditable.
 
