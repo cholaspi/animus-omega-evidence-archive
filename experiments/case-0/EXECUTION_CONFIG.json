@@ -31,6 +31,40 @@
     "manual_reasoning_configuration": null,
     "application_retries_after_recorded_response": 0
   },
+  "spending_guard": {
+    "currency": "USD",
+    "replit_credit_equivalent_limit": 15.0,
+    "scope": [
+      "integration verification",
+      "preflight episodes",
+      "burned dry run",
+      "target episode"
+    ],
+    "pre_request_rule": "Do not send a request when recorded cumulative spend plus the pending request's maximum projected cost would exceed 15.00.",
+    "projection_uses": [
+      "input token count",
+      "frozen maximum output tokens",
+      "current documented model input rate",
+      "current documented model output rate"
+    ],
+    "halt_if_unavailable": [
+      "usage telemetry",
+      "input token count",
+      "current documented model price"
+    ]
+  },
+  "request_record": {
+    "required_fields": [
+      "requested_integration_model",
+      "raw_provider_model",
+      "request_payload_sha256",
+      "echoed_sampling_values",
+      "input_tokens",
+      "output_tokens",
+      "recorded_cost_usd",
+      "cumulative_case0_cost_usd"
+    ]
+  },
   "swap_boundary": {
     "annotation_action": "first_expected_cancel_pending_order",
     "scan_unit": "official_source_messages",

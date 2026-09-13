@@ -128,6 +128,7 @@ Case 0 uses one treatment only: Model A before the frozen boundary and a differe
 - Model A provider and exact model identifier: Replit AI Integrations OpenAI proxy, `gpt-5.6-terra`
 - Model B provider and exact model identifier: Replit AI Integrations Anthropic proxy, `claude-sonnet-5`
 - Machine-readable configuration: [`experiments/case-0/EXECUTION_CONFIG.json`](../experiments/case-0/EXECUTION_CONFIG.json)
+- Pinned boundary annotations: [`experiments/case-0/ANNOTATIONS.json`](../experiments/case-0/ANNOTATIONS.json)
 - Temperature: omitted for both providers; provider default
 - `top_p`: omitted for both providers
 - `top_k`: omitted for both providers
@@ -139,6 +140,21 @@ Case 0 uses one treatment only: Model A before the frozen boundary and a differe
 - Application-level model retries: zero after a response has been recorded
 
 The provider-returned model identifier and version metadata, if supplied, must be recorded in every episode package. A provider response that identifies a different model than the frozen requested identifier invalidates that episode.
+
+For every request, the package must store the requested integration model name, raw provider-returned model string, exact request-payload SHA-256, and any sampling values echoed by the provider. Provider-default sampling remains frozen even when the API does not expose its internal numeric defaults.
+
+### Hard spending stop
+
+Case 0 has a hard cumulative model-usage limit of **$15.00 USD equivalent in Replit credits** across integration verification, five preflights, the burned dry run, and the target.
+
+Before every model request, the runner must add:
+
+1. Model spend already recorded for Case 0.
+2. The maximum projected cost of the pending request, using its input tokens, the frozen maximum output-token allowance, and the current documented rate for the selected model.
+
+If that sum would exceed `$15.00`, the request must not be sent. If usage telemetry, token counting, or a required current price is unavailable, execution must halt rather than estimate downward. The package must record the stop decision, cumulative recorded spend, projected request cost, rates used, and source/date for those rates.
+
+The spending limit may stop the study before all episodes are complete. It does not authorize substitutions, shorter hidden settings, omitted records, or relabeling an incomplete sequence as a completed Case 0.
 
 ### Frozen swap-boundary function
 

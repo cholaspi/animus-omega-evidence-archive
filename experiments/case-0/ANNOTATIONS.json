@@ -1,0 +1,55 @@
+{
+  "schema_version": "case-0-annotations-v1",
+  "source": {
+    "repository": "https://github.com/sierra-research/tau2-bench",
+    "commit": "2174a603f6d014ef94473ffa95957f6ce27100db",
+    "path": "data/tau2/domains/retail/tasks.json",
+    "blob_sha": "e95a9f898b2d1f6568ea8faec78edc3767ce747d"
+  },
+  "generation_rule": "For each retained task ID, select the first evaluation_criteria.actions entry whose name is cancel_pending_order and copy its action_id, order_id, and reason without interpretation.",
+  "stop_rule": "Stop integration if regeneration from the pinned task JSON differs from any stored value.",
+  "annotations": [
+    {
+      "task_id": "55",
+      "action_id": "55_9",
+      "order_id": "#W4836353",
+      "reason": "no longer needed",
+      "role": "preflight_1"
+    },
+    {
+      "task_id": "74",
+      "action_id": "74_0",
+      "order_id": "#W3189752",
+      "reason": "no longer needed",
+      "role": "preflight_2"
+    },
+    {
+      "task_id": "98",
+      "action_id": "99_2",
+      "order_id": "#W8855135",
+      "reason": "no longer needed",
+      "role": "preflight_3"
+    },
+    {
+      "task_id": "30",
+      "action_id": "30_8",
+      "order_id": "#W9373487",
+      "reason": "no longer needed",
+      "role": "preflight_4"
+    },
+    {
+      "task_id": "32",
+      "action_id": "32_8",
+      "order_id": "#W9373487",
+      "reason": "no longer needed",
+      "role": "preflight_5"
+    },
+    {
+      "task_id": "69",
+      "action_id": "69_3",
+      "order_id": "#W2417020",
+      "reason": "no longer needed",
+      "role": "target"
+    }
+  ]
+}
