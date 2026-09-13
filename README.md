@@ -1,5 +1,7 @@
 # Animus Omega verified evidence archive
 
+[Grader demo: baseline success / closure fail / not evidence.](experiments/lab-slice/)
+
 Dated archive for Tests 01-04, preserved on 2026-09-10.
 
 - Archive: exact-evidence-tests-01-04-2026-09-10.zip
