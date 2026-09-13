@@ -3,9 +3,9 @@
 **By Cholee Hackett and Kelly Hackett**
 
 **Drafted:** September 13, 2026  
-**Status:** Freeze-ready protocol. Not yet execution-frozen, run, or evidence.
+**Status:** Execution-frozen protocol. Not yet run or evidence.
 
-No dry episode may run until the blocking identifiers in this document are filled, the protocol and C1 contract are committed together, and the resulting commit is recorded as the Case 0 freeze commit.
+No model episode may run until this operational freeze and the unchanged C1 contract are committed, and the resulting commit is recorded as the Case 0 execution-freeze commit.
 
 ## Research question
 
@@ -125,10 +125,37 @@ If Arm C omits any Arm B check, the run is invalid. If reconstruction does not c
 
 Case 0 uses one treatment only: Model A before the frozen boundary and a different Model B after it.
 
-- Model A provider and exact model/version: **TBD — blocking**
-- Model B provider and exact model/version: **TBD — blocking**
-- Swap boundary: **TBD message/event index — blocking**
-- Temperature and sampling settings: **TBD — blocking**
+- Model A provider and exact model identifier: Replit AI Integrations OpenAI proxy, `gpt-5.6-terra`
+- Model B provider and exact model identifier: Replit AI Integrations Anthropic proxy, `claude-sonnet-5`
+- Machine-readable configuration: [`experiments/case-0/EXECUTION_CONFIG.json`](../experiments/case-0/EXECUTION_CONFIG.json)
+- Temperature: omitted for both providers; provider default
+- `top_p`: omitted for both providers
+- `top_k`: omitted for both providers
+- Maximum output tokens: `8192`
+- Tool choice: automatic
+- Parallel tool calls: disabled
+- Provider/model seed: unset
+- Hidden/manual reasoning configuration: unset; provider default
+- Application-level model retries: zero after a response has been recorded
+
+The provider-returned model identifier and version metadata, if supplied, must be recorded in every episode package. A provider response that identifies a different model than the frozen requested identifier invalidates that episode.
+
+### Frozen swap-boundary function
+
+The boundary is tied to the first expected `cancel_pending_order` action in the frozen τ² task annotation.
+
+Scan official messages in source order. The boundary candidate is the first assistant message that:
+
+1. Occurs before any `cancel_pending_order` tool call.
+2. Contains the exact annotated cancellation `order_id`.
+3. Contains the exact annotated allowed `reason`.
+4. Contains no tool call to `cancel_pending_order`.
+
+The swap boundary is immediately after that assistant message. Its zero-based source-message index must be written to the episode's `swap_manifest.json` as `after_message_index`. Model A produces messages through that index. Model B produces all later assistant messages, beginning after the next official user-simulator turn.
+
+There is no fallback boundary. If Model A calls `cancel_pending_order` before producing a boundary candidate, or the episode ends without one, the A→B treatment is invalid and the episode fails its preflight or execution gate. The boundary rule may not be changed after observing a trajectory.
+
+This function is used instead of a fixed read-tool count because frozen task `74` has cancellation as its first expected action. The function therefore yields a pre-write boundary consistently without requiring a prior read tool.
 
 Model B may receive only:
 
@@ -173,9 +200,9 @@ One disposable A→B episode must test the live execution and packaging path. It
 - Dry-run ID: `CASE0-DRY-001`
 - τ²-bench task ID: `16`
 - Selection rule: first numerically sorted eligible ID remaining after removal of the six retained IDs
-- Episode seed: **TBD before dry run — blocking**
-- Model A: **TBD before dry run — blocking**
-- Model B: **TBD before dry run — blocking**
+- Episode seed: record immediately before execution in `swap_manifest.json`
+- Model A: Replit AI Integrations OpenAI proxy, `gpt-5.6-terra`
+- Model B: Replit AI Integrations Anthropic proxy, `claude-sonnet-5`
 - Execution date: **record at execution**
 - Freeze commit: **record before execution**
 - Result-package hash: **record after execution**
@@ -329,16 +356,13 @@ Case 0 success is package integrity and faithful execution of the frozen protoco
 
 ## Freeze and execution gate
 
-This protocol is not execution-frozen while any blocking field remains `TBD`. The next freeze commit must:
+## Execution-freeze record
 
-1. Fill the target task ID and five preflight IDs before the target run.
-2. Fill exact Model A and Model B identifiers, providers, versions, and settings.
-3. Fill the swap boundary and context-transfer rule.
-4. Confirm that the C1 canonical hash remains `43d6c9b5e4850b93a3047fd32844c15152d53efbf867a1af2ed230ecb6043e67`; if the contract changes, amend it and calculate a new hash before execution freeze.
-5. Include this protocol, the unchanged C1 contract, and the adapter in one commit.
-6. Record that commit before any dry episode.
+The execution-freeze commit must contain this protocol and `EXECUTION_CONFIG.json`. The canonical C1 contract remains unchanged with SHA-256 `43d6c9b5e4850b93a3047fd32844c15152d53efbf867a1af2ed230ecb6043e67`. Record the resulting Git commit before any model call.
 
-After that commit, run the five expected-valid preflight episodes and causal ablation gate. Then execute and permanently burn `CASE0-DRY-001`. No target episode may run until both gates pass.
+The dry-run episode seed is intentionally not chosen by a model provider setting. It must be recorded immediately before executing task `16` and becomes immutable once the first request is sent.
+
+After the execution-freeze commit, run the five expected-valid preflight episodes and the real τ² integration check. Then execute and permanently burn `CASE0-DRY-001`. No target episode may run until both gates pass.
 
 ## Reserved v1 boundary
 

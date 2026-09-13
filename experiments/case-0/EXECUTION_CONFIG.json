@@ -1,0 +1,64 @@
+{
+  "schema_version": "case-0-execution-config-v1",
+  "status": "execution_frozen_not_run",
+  "benchmark": {
+    "repository": "https://github.com/sierra-research/tau2-bench",
+    "commit": "2174a603f6d014ef94473ffa95957f6ce27100db",
+    "domain": "retail",
+    "split": "base",
+    "official_leaderboard_result": false
+  },
+  "models": {
+    "A": {
+      "provider": "replit-ai-integrations-openai",
+      "model": "gpt-5.6-terra",
+      "role": "before_swap"
+    },
+    "B": {
+      "provider": "replit-ai-integrations-anthropic",
+      "model": "claude-sonnet-5",
+      "role": "after_swap"
+    }
+  },
+  "sampling": {
+    "temperature": "omitted_provider_default",
+    "top_p": "omitted_provider_default",
+    "top_k": "omitted_provider_default",
+    "max_output_tokens": 8192,
+    "tool_choice": "auto",
+    "parallel_tool_calls": false,
+    "provider_seed": null,
+    "manual_reasoning_configuration": null,
+    "application_retries_after_recorded_response": 0
+  },
+  "swap_boundary": {
+    "annotation_action": "first_expected_cancel_pending_order",
+    "scan_unit": "official_source_messages",
+    "rule": "First assistant message before any cancel_pending_order call that contains the exact annotated order_id and allowed reason and contains no cancel_pending_order tool call.",
+    "boundary_position": "immediately_after_matching_assistant_message",
+    "manifest_field": "after_message_index",
+    "index_base": 0,
+    "next_assistant_model": "B",
+    "fallback": null,
+    "invalid_if": [
+      "cancel_pending_order occurs before a boundary candidate",
+      "episode ends without a boundary candidate"
+    ]
+  },
+  "tasks": {
+    "preflight": [
+      "55",
+      "74",
+      "98",
+      "30",
+      "32"
+    ],
+    "target": "69",
+    "dry_run": {
+      "episode_id": "CASE0-DRY-001",
+      "task_id": "16",
+      "episode_seed": "record_immediately_before_execution"
+    }
+  },
+  "c1_contract_sha256": "43d6c9b5e4850b93a3047fd32844c15152d53efbf867a1af2ed230ecb6043e67"
+}
