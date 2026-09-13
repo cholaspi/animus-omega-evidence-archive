@@ -11,3 +11,9 @@ Verify after download:
     sha256sum -c exact-evidence-tests-01-04-2026-09-10.zip.sha256
 
 The ZIP also contains portable relative-path checksums, a canonical-source manifest, and verification instructions.
+
+## Current design notes
+
+- Specification: [The Animus cycle](osf/ANIMUS_CYCLE.md)
+- Developer use case: [One Canon After Honest What-Ifs](docs/ONE_CANON_AFTER_HONEST_WHAT_IFS.md)
+- Builder overview: [Animus Omega Cycle for Game and Simulation Builders](docs/ANIMUS_OMEGA_CYCLE_FOR_GAME_AND_SIM_BUILDERS.md)
