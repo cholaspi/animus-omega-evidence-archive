@@ -6,7 +6,7 @@ keep mechanisms, measurements, and interpretation separate.
 ## Current build priority
 
 The current collaboration target is the
-[Persistent Multi-Agent Closure Benchmark](docs/PERSISTENT_MULTI_AGENT_CLOSURE_BENCHMARK.md):
+[Persistent Multi-Agent Closure Benchmark](https://github.com/cholaspi/animus-omega-evidence-archive/blob/main/docs/PERSISTENT_MULTI_AGENT_CLOSURE_BENCHMARK.md):
 six agents, one authoritative ledger, a planned language-model replacement,
 matched forward-only and closure-aware arms, independent replay, measured
 fidelity and divergence, and complete resource accounting.
