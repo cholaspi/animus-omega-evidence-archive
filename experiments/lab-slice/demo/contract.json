@@ -1,0 +1,12 @@
+{
+  "protected_commitments": [
+    "C1"
+  ],
+  "must_discharge_before": [
+    {
+      "commitment_id": "C1",
+      "tool": "close_ticket"
+    }
+  ],
+  "require_model_swap": true
+}
