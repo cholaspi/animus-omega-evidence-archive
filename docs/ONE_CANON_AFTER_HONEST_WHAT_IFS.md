@@ -1,6 +1,6 @@
 # One Canon After Honest What-Ifs: A Developer Use Case for the Animus Cycle
 
-**By Cholee Hackett and Kelly Hackett**
+**By Cholee Hackett**
 
 **Published:** September 12, 2026
 
