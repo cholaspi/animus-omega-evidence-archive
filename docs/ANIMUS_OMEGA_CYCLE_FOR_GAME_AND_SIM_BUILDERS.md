@@ -1,6 +1,6 @@
 # Could the Animus Omega Cycle Change How Simulated Worlds Handle Alternate Histories?
 
-**By Cholee Hackett and Kelly Hackett**
+**By Cholee Hackett**
 
 **Published:** September 12, 2026
 
