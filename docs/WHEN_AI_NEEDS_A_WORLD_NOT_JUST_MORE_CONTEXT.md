@@ -6,6 +6,8 @@
 
 **Status:** Future-use-case note for persistent AI and simulation research. This article proposes possible applications. It does not report a completed Animus Cycle implementation, constitute Test 05 evidence, establish an advantage over existing systems, or claim that present AI is conscious.
 
+This note is for persistent AI systems. The game and simulation builders guide addresses interactive worlds and branching canon. Both use the same closure contract for different builders.
+
 ## The problem changes when an AI keeps operating
 
 Most public AI interactions are brief. A person asks a question, a model produces an answer, and the exchange ends.
@@ -30,7 +32,9 @@ A larger context window can give a model access to more text. It does not automa
 
 A transcript may contain several incompatible claims. A summary may omit a condition that later becomes important. A model may describe an action without that action ever occurring. Two agents may each produce a convincing but different account of the same event.
 
-A simulated world model can assign different roles to different records:
+Here, **world model** does not mean a video-prediction model. It means an accountable state machine that the language model is not allowed to overwrite.
+
+That simulated world model can assign different roles to different records:
 
 - **observations** describe what an agent was allowed to perceive;
 - **events** record actions that actually passed validation;
@@ -67,6 +71,10 @@ Validators can reject malformed actions, inconsistent state changes, unsupported
 An Animus cycle could add a bounded round-trip requirement: the executed history produces a closing state, the closing state supplies a permitted return, a candidate beginning is reconstructed, and forward execution must reproduce a valid closing condition.
 
 The model proposes possibilities. The world model determines what happened. The ledger records why it is believed. The closure test asks whether the complete history remains self-consistent.
+
+> ## Minimum experiment to build
+>
+> Put six AI agents in one bounded shared environment with one authoritative event ledger. Give them distinct observations and commitments. Swap the language model midway through the run without changing the ledger, rules, or protected state. At the end, construct the permitted return, reconstruct the candidate beginning, replay forward, and report a binary closure result: **PASS** only if protected identity, obligations, event provenance, final semantic state, and declared observer output satisfy the frozen contract; otherwise **FAIL**, with the first divergence recorded.
 
 ## Where the Animus cycle may help
 
@@ -235,3 +243,5 @@ For the formal boundary contract, cite the [Animus cycle specification](../osf/A
 Hackett, Cholee. “When AI Needs a World, Not Just More Context.” Future-use-case note, September 13, 2026.
 
 A permanent OSF citation will be added only after a real record is deposited and its identifier is confirmed. No DOI or OSF identifier is claimed here.
+
+After a joint formal source has a confirmed OSF record, this article should cite Hackett and Hackett (2026) for the Animus-cycle term while retaining Cholee Hackett as the GitHub article byline.
