@@ -76,7 +76,7 @@ The model proposes possibilities. The world model determines what happened. The 
 >
 > Put six AI agents in one bounded shared environment with one authoritative event ledger. Give them distinct observations and commitments. Swap the language model midway through the run without changing the ledger, rules, or protected state. At the end, construct the permitted return, reconstruct the candidate beginning, replay forward, and report a binary closure result: **PASS** only if protected identity, obligations, event provenance, final semantic state, and declared observer output satisfy the frozen contract; otherwise **FAIL**, with the first divergence recorded.
 
-The public [Persistent Multi-Agent Closure Benchmark](PERSISTENT_MULTI_AGENT_CLOSURE_BENCHMARK.md) turns this minimum experiment into a development protocol with a matched baseline, measurements, resource accounting, replay requirements, and falsification conditions.
+The public [Persistent Multi-Agent Closure Benchmark](https://github.com/cholaspi/animus-omega-evidence-archive/blob/main/docs/PERSISTENT_MULTI_AGENT_CLOSURE_BENCHMARK.md) turns this minimum experiment into a development protocol with a matched baseline, measurements, resource accounting, replay requirements, and falsification conditions. Active implementation work is tracked in [GitHub Issue #1](https://github.com/cholaspi/animus-omega-evidence-archive/issues/1).
 
 ## Where the Animus cycle may help
 
