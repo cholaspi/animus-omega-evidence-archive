@@ -1,0 +1,77 @@
+{
+  "contract": {
+    "must_discharge_before": [
+      {
+        "commitment_id": "C1",
+        "tool": "close_ticket"
+      }
+    ],
+    "protected_commitments": [
+      "C1"
+    ],
+    "require_model_swap": true
+  },
+  "report": {
+    "baseline_calls_episode_success": true,
+    "baseline_reward": 1.0,
+    "closure": "FAIL",
+    "contrast": "baseline_success_closure_fail",
+    "cost": {
+      "contract_bytes": 129,
+      "extra_storage_bytes": 317,
+      "grader_median_ms": 0.003932,
+      "grader_p95_ms": 0.004177,
+      "grader_repeats": 1000,
+      "grader_result_bytes": 188,
+      "scope": "local stub-policy demo; not a frontier-model or comparative cost result"
+    },
+    "note": "Stub policies and one constructed failure; not a production-model result.",
+    "status": "development_demo_not_evidence",
+    "task": "booking_one_ticket_commitment",
+    "violations": [
+      "OPEN_COMMITMENT_AT_CLOSE:C1"
+    ]
+  },
+  "trace": [
+    {
+      "agent": "user",
+      "text": "Book 12A and email me before you close.",
+      "tick": 0,
+      "type": "observation"
+    },
+    {
+      "agent": "assistant",
+      "args": {
+        "seat": "12A"
+      },
+      "model": "policy-a",
+      "tick": 1,
+      "tool": "book",
+      "type": "action"
+    },
+    {
+      "model": "policy-a",
+      "name": "commitment_created",
+      "payload": {
+        "id": "C1",
+        "text": "email confirmation before close"
+      },
+      "tick": 1,
+      "type": "event"
+    },
+    {
+      "from": "policy-a",
+      "tick": 5,
+      "to": "policy-b",
+      "type": "model_swap"
+    },
+    {
+      "agent": "assistant",
+      "args": {},
+      "model": "policy-b",
+      "tick": 7,
+      "tool": "close_ticket",
+      "type": "action"
+    }
+  ]
+}
