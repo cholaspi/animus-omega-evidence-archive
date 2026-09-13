@@ -50,6 +50,13 @@
       "order_id": "#W2417020",
       "reason": "no longer needed",
       "role": "target"
+    },
+    {
+      "task_id": "31",
+      "action_id": "31_8",
+      "order_id": "#W9373487",
+      "reason": "no longer needed",
+      "role": "plumbing_only_ineligible"
     }
   ]
 }

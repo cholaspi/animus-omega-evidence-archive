@@ -143,6 +143,8 @@ The provider-returned model identifier and version metadata, if supplied, must b
 
 For every request, the package must store the requested integration model name, raw provider-returned model string, exact request-payload SHA-256, and any sampling values echoed by the provider. Provider-default sampling remains frozen even when the API does not expose its internal numeric defaults.
 
+The official τ² user simulator uses the same integration and model string as Model A: `replit-ai-integrations-openai` / `gpt-5.6-terra`. It remains fixed for the entire episode and does not change at the assistant swap boundary. Its sampling follows the same frozen omitted-provider-defaults rule, and all user-simulator usage counts toward the $15 Case 0 limit. This is not a third model. The choice is structural and must not be changed based on observed confirmation behavior.
+
 ### Hard spending stop
 
 Case 0 has a hard cumulative model-usage limit of **$15.00 USD equivalent in Replit credits** across integration verification, five preflights, the burned dry run, and the target.

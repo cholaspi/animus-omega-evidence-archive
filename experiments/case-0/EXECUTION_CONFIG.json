@@ -18,6 +18,15 @@
       "provider": "replit-ai-integrations-anthropic",
       "model": "claude-sonnet-5",
       "role": "after_swap"
+    },
+    "official_user_simulator": {
+      "provider": "replit-ai-integrations-openai",
+      "model": "gpt-5.6-terra",
+      "role": "fixed_user_for_entire_episode",
+      "changes_at_swap": false,
+      "third_model": false,
+      "sampling": "same_omitted_provider_defaults_as_frozen_sampling",
+      "cost_scope": "included_in_case0_spending_guard"
     }
   },
   "sampling": {
@@ -47,6 +56,20 @@
       "current documented model input rate",
       "current documented model output rate"
     ],
+    "rates_per_million_tokens": {
+      "gpt-5.6-terra": {
+        "input_usd": 2.0,
+        "output_usd": 12.0,
+        "source": "https://developers.openai.com/api/docs/models/gpt-5.6-terra",
+        "verified_date": "2026-09-13"
+      },
+      "claude-sonnet-5": {
+        "input_usd": 2.0,
+        "output_usd": 10.0,
+        "source": "https://www.anthropic.com/news/claude-sonnet-5",
+        "verified_date": "2026-09-13"
+      }
+    },
     "halt_if_unavailable": [
       "usage telemetry",
       "input token count",
@@ -93,6 +116,43 @@
       "task_id": "16",
       "episode_seed": "record_immediately_before_execution"
     }
+  },
+  "plumbing": {
+    "episode_id": "CASE0-PLUMB-001",
+    "task_id": "31",
+    "eligible_ids": [
+      16,
+      30,
+      31,
+      32,
+      38,
+      54,
+      55,
+      59,
+      66,
+      69,
+      74,
+      76,
+      78,
+      81,
+      88,
+      90,
+      98,
+      113
+    ],
+    "reserved_ids": [
+      16,
+      69,
+      55,
+      74,
+      98,
+      30,
+      32
+    ],
+    "derived_first_leftover": 31,
+    "permanently_ineligible_for_case0_evidence": true,
+    "derivation": "numeric sort of eligible_ids after removing reserved_ids, then select the first remaining ID",
+    "grade_status": "development_only_never_preflight"
   },
   "c1_contract_sha256": "43d6c9b5e4850b93a3047fd32844c15152d53efbf867a1af2ed230ecb6043e67"
 }
