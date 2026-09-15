@@ -22,4 +22,5 @@ The ZIP also contains portable relative-path checksums, a canonical-source manif
 - Specification: [The Animus cycle](osf/ANIMUS_CYCLE.md)
 - Developer use case: [One Canon After Honest What-Ifs](docs/ONE_CANON_AFTER_HONEST_WHAT_IFS.md)
 - Narrative use case: [Closed-Knot Stories on One Wheel](docs/CLOSED_KNOT_STORIES_ON_ONE_WHEEL.md)
-- Builder overview: [Animus Omega Cycle for Game and Simulation Builders](docs/ANIMUS_OMEGA_CYCLE_FOR_GAME_AND_SIM_BUILDERS.md)
+- Builders start here: [Animus Omega for Builders: Start Here](docs/BUILDERS_START_HERE.md)
+- Full builder paper: [Reciprocal Closure for Persistent LLM-Informed Worlds](docs/animus_omega_reciprocal_closure_builders.md)
