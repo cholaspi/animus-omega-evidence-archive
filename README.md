@@ -23,4 +23,4 @@ The ZIP also contains portable relative-path checksums, a canonical-source manif
 - Developer use case: [One Canon After Honest What-Ifs](docs/ONE_CANON_AFTER_HONEST_WHAT_IFS.md)
 - Narrative use case: [Closed-Knot Stories on One Wheel](docs/CLOSED_KNOT_STORIES_ON_ONE_WHEEL.md)
 - Builders start here: [Animus Omega for Builders: Start Here](docs/BUILDERS_START_HERE.md)
-- Full builder paper: [Reciprocal Closure for Persistent LLM-Informed Worlds](docs/animus_omega_reciprocal_closure_builders.md)
+- Full builder paper: [Markdown](docs/animus_omega_reciprocal_closure_builders.md) · [PDF](docs/animus_omega_reciprocal_closure_builders.pdf) · [The Handshake simulator](https://animusomega.com/handshake)
