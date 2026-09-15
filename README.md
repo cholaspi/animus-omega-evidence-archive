@@ -16,6 +16,7 @@ The ZIP also contains portable relative-path checksums, a canonical-source manif
 
 ## Current design notes
 
+- Vision and proposed applications: [Animus Omega: Vision and Proposed Applications](docs/ANIMUS_OMEGA_VISION.md)
 - Specification: [The Animus cycle](osf/ANIMUS_CYCLE.md)
 - Developer use case: [One Canon After Honest What-Ifs](docs/ONE_CANON_AFTER_HONEST_WHAT_IFS.md)
 - Narrative use case: [Closed-Knot Stories on One Wheel](docs/CLOSED_KNOT_STORIES_ON_ONE_WHEEL.md)
