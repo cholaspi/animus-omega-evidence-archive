@@ -4,11 +4,20 @@
 **Cholee Hackett, Kelly Hackett**
 15 September 2026
 *Proposed author list; authorship, order, and affiliations require confirmation.*
-*Author-review draft, revision 4 (builder-facing reshaping of revision 3). Not submitted, accepted, or peer reviewed.*
+*Author-review draft, revision 5. Not submitted, accepted, or peer reviewed.*
+
+[PDF edition](https://github.com/cholaspi/animus-omega-evidence-archive/blob/main/docs/animus_omega_reciprocal_closure_builders.pdf)
 
 ---
 
-> **Revision note (rev 3 to rev 4).** This revision re-scopes the document for its intended readers: builders of persistent simulations and LLM-informed worlds. Five changes. (1) The contribution is narrowed from "a general framework for persistent worlds" to a closure contract for the specific class of worlds that carry committed end-to-beginning constraints (authored destiny, prophecy payoff, bootstrap loops, multi-branch reconciliation). (2) A new early section answers the question a builder asks first: what does this give me that event sourcing and validation do not, and when is it not worth adopting. (3) The world-design material is retained but reframed as buildable design patterns rather than as vision, since this audience builds exactly these mechanics. (4) The four component studies are pulled into a clearly separated foundational-research track, reported for completeness, because a builder prices adoption on the runnable artifact, not on the science arm. (5) The runnable spec, fixtures, and reference engine are moved forward. One wall is kept throughout and it is the only one this audience needs: the pattern is a building tool, never a claim about physical reality, consciousness, or time.
+> **Revision note.** Revision 4 re-scoped the paper for builders of persistent simulations and LLM-informed worlds. Revision 5 adds direct links to the public teaching simulators and clarifies their evidence status. The contribution remains a closure contract for the specific class of worlds that carry committed end-to-beginning constraints. The pattern is a building tool, never a claim about physical reality, consciousness, or time.
+
+**Interactive teaching tools**
+
+- [The Handshake](https://animusomega.com/handshake) demonstrates minimum reciprocal closure.
+- [Advanced Technical Lab](https://animusomega.com/simulator) explores optional branch reconvergence, observer semantics, information loss, and traces.
+
+Both simulators are conceptual teaching tools. Neither is Test 05 evidence, an independent replication, or proof that the architecture outperforms conventional validation.
 
 ---
 
@@ -236,6 +245,8 @@ This section belongs to the project's foundational science arm, not to the build
 ## 10. The runnable artifact and how to adopt
 
 For this audience the trustworthy evidence is not the science track, it is code that does what the spec says. The published package provides a machine-checkable contract you can run and inspect, and adoption should begin there rather than with the propositions.
+
+**Start with the teaching simulators.** [The Handshake](https://animusomega.com/handshake) is the primary conceptual demonstration of minimum reciprocal closure. The [Advanced Technical Lab](https://animusomega.com/simulator) adds optional branch reconvergence, observer semantics, information loss, and execution traces. These tools explain the mechanics; they are not Test 05 evidence and do not establish comparative advantage.
 
 **What exists to run.** The package includes the Animus Cycle specification (version 1.0), a claims-boundary document, registration metadata, a simulator specification, a reference engine with types, a candidate generator, and tests, together with frozen reference fixtures: a clean PASS, a mutate-endpoint FAILURE, and a separately versioned ORIGIN_CUT branching example. Checksums are published for the evidence package. These fixtures are the fastest way to see the contract reject something: run the mutate-endpoint fixture and watch closure fail because the ending-derived return no longer satisfies the beginning contract, then run the clean fixture and watch it pass through the full sealed-history validation.
 
