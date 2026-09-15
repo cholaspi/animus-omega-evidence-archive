@@ -2,7 +2,7 @@
 
 **Status:** Vision statement and proposed architecture
 
-**Date:** September 15, 2026
+**Date:** September 14, 2026
 
 **Evidence status:** Not an experiment, formal specification, or amendment to prior evidence
 
