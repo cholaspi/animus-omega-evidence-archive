@@ -5,6 +5,11 @@ keep mechanisms, measurements, and interpretation separate.
 
 ## Current build priority
 
+New builders should first read
+[Animus Omega for Builders: Start Here](docs/BUILDERS_START_HERE.md) to decide
+whether reciprocal closure fits their problem before proposing implementation
+work.
+
 The current collaboration target is the
 [Persistent Multi-Agent Closure Benchmark](https://github.com/cholaspi/animus-omega-evidence-archive/blob/main/docs/PERSISTENT_MULTI_AGENT_CLOSURE_BENCHMARK.md):
 six agents, one authoritative ledger, a planned language-model replacement,
@@ -40,7 +45,10 @@ random seeds, runtime, hardware-relevant assumptions, outputs, and checksums.
 Freeze confirmatory inputs before reserved seeds are opened. Development runs
 are not confirmatory evidence. Preserve failed and aborted attempts, deviations,
 and burned seeds. Do not overwrite an executed manifest or silently rerun a
-one-attempt protocol.
+one-attempt protocol. For the persistent-closure development harness, use only
+the disclosed seeds in
+`persistent_closure_benchmark/outputs/DEV_MANIFEST.json`; no reserved seeds
+are allocated to the development harness.
 
 ## Issues, proposals, and review
 
@@ -85,3 +93,17 @@ advantage, or universe-scale validity.
 Do not claim endorsement, affiliation, shared formalism, or agreement with
 Klee Irwin, Donald Hoffman, or Tom Campbell. If public themes are mentioned,
 say they independently motivated this project only.
+
+
+## Persistent closure benchmark implementation boundary
+
+The Python implementation in `persistent_closure_benchmark/` is a
+development-only deterministic harness. Contributions may improve its ledger,
+schemas, fixtures, replay worker, or resource accounting, but must retain the
+six stable IDs, matched arms, disclosed fixture list, and explicit
+`development` status unless a protocol revision is documented. Do not call the
+script in confirmatory mode (none exists), introduce reserved seeds, edit
+frozen checkpoint evidence, or describe the sample output as proof that closure
+is generally effective. A pull request changing an invariant, fixture,
+divergence ordering, model-swap schedule, or resource definition must update
+the protocol and source manifest and receive independent review.
