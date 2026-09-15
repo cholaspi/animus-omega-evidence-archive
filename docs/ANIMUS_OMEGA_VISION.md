@@ -1,7 +1,9 @@
 # Animus Omega: Vision and Proposed Applications
 
-**Status:** Vision statement and proposed architecture  
-**Date:** September 15, 2026  
+**Status:** Vision statement and proposed architecture
+
+**Date:** September 15, 2026
+
 **Evidence status:** Not an experiment, formal specification, or amendment to prior evidence
 
 ## Purpose
