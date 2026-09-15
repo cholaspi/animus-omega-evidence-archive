@@ -8,7 +8,7 @@ Dated archive for Tests 01-04, preserved on 2026-09-10.
 - SHA-256: 28caf6b0bdd02f4c9441b01bd528ae7dcb70408e8751fff4ca09fcc52044dfd1
 - Website: https://animusomega.com/
 
-Verification confirms that downloaded files match the published bytes; it does not independently validate the scientific claims, methods, or conclusions.
+This repository contains a dated evidence archive alongside evolving specifications, use-case notes, and a vision statement. Design documents do not amend the archived results. Archive integrity checks are distinct from independent scientific replication.
 
 Verify after download:
 
